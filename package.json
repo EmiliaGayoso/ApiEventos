@@ -1,0 +1,21 @@
+{
+  "name": "api-eventos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EmiliaGayoso/ApiEventos.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EmiliaGayoso/ApiEventos/issues"
+  },
+  "homepage": "https://github.com/EmiliaGayoso/ApiEventos#readme"
+}
