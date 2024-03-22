@@ -25,3 +25,4 @@ router.post("/user/register", (req:Request,res:Response) => {
     });
 });
 
+export default router;
