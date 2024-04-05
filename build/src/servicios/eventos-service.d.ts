@@ -8,11 +8,6 @@ export declare class EventService {
             total: string;
         };
     };
-    getEventoNombre(name: string): {
-        collection: string;
-        pagination: {
-            nextPage: string;
-            total: string;
-        };
-    };
+    getEventoById(id: number): void;
+    getParticipants(id: number, fName?: string, lName?: string, username?: string, attended?: boolean, rating?: number): void;
 }

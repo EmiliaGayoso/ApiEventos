@@ -10,9 +10,9 @@ const user_controller_1 = __importDefault(require("./src/controllers/user-contro
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 const port = 5050;
-app.use("/Event", eventos_controller_1.default);
-app.use("/User", user_controller_1.default);
-app.use("/Provincias", provincias_controller_1.default);
+app.use("/event", eventos_controller_1.default);
+app.use("/user", user_controller_1.default);
+app.use("/provincias", provincias_controller_1.default);
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

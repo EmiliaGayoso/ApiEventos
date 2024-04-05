@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const eventos_service_1 = require("../servicios/eventos-service");
 const router = express_1.default.Router();
+const eventService = new eventos_service_1.EventService();
 router.get("/", (req, res) => {
     const limit = req.query.limit;
     const offset = req.query.offset;
@@ -16,7 +17,6 @@ router.get("/", (req, res) => {
     const fechaString = String(fecha);
     new Date(fechaString);
     try {
-        const eventService = new eventos_service_1.EventService();
         const allEvent = eventService.getAllEventos(Number(limit), Number(offset), String(name), String(cat), new Date(fechaString), String(tag));
         return res.json(allEvent);
     }
@@ -25,27 +25,30 @@ router.get("/", (req, res) => {
         return res.json("Un Error");
     }
 });
-router.get("/", (req, res) => {
-    const limit = req.query.limit;
-    const offset = req.query.offset;
-    const name = req.query.name;
+router.get("/:id", (req, res) => {
     try {
-        const eventService = new eventos_service_1.EventService();
-        const eventWithName = eventService.getEventoNombre(String(name));
-        return res.json(eventWithName);
+        const event = eventService.getEventoById(Number(req.params.id));
+        return res.json(event);
     }
     catch (error) {
         console.log("Un Error");
         return res.json("Un Error");
     }
 });
-router.get("/", (req, res) => {
-});
-router.get("/", (req, res) => {
-});
-router.get("/:id", (req, res) => {
-});
 router.post("/:id/enrollment", (req, res) => {
+    const first_name = req.query.first_name;
+    const last_name = req.query.last_name;
+    const username = req.query.username;
+    const attended = req.query.attended;
+    const rating = req.query.rating;
+    try {
+        const event = eventService.getParticipants(Number(req.params.id), String(first_name), String(last_name), String(username), Boolean(attended), Number(rating));
+        return res.json(event);
+    }
+    catch (_a) {
+        console.log("Un Error");
+        return res.json("Un Error");
+    }
 });
 exports.default = router;
 //# sourceMappingURL=eventos-controller.js.map
