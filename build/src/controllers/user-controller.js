@@ -25,4 +25,5 @@ router.post("/user/register", (req, res) => {
         password: body.password,
     });
 });
+exports.default = router;
 //# sourceMappingURL=user-controller.js.map
