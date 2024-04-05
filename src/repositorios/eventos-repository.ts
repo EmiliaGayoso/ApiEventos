@@ -6,6 +6,7 @@ import { query } from "express";
 export class EventRepository{
     getAllEvents(name, cat, fecha, tag, pageSize, requestedPage, queryBase) {
         
+        //FIJARSE PORQUE FALLA EL HARCODEO, QUE FALTA AGREGAR
         const query = `SELECT * FROM collection limit ${pageSize} offset ${requestedPage}
         LEFT JOIN event_categories ON event.id_event_category = event_categories.id
         LEFT JOIN event_tags ON event_tags.id_event = event.id 
