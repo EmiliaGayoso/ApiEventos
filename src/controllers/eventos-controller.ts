@@ -51,9 +51,12 @@ router.get("/:id", (req: Request, res: Response) => {
   }
 });
 
+/*5*/
 router.post("/:id/enrollment", (req: Request, res: Response) => {
   //hacer una query para getear
-
+  
+  const limit = req.query.limit;
+  const offset = req.query.offset;
   const first_name = req.query.first_name;
   const last_name = req.query.last_name;
   const username = req.query.username;
@@ -61,7 +64,10 @@ router.post("/:id/enrollment", (req: Request, res: Response) => {
   const rating = req.query.rating;
 
   try {
-    const event = eventService.getParticipants(Number(req.params.id), String(first_name), String(last_name), String(username), Boolean(attended), Number(rating));
+    const event = eventService.getParticipants(Number(limit), Number(offset), Number(req.params.id), String(first_name), String(last_name), String(username), Boolean(attended), Number(rating));
+    /*if(!event){
+      return res.status(405).json({error: `El formato ingresado es inválido`})
+    }else {}*/
     return res.json(event);
   }
   catch{
@@ -70,4 +76,102 @@ router.post("/:id/enrollment", (req: Request, res: Response) => {
   }
 
 });
+
+
+/*8*/
+
+// Create Event
+
+router.post("/", (req: Request, res: Response) => {
+  //hacer una query para getear
+
+
+  try {
+    const event = eventService.createEvent(req.body);
+    if(!event){
+      return res.status(405).json({error: `El formato ingresado es inválido`})
+    }else {}
+    return res.json(event);
+  }
+  catch{
+    console.log("Un Error");
+    return res.json("Un Error");
+  }
+
+});
+/*
+
+/*
+export async function createEvent(req: Request, res: Response): Promise<void> {
+    try {
+        // Extract event data from request body
+        const eventData: Event = req.body;
+
+        // Call service to create event
+        const newEvent: Event = await eventService.createEvent(eventData);
+
+        // Return the newly created event
+        res.json(newEvent);
+    } catch (error) {
+        console.error("Error creating event:", error);
+        res.status(500).json({ error: "Failed to create event" });
+    }
+}
+
+Edit Event
+export async function editEvent(req: Request, res: Response): Promise<void> {
+    const eventId: number = parseInt(req.params.id, 10);
+    const userId: number = req.body.id; // Assuming you have user information in request
+
+    try {
+        // Check if the user is the creator of the event
+        const isCreator: boolean = await eventService.isUserEventCreator(eventId, userId);
+        if (!isCreator) {
+            return res.status(403).json({ error: "You are not authorized to edit this event" });
+        }
+
+        // Extract updated event data from request body
+        const eventData: Event = req.body;
+
+        // Call service to edit event
+        const updatedEvent: Event | null = await eventService.editEvent(eventId, eventData);
+
+        if (updatedEvent) {
+            // Return the updated event
+            res.json(updatedEvent);
+        } else {
+            res.status(404).json({ error: "Event not found" });
+        }
+    } catch (error) {
+        console.error("Error editing event:", error);
+        res.status(500).json({ error: "Failed to edit event" });
+    }
+}
+
+Delete Event
+export async function deleteEvent(req: Request, res: Response): Promise<void> {
+    const eventId: number = parseInt(req.params.id, 10);
+    const userId: number = req.body.id; // Assuming you have user information in request
+
+    try {
+        // Check if the user is the creator of the event
+        const isCreator: boolean = await eventService.isUserEventCreator(eventId, userId);
+        if (!isCreator) {
+            return res.status(403).json({ error: "You are not authorized to delete this event" });
+        }
+
+        // Call service to delete event
+        const deletedEvent: boolean = await eventService.deleteEvent(eventId);
+
+        if (deletedEvent) {
+            // Return success message
+            res.json({ message: "Event deleted successfully" });
+        } else {
+            res.status(404).json({ error: "Event not found" });
+        }
+    } catch (error) {
+        console.error("Error deleting event:", error);
+        res.status(500).json({ error: "Failed to delete event" });
+    }
+}*/
 export default router;

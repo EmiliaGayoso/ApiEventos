@@ -4,14 +4,14 @@ import { query } from "express";
 
 //tercera parte de la travesia, aquí se ingresa la query y se obtiene la respuesta en rows
 export class EventRepository{
-    getAllEvents(name, cat, fecha, tag, pageSize, requestedPage, queryBase) {
+    getAllEvents(name, cat, fecha, tag, pageSize, requestedPage, queryWhere) {
         
         //FIJARSE PORQUE FALLA EL HARCODEO, QUE FALTA AGREGAR
         const query = `SELECT * FROM collection limit ${pageSize} offset ${requestedPage}
         LEFT JOIN event_categories ON event.id_event_category = event_categories.id
         LEFT JOIN event_tags ON event_tags.id_event = event.id 
         LEFT JOIN tags ON event_tags.id_tag = tags.id
-        ` + queryBase;
+        ` + queryWhere;
         /*`SELECT * FROM events limit ${pageSize} offset ${requestedPage}
         LEFT JOIN event_categories ON event.id_event_category = event_categories.id
         LEFT JOIN event_tags ON event_tags.id_event = event.id 
@@ -24,7 +24,7 @@ export class EventRepository{
 
         //const values = client.query(sqlQuery);
         
-        { const collection = [
+         const collection = [
             {
                 "id": 2,
                 "name": "Taylor Swift",
@@ -56,15 +56,15 @@ export class EventRepository{
                     "longitude": -58.4498,
                     "max_capacity": "84567"
                 }
-            },]
-        }
+            }]
         
-        return [query,query1];//const [allEvents, cantidadEvents] en el service
+        
+        return [collection];//const [allEvents, cantidadEvents] en el service
     }
 
     getEventById(id)
     {
-        const queryId = `SELECT events.* , location.*, provinces.*, event_categories.*, users.*, event_enrollments.*, event_tag.*, tags.* FROM events e
+        const queryId = `SELECT event.*, location.*, provinces.*, event_categories.*, users.*, event_enrollments.*, event_tag.*, tags.* FROM events e
         
         LEFT JOIN location l ON e.id_location = l.id
         LEFT JOIN provinces p ON l.id_province = p.id
@@ -86,7 +86,42 @@ export class EventRepository{
         
     }
 
-    getParticipants(id, fName, lName, username, attended, rating, queryWhere){
-        const query = `` + queryWhere;
+    /*5*/
+    getParticipants(id, limit, offset, queryWhere){
+        const query = `SELECT event_enrollment.*,u.first_name,u.last_name,u.username,e.name FROM event_enrollment er limit ${limit} offset ${offset}
+        LEFT JOIN users u ON er.id_user = u.id
+        LEFT JOIN events e ON er.id_event = e.id 
+        LEFT JOIN tags ON event_tags.id_tag = tags.id
+        WHERE e.id = ${id}` + queryWhere;
+
+        return
     }
-}
+
+
+    /*8*/
+   createEvent(eventData: Event) {
+        // Lógica para crear un nuevo evento en la base de datos
+        const query= `INSERT INTO events (${eventData.name},title, description, start_date, end_date, location_id, creator_user_id)
+        VALUES (?, ?, ?, ?, ?, ?); `;
+        
+        const createdEvent: Event = await this.db.create(eventData); // Suponiendo que tienes un método create en tu clase Database
+        return createdEvent;
+    }
+
+    async editEvent(eventId: number, eventData: Event): Promise<Event | null> {
+        // Lógica para editar un evento existente en la base de datos
+        const updatedEvent: Event | null = await this.db.update(eventId, eventData); // Suponiendo que tienes un método update en tu clase Database
+        return updatedEvent;
+    }
+
+    async deleteEvent(eventId: number): Promise<boolean> {
+        // Lógica para eliminar un evento existente de la base de datos
+        const deleted: boolean = await this.db.delete(eventId); // Suponiendo que tienes un método delete en tu clase Database
+        return deleted;
+    }
+
+    async getEventById(eventId: number): Promise<Event | null> {
+        // Lógica para obtener un evento por su ID de la base de datos
+        const event: Event | null = await this.db.findById(eventId); // Suponiendo que tienes un método findById en tu clase Database
+        return event;
+    }

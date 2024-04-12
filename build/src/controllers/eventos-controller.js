@@ -36,13 +36,15 @@ router.get("/:id", (req, res) => {
     }
 });
 router.post("/:id/enrollment", (req, res) => {
+    const limit = req.query.limit;
+    const offset = req.query.offset;
     const first_name = req.query.first_name;
     const last_name = req.query.last_name;
     const username = req.query.username;
     const attended = req.query.attended;
     const rating = req.query.rating;
     try {
-        const event = eventService.getParticipants(Number(req.params.id), String(first_name), String(last_name), String(username), Boolean(attended), Number(rating));
+        const event = eventService.getParticipants(Number(limit), Number(offset), Number(req.params.id), String(first_name), String(last_name), String(username), Boolean(attended), Number(rating));
         return res.json(event);
     }
     catch (_a) {

@@ -1,7 +1,6 @@
 import { EventRepository } from "../repositorios/eventos-repository";
 
-export class EventService 
-{
+export class EventService {
     
     getAllEventos(pageSize: number, requestedPage:number, name ?: string, cat ?: string, fecha ?: Date, tag ?: string) //el ?: (segun gemini) es para definir que el parametro es opcional
     {   
@@ -10,7 +9,7 @@ export class EventService
         
         //falta agregar cosas, ya que en el caso que no exista name, pero si las demas, el WHERE debería seguir funcionando
         if (name){
-            queryWhere += `WHERE name ${name},`;
+            queryWhere += `WHERE name = ${name},`;
         }
         if (cat){
             if(queryWhere.includes("WHERE")){
@@ -46,7 +45,7 @@ export class EventService
             {
               limit: pageSize, //la cantidad de elementos por pagina
               offset: requestedPage,// la pagina en la que estas
-              nextPage: "http://localhost:3000/event?limit=15&offset=1",
+              nextPage: "http://localhost:5050/event?limit=15&offset=1",
               total: cantidadEvents, // cantidad de elementos, lo mismo de arriba
             },
         };
@@ -62,50 +61,68 @@ export class EventService
 
     }
 
-    getParticipants(id: number, fName ?: string, lName ?: string, username ?: string, attended ?: boolean, rating ?: number){
+    /*5*/
+    getParticipants(limit: number, offset: number, id: number, fName ?: string, lName ?: string, username ?: string, attended ?: boolean, rating ?: number){
         //se tiene que verificar que id EXISTA
         var queryWhere = ``;
         
         //falta agregar cosas, ya que en el caso que no exista name, pero si las demas, el WHERE debería seguir funcionando
         if (fName){
-            queryWhere += `WHERE first_name ${fName},`;
+            queryWhere += `AND u.first_name = ${fName},`;
         }
         if (lName){
-            if(queryWhere.includes("WHERE")){
-                queryWhere += ` AND last_name = ${lName}`;
-            }
-            else{
-                queryWhere += ` WHERE last_name = ${lName}`;
-            };
+            queryWhere += ` AND u.last_name = ${lName}`;
         }
         if (username){
-            if(queryWhere.includes("WHERE")){
-                queryWhere += ` AND username = ${username}`;
-            }
-            else{
-                queryWhere += ` WHERE username = ${username}`;
-            };
+            queryWhere += ` AND u.username = ${username}`;
         }
         if (attended){
-            if(queryWhere.includes("WHERE")){
-                queryWhere += ` AND attended = ${attended}`;
-            }
-            else{
-                queryWhere += ` WHERE attended = ${attended}`;
-            }
+            queryWhere += ` AND er.attended = ${attended}`;
         }
         if (rating){
-            if(queryWhere.includes("WHERE")){
-                queryWhere += ` AND rating = ${rating}`;
-            }
-            else{
-                queryWhere += ` WHERE rating = ${rating}`;
-            }
+            queryWhere += ` AND er.rating = ${rating}`;
         }
 
         const eventRepository = new EventRepository();
-        const participants = eventRepository.getParticipants(id, fName, lName, username, attended, rating, queryWhere);
+        const participants = eventRepository.getParticipants(id, limit, offset, queryWhere);
         return participants;
     }
 
+
+/*8*/
+    createEvent(eventData: Event): Promise<Event> {
+        const eventRepository = new EventRepository();
+        const evento= eventRepository.createEvent(eventData);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
+        return evento;
+    }
+/*
+    async editEvent(eventId: number, eventData: Event): Promise<Event | null> {
+        // Verificar si el evento existe
+        const existingEvent: Event | null = await this.eventRepository.getEventById(eventId);
+        if (!existingEvent) {
+            return null; // Evento no encontrado
+        }
+
+        // Aquí podrías realizar validaciones adicionales antes de editar el evento, si es necesario.
+        return await this.eventRepository.editEvent(eventId, eventData);
+    }
+
+    async deleteEvent(eventId: number): Promise<boolean> {
+        // Verificar si el evento existe
+        const existingEvent: Event | null = await this.eventRepository.getEventById(eventId);
+        if (!existingEvent) {
+            return false; // Evento no encontrado
+        }
+
+        return await this.eventRepository.deleteEvent(eventId);
+    }
+
+    async isUserEventCreator(eventId: number, userId: number): Promise<boolean> {
+        // Verificar si el usuario es el creador del evento
+        const event: Event | null = await this.eventRepository.getEventById(eventId);
+        return event !== null && event.creatorUserId === userId;
+    }
+*/
 }
+
+

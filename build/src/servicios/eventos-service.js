@@ -41,7 +41,7 @@ class EventService {
             pagination: {
                 limit: pageSize,
                 offset: requestedPage,
-                nextPage: "http://localhost:3000/event?limit=15&offset=1",
+                nextPage: "http://localhost:5050/event?limit=15&offset=1",
                 total: cantidadEvents,
             },
         };
@@ -51,7 +51,7 @@ class EventService {
         const evento = eventRepository.getEventById(id);
         return evento;
     }
-    getParticipants(id, fName, lName, username, attended, rating) {
+    getParticipants(limit, offset, id, fName, lName, username, attended, rating) {
         var queryWhere = ``;
         if (fName) {
             queryWhere += `WHERE first_name ${fName},`;
@@ -91,7 +91,7 @@ class EventService {
             }
         }
         const eventRepository = new eventos_repository_1.EventRepository();
-        const participants = eventRepository.getParticipants(id, fName, lName, username, attended, rating, queryWhere);
+        const participants = eventRepository.getParticipants(limit, offset, queryWhere);
         return participants;
     }
 }
