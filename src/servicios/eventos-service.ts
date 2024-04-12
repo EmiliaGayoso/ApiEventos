@@ -90,9 +90,10 @@ export class EventService {
 
 
 /*8*/
-    createEvent(eventData: Event): Promise<Event> {
+    createEvent(eventData: Event){
         const eventRepository = new EventRepository();
         const evento= eventRepository.createEvent(eventData);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
+        
         return evento;
     }
 /*
@@ -123,6 +124,21 @@ export class EventService {
         return event !== null && event.creatorUserId === userId;
     }
 */
+
+    /*9*/
+    //verificar si el nombre de usuario coincide con el id
+    verificarExistenciaUsuario(idUser: number, username: string){
+        const eventRepository = new EventRepository();
+        const user = eventRepository.verificarExistenciaUsuario(idUser, username);
+        return user;
+    }
+
+    //inscribirlo
+    enrollUser(id: number, idUser: number){
+        const eventRepository = new EventRepository();
+        //insertar el idUser a la BD de inscriptos
+        
+    }
 }
 
 

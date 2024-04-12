@@ -101,13 +101,14 @@ export class EventRepository{
     /*8*/
    createEvent(eventData: Event) {
         // Lógica para crear un nuevo evento en la base de datos
-        const query= `INSERT INTO events (${eventData.name},title, description, start_date, end_date, location_id, creator_user_id)
-        VALUES (?, ?, ?, ?, ?, ?); `;
-        
-        const createdEvent: Event = await this.db.create(eventData); // Suponiendo que tienes un método create en tu clase Database
-        return createdEvent;
-    }
+        const query= `INSERT INTO events (name,description,id_event_category,id_event_location, start_date,duration_in_minutes,price,enabled_for_enrollment,max_assistance,id_creator_user)
+        VALUES (${eventData.name},${eventData.description},${eventData.id_event_category},${eventData.id_event_location}, ${eventData.start_date},${eventData.duration_in_minutes},${eventData.price},${eventData.enabled_for_enrollment},${eventData.max_assistance},${eventData.id_creator_user}); `;
+        const query2=`SELECT * FROM events WHERE title = ${eventData.name}`
+        // Suponiendo que tienes un método create en tu clase Database
 
+        return query2;
+    }
+    /*
     async editEvent(eventId: number, eventData: Event): Promise<Event | null> {
         // Lógica para editar un evento existente en la base de datos
         const updatedEvent: Event | null = await this.db.update(eventId, eventData); // Suponiendo que tienes un método update en tu clase Database
@@ -124,4 +125,17 @@ export class EventRepository{
         // Lógica para obtener un evento por su ID de la base de datos
         const event: Event | null = await this.db.findById(eventId); // Suponiendo que tienes un método findById en tu clase Database
         return event;
+    }*/
+
+    /*9*/
+    //verificar si el usuario existe
+    verificarExistenciaUsuario(id, username){
+        //se debería crear la query que confirme que el id que llega coincide con el id del username
+        return "usuario";
     }
+
+    enrollUsuario(){
+        //se tiene que hacer lo de agregar el usuario
+        //si no se pudo se manda null
+    }
+}

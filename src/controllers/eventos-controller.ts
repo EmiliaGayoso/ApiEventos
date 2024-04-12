@@ -84,7 +84,7 @@ router.post("/:id/enrollment", (req: Request, res: Response) => {
 
 router.post("/", (req: Request, res: Response) => {
   //hacer una query para getear
-
+/*crear una clase llama event, y hacer objeto EMIIIIIIIIIIIIIIIII*/
 
   try {
     const event = eventService.createEvent(req.body);
@@ -99,8 +99,8 @@ router.post("/", (req: Request, res: Response) => {
   }
 
 });
-/*
 
+/*más del 8*/
 /*
 export async function createEvent(req: Request, res: Response): Promise<void> {
     try {
@@ -174,4 +174,29 @@ export async function deleteEvent(req: Request, res: Response): Promise<void> {
         res.status(500).json({ error: "Failed to delete event" });
     }
 }*/
+
+/*9*/
+router.post("/:id/enrollment", (req: Request, res: Response) => {
+  
+  const idUser = req.body;
+  const id = req.params.id;
+  const username = req.body.username;
+
+  try {
+    const usuarioExistente = eventService.verificarExistenciaUsuario(Number(idUser), String(username));
+    if(!usuarioExistente){
+      return res.status(405).json({error: `El usuario ingresado es inválido`});
+    } else {
+      const event = eventService.enrollUser(Number(id), Number(idUser));
+    }
+    //se deberia fijar si existe el evento
+    return res.json("Te pudiste inscribir bien")
+  }
+  catch{
+    console.log("Un Error");
+    return res.json("Un Error");
+  }
+
+});
+
 export default router;
