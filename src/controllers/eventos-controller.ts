@@ -1,7 +1,6 @@
 import express, {Request, Response} from "express";
-import {
-  EventService
-} from "../servicios/eventos-service";
+import {EventService} from "../servicios/eventos-service";
+
 
 const router = express.Router();
 const eventService = new EventService();
@@ -80,105 +79,51 @@ router.post("/:id/enrollment", (req: Request, res: Response) => {
 
 /*8*/
 
-// Create Event
+/*create*/
+import Eventos from '../src/models/Eventos'; // no se porque da error
 
-router.post("/", (req, res) => {
-  const name = req.body.name;
-  const description = req.body.description;
-  const id_event_category = req.body.id_event_category;
-  const id_event_location = req.body.id_event_location;
-  const start_date = req.body.start_date;
-  const duration_in_minutes = req.body.duration_in_minutes;
-  const price = req.body.price;
-  const enabled_for_enrollment = req.body.enabled_for_enrollment;
-  const max_assistance = req.body.max_assistance;
-  const id_creator_user = req.body.id_creator_user;
+router.post("/", async (req: Request, res: Response) => {
+  const eventito= new Eventos();
+
+  try {
+    const createdEvent = await eventService.createEvent(eventito);
+    return res.status(201).json({
+      message: "Evento creado correctamente",
+      data: createdEvent, 
+    });
+  } catch (error) {
+    console.error("Error creating event:", error);
+    return res.status(500).json({ message: "Error creando evento" });
+  }
+});
+
+/*update*/
+router.put("/id", async (req: Request, res: Response) => {
   
-  if(name && description && id_event_category && id_event_location && start_date && duration_in_minutes && price && enabled_for_enrollment && max_assistance && id_creator_user){
-      if(eventService.createEvent(String (name), String (description), Number (id_event_category), Number (id_event_location), new Date (start_date), Number (duration_in_minutes), Number(price), Boolean(enabled_for_enrollment), Number(max_assistance), Number(id_creator_user)))
-      {
-          return res.status(232).send({
-              valido: "evento creado correctamente",
-          });
-      }
+  const eventito= new Eventos();//crea un nuevo objeto dentro de la clase Eventos pero no funciona
+
+  try {
+    const updatedEvent = await eventService.updateEvent(eventito);
+    return res.status(201).json({
+      message: "Evento creado correctamente",
+      data: updatedEvent, 
+    });
+  } catch (error) {
+    console.error("Error creating event:", error);
+    return res.status(500).json({ message: "Error creando evento" });
+  }
+});
+
+/*delete*/
+ router.delete( "/:id", (req,res) =>{
+  const id=req.params.id;
+  if(eventService.deleteEvent(Number(id))){
+      return res.status(232).send({
+          valido: "evento eliminado correctamente"
+      });
   }
   return res.status(400).send("Error en los campos");
 });
-
-/*más del 8*/
-/*
-export async function createEvent(req: Request, res: Response): Promise<void> {
-    try {
-        // Extract event data from request body
-        const eventData: Event = req.body;
-
-        // Call service to create event
-        const newEvent: Event = await eventService.createEvent(eventData);
-
-        // Return the newly created event
-        res.json(newEvent);
-    } catch (error) {
-        console.error("Error creating event:", error);
-        res.status(500).json({ error: "Failed to create event" });
-    }
-}
-
-Edit Event
-export async function editEvent(req: Request, res: Response): Promise<void> {
-    const eventId: number = parseInt(req.params.id, 10);
-    const userId: number = req.body.id; // Assuming you have user information in request
-
-    try {
-        // Check if the user is the creator of the event
-        const isCreator: boolean = await eventService.isUserEventCreator(eventId, userId);
-        if (!isCreator) {
-            return res.status(403).json({ error: "You are not authorized to edit this event" });
-        }
-
-        // Extract updated event data from request body
-        const eventData: Event = req.body;
-
-        // Call service to edit event
-        const updatedEvent: Event | null = await eventService.editEvent(eventId, eventData);
-
-        if (updatedEvent) {
-            // Return the updated event
-            res.json(updatedEvent);
-        } else {
-            res.status(404).json({ error: "Event not found" });
-        }
-    } catch (error) {
-        console.error("Error editing event:", error);
-        res.status(500).json({ error: "Failed to edit event" });
-    }
-}
-
-Delete Event
-export async function deleteEvent(req: Request, res: Response): Promise<void> {
-    const eventId: number = parseInt(req.params.id, 10);
-    const userId: number = req.body.id; // Assuming you have user information in request
-
-    try {
-        // Check if the user is the creator of the event
-        const isCreator: boolean = await eventService.isUserEventCreator(eventId, userId);
-        if (!isCreator) {
-            return res.status(403).json({ error: "You are not authorized to delete this event" });
-        }
-
-        // Call service to delete event
-        const deletedEvent: boolean = await eventService.deleteEvent(eventId);
-
-        if (deletedEvent) {
-            // Return success message
-            res.json({ message: "Event deleted successfully" });
-        } else {
-            res.status(404).json({ error: "Event not found" });
-        }
-    } catch (error) {
-        console.error("Error deleting event:", error);
-        res.status(500).json({ error: "Failed to delete event" });
-    }
-}*/
 
 /*9*/
 router.post("/:id/enrollment", (req: Request, res: Response) => {
