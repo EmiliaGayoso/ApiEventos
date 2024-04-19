@@ -99,14 +99,57 @@ export class EventRepository{
 
 
     /*8*/
-   createEvent(name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance,id_creator_user) {
-        // Lógica para crear un nuevo evento en la base de datos
+   createEvent(eventito){// Lógica para crear un nuevo evento en la base de datos
         const query= `INSERT INTO events (name,description,id_event_category,id_event_location, start_date,duration_in_minutes,price,enabled_for_enrollment,max_assistance,id_creator_user)
-        VALUES (${name},${description},${id_event_category},${id_event_location}, ${start_date},${duration_in_minutes},${price},${enabled_for_enrollment},${max_assistance},${id_creator_user}); `;
+        VALUES (${eventito.name},${eventito.description},${eventito.id_event_category},${eventito.id_event_location}, ${eventito.start_date},${eventito.duration_in_minutes},${eventito.price},${eventito.enabled_for_enrollment},${eventito.max_assistance},${eventito.id_creator_user}); `;
         const query2=`SELECT * FROM events WHERE title = ${name}`
         // Suponiendo que tienes un método create en tu clase Database
+        if(query2!=null)
+        {
+            return true;
+        }
+        else{
+            return false
+        }
+    }
+    updateEvent(id, name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance,id_creator_user) {
+        // Lógica para crear un nuevo evento en la base de datos
+        const query= `UPDATE events 
+        SET name=${name}, 
+        description=${description},
+        id_event_category=${id_event_category},
+        id_event_location=${id_event_location},
+        start_date= ${start_date}, 
+        duration_in_minutes =${duration_in_minutes},
+        price=${price}, 
+        enabled_for_enrollment=${enabled_for_enrollment},
+        max_assistance=${max_assistance},
+        id_creator_user=${id_creator_user}); 
+        WHERE id = ${id}; `;
 
-        return query2;
+        const query2=`SELECT * FROM events WHERE id = ${id}`
+        // Suponiendo que tienes un método create en tu clase Database
+        if(query2!=null)
+        {
+            return true;
+        }
+        else{
+            return false
+        }
+    }
+
+   deleteEvent(id)
+    {
+        const query= `DELETE * FROM events WHERE id = ${id}`
+        const query2=`SELECT * FROM events WHERE id = ${id}`
+        if(query2==null)
+        {
+            return true;//se borro correctamente
+        }
+        else{
+            return false
+        }
+
     }
     /*
     async editEvent(eventId: number, eventData: Event): Promise<Event | null> {
