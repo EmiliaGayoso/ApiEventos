@@ -131,11 +131,12 @@ export class EventRepository{
     //verificar si el usuario existe
     verificarExistenciaUsuario(id, username){
         //se debería crear la query que confirme que el id que llega coincide con el id del username
-        return "usuario";
+        return true;
     }
 
-    enrollUsuario(){
+    enrollUsuario(id, idUser, username){
         //se tiene que hacer lo de agregar el usuario
         //si no se pudo se manda null
+        return true;
     }
 }
