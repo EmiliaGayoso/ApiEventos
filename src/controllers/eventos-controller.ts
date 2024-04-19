@@ -183,23 +183,42 @@ export async function deleteEvent(req: Request, res: Response): Promise<void> {
 /*9*/
 router.post("/:id/enrollment", (req: Request, res: Response) => {
   
-  const idUser = req.body;
   const id = req.params.id;
+  const idUser = req.body.id_user;
   const username = req.body.username;
 
   try {
     const usuarioExistente = eventService.verificarExistenciaUsuario(Number(idUser), String(username));
+    
     if(!usuarioExistente){
       return res.status(405).json({error: `El usuario ingresado es inválido`});
     } else {
-      const event = eventService.enrollUser(Number(id), Number(idUser));
+      const event = eventService.enrollUser(Number(id), Number(idUser), String(username));
     }
-    //se deberia fijar si existe el evento
     return res.json("Te pudiste inscribir bien")
   }
   catch{
     console.log("Un Error");
     return res.json("Un Error");
+  }
+});
+
+/*10*/
+/*id del evento, idUser, attended (para verificar), rating (1 a 10) feedback*/
+router.patch("/:id/enrollment", (req: Request, res: Response) => {
+  
+  const id = req.params.id;
+  const idUser = req.body.id_user;
+  const attended = req.body.attended;
+  const rating = req.body.rating;
+  const feedback = req.body.feedback;
+
+  try {
+    
+  }
+  catch {
+    console.log("Un error");
+    return res.json("Un error");
   }
 
 });

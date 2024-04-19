@@ -134,10 +134,11 @@ export class EventService {
     }
 
     //inscribirlo
-    enrollUser(id: number, idUser: number){
+    enrollUser(id: number, idUser: number, username: string){
         const eventRepository = new EventRepository();
         //insertar el idUser a la BD de inscriptos
-        
+        const sePudo = eventRepository.enrollUsuario(id, idUser, username)
+        return sePudo;
     }
 }
 
