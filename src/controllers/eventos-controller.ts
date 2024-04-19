@@ -208,13 +208,16 @@ router.post("/:id/enrollment", (req: Request, res: Response) => {
 router.patch("/:id/enrollment", (req: Request, res: Response) => {
   
   const id = req.params.id;
-  const idUser = req.body.id_user;
   const attended = req.body.attended;
   const rating = req.body.rating;
-  const feedback = req.body.feedback;
-
+  const observations = req.body.observations;
+  //hay que verificar si fue, pero si no fue se debería mandar igual y queda todo lo demas en vacio
   try {
-    
+    if(attended==0 && !(Number.isInteger(Number(rating)))){
+      return res.status(405).json({error: `El formato ingresado es inválido`});
+    }
+    const feedback = eventService.patchFeedback(Number(id), Number(attended), String(observations), Number(rating));
+    return res.json("El feedback se pudo cargar de manera exitosa");
   }
   catch {
     console.log("Un error");

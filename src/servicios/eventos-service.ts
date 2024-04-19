@@ -140,6 +140,16 @@ export class EventService {
         const sePudo = eventRepository.enrollUsuario(id, idUser, username)
         return sePudo;
     }
+    /*10*/
+    patchFeedback(id: number, attended: number, observations: string, rating: number){
+        const eventRepository = new EventRepository();
+        const sePudo = eventRepository.patchFeedback(id, attended, observations, rating)
+        return sePudo;
+    }
+
 }
+
+
+
 
 

@@ -139,4 +139,9 @@ export class EventRepository{
         //si no se pudo se manda null
         return true;
     }
+
+    patchFeedback(id, attended, observations, rating){
+        //deberia retornar el json de como
+        return "json"
+    }
 }
