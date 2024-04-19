@@ -12,8 +12,13 @@ export class ProvinciaService {
     }
 
     traerTodas(limit: number, offset: number){
-        
-        return 
+        const provinciaRepository = new ProvinciaRepository();
+        let provinciaDevolver = null;
+        console.log("traerTodasProvincias");
+        provinciaDevolver = provinciaRepository.traerTodas(limit, offset);
+        console.log(provinciaDevolver);
+
+        return provinciaDevolver;
     }
 
     crearProvincia(){

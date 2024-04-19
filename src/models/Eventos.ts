@@ -1,4 +1,4 @@
-export class Eventos
+export default class Eventos
 {
   id:number;
   name:string;
