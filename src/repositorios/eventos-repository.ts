@@ -99,11 +99,11 @@ export class EventRepository{
 
 
     /*8*/
-   createEvent(eventData: Event) {
+   createEvent(name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance,id_creator_user) {
         // Lógica para crear un nuevo evento en la base de datos
         const query= `INSERT INTO events (name,description,id_event_category,id_event_location, start_date,duration_in_minutes,price,enabled_for_enrollment,max_assistance,id_creator_user)
-        VALUES (${eventData.name},${eventData.description},${eventData.id_event_category},${eventData.id_event_location}, ${eventData.start_date},${eventData.duration_in_minutes},${eventData.price},${eventData.enabled_for_enrollment},${eventData.max_assistance},${eventData.id_creator_user}); `;
-        const query2=`SELECT * FROM events WHERE title = ${eventData.name}`
+        VALUES (${name},${description},${id_event_category},${id_event_location}, ${start_date},${duration_in_minutes},${price},${enabled_for_enrollment},${max_assistance},${id_creator_user}); `;
+        const query2=`SELECT * FROM events WHERE title = ${name}`
         // Suponiendo que tienes un método create en tu clase Database
 
         return query2;

@@ -90,9 +90,9 @@ export class EventService {
 
 
 /*8*/
-    createEvent(eventData: Event){
+    createEvent(name: string, description:string, id_event_category:number,id_event_location:number, start_date:Date, duration_in_minutes:number, price:number, enabled_for_enrollment:boolean, max_assistance:number, id_creator_user:number){
         const eventRepository = new EventRepository();
-        const evento= eventRepository.createEvent(eventData);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
+        const evento= eventRepository.createEvent(name,description,id_event_category,id_event_location,start_date,duration_in_minutes,price,enabled_for_enrollment,max_assistance,id_creator_user);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
         
         return evento;
     }

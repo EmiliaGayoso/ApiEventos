@@ -82,22 +82,27 @@ router.post("/:id/enrollment", (req: Request, res: Response) => {
 
 // Create Event
 
-router.post("/", (req: Request, res: Response) => {
-  //hacer una query para getear
-/*crear una clase llama event, y hacer objeto EMIIIIIIIIIIIIIIIII*/
-
-  try {
-    const event = eventService.createEvent(req.body);
-    if(!event){
-      return res.status(405).json({error: `El formato ingresado es inválido`})
-    }else {}
-    return res.json(event);
+router.post("/", (req, res) => {
+  const name = req.body.name;
+  const description = req.body.description;
+  const id_event_category = req.body.id_event_category;
+  const id_event_location = req.body.id_event_location;
+  const start_date = req.body.start_date;
+  const duration_in_minutes = req.body.duration_in_minutes;
+  const price = req.body.price;
+  const enabled_for_enrollment = req.body.enabled_for_enrollment;
+  const max_assistance = req.body.max_assistance;
+  const id_creator_user = req.body.id_creator_user;
+  
+  if(name && description && id_event_category && id_event_location && start_date && duration_in_minutes && price && enabled_for_enrollment && max_assistance && id_creator_user){
+      if(eventService.createEvent(String (name), String (description), Number (id_event_category), Number (id_event_location), new Date (start_date), Number (duration_in_minutes), Number(price), Boolean(enabled_for_enrollment), Number(max_assistance), Number(id_creator_user)))
+      {
+          return res.status(232).send({
+              valido: "evento creado correctamente",
+          });
+      }
   }
-  catch{
-    console.log("Un Error");
-    return res.json("Un Error");
-  }
-
+  return res.status(400).send("Error en los campos");
 });
 
 /*más del 8*/
