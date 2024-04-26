@@ -29,5 +29,11 @@ export declare class EventRepository {
         };
     }[][];
     getEventById(id: any): void;
-    getParticipants(limit: any, offset: any, queryWhere: any): void;
+    getParticipants(id: any, limit: any, offset: any, queryWhere: any): void;
+    createEvent(eventito: any): boolean;
+    updateEvent(eventito: any, eventoId: any): boolean;
+    deleteEvent(id: any): boolean;
+    verificarExistenciaUsuario(id: any, username: any): boolean;
+    enrollUsuario(id: any, idUser: any, username: any): boolean;
+    patchFeedback(id: any, attended: any, observations: any, rating: any): string;
 }

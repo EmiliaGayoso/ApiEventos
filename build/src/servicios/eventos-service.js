@@ -6,7 +6,7 @@ class EventService {
     getAllEventos(pageSize, requestedPage, name, cat, fecha, tag) {
         var queryWhere = ``;
         if (name) {
-            queryWhere += `WHERE name ${name},`;
+            queryWhere += `WHERE name = ${name},`;
         }
         if (cat) {
             if (queryWhere.includes("WHERE")) {
@@ -54,45 +54,53 @@ class EventService {
     getParticipants(limit, offset, id, fName, lName, username, attended, rating) {
         var queryWhere = ``;
         if (fName) {
-            queryWhere += `WHERE first_name ${fName},`;
+            queryWhere += `AND u.first_name = ${fName},`;
         }
         if (lName) {
-            if (queryWhere.includes("WHERE")) {
-                queryWhere += ` AND last_name = ${lName}`;
-            }
-            else {
-                queryWhere += ` WHERE last_name = ${lName}`;
-            }
-            ;
+            queryWhere += ` AND u.last_name = ${lName}`;
         }
         if (username) {
-            if (queryWhere.includes("WHERE")) {
-                queryWhere += ` AND username = ${username}`;
-            }
-            else {
-                queryWhere += ` WHERE username = ${username}`;
-            }
-            ;
+            queryWhere += ` AND u.username = ${username}`;
         }
         if (attended) {
-            if (queryWhere.includes("WHERE")) {
-                queryWhere += ` AND attended = ${attended}`;
-            }
-            else {
-                queryWhere += ` WHERE attended = ${attended}`;
-            }
+            queryWhere += ` AND er.attended = ${attended}`;
         }
         if (rating) {
-            if (queryWhere.includes("WHERE")) {
-                queryWhere += ` AND rating = ${rating}`;
-            }
-            else {
-                queryWhere += ` WHERE rating = ${rating}`;
-            }
+            queryWhere += ` AND er.rating = ${rating}`;
         }
         const eventRepository = new eventos_repository_1.EventRepository();
-        const participants = eventRepository.getParticipants(limit, offset, queryWhere);
+        const participants = eventRepository.getParticipants(id, limit, offset, queryWhere);
         return participants;
+    }
+    createEvent(eventito) {
+        const eventRepository = new eventos_repository_1.EventRepository();
+        const evento = eventRepository.createEvent(eventito);
+        return evento;
+    }
+    updateEvent(eventito, eventoId) {
+        const eventRepository = new eventos_repository_1.EventRepository();
+        const evento = eventRepository.updateEvent(eventito, eventoId);
+        return evento;
+    }
+    deleteEvent(id) {
+        const eventRepository = new eventos_repository_1.EventRepository();
+        const evento = eventRepository.deleteEvent(id);
+        return evento;
+    }
+    verificarExistenciaUsuario(idUser, username) {
+        const eventRepository = new eventos_repository_1.EventRepository();
+        const user = eventRepository.verificarExistenciaUsuario(idUser, username);
+        return user;
+    }
+    enrollUser(id, idUser, username) {
+        const eventRepository = new eventos_repository_1.EventRepository();
+        const sePudo = eventRepository.enrollUsuario(id, idUser, username);
+        return sePudo;
+    }
+    patchFeedback(id, attended, observations, rating) {
+        const eventRepository = new eventos_repository_1.EventRepository();
+        const sePudo = eventRepository.patchFeedback(id, attended, observations, rating);
+        return sePudo;
     }
 }
 exports.EventService = EventService;

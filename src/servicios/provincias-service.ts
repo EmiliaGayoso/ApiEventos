@@ -1,5 +1,5 @@
 import { ProvinciaRepository } from "../repositorios/provincias-repository";
-import Provincias from "../models/Provincias";
+import Provincias from "../entities/Provincias";
 
 export class ProvinciaService {
     async busquedaId(id: number){

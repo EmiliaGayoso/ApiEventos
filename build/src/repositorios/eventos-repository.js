@@ -65,13 +65,64 @@ class EventRepository {
         
         WHERE e.id = ${id}`;
     }
-    getParticipants(limit, offset, queryWhere) {
-        const query = `SELECT * FROM collection limit ${limit} offset ${offset}
-        LEFT JOIN event_categories ON event.id_event_category = event_categories.id
-        LEFT JOIN event_tags ON event_tags.id_event = event.id 
+    getParticipants(id, limit, offset, queryWhere) {
+        const query = `SELECT event_enrollment.*,u.first_name,u.last_name,u.username,e.name FROM event_enrollment er limit ${limit} offset ${offset}
+        LEFT JOIN users u ON er.id_user = u.id
+        LEFT JOIN events e ON er.id_event = e.id 
         LEFT JOIN tags ON event_tags.id_tag = tags.id
-        ` + queryWhere;
+        WHERE e.id = ${id}` + queryWhere;
         return;
+    }
+    createEvent(eventito) {
+        const query = `INSERT INTO events (name,description,id_event_category,id_event_location, start_date,duration_in_minutes,price,enabled_for_enrollment,max_assistance,id_creator_user)
+        VALUES (${eventito.name},${eventito.description},${eventito.id_event_category},${eventito.id_event_location}, ${eventito.start_date},${eventito.duration_in_minutes},${eventito.price},${eventito.enabled_for_enrollment},${eventito.max_assistance},${eventito.id_creator_user}); `;
+        const query2 = `SELECT * FROM events WHERE title = ${name}`;
+        if (query2 != null) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    updateEvent(eventito, eventoId) {
+        const query = `UPDATE events 
+        SET name=${eventito.name}, 
+        description=${eventito.description},
+        id_event_category=${eventito.id_event_category},
+        id_event_location=${eventito.id_event_location},
+        start_date= ${eventito.start_date}, 
+        duration_in_minutes =${eventito.duration_in_minutes},
+        price=${eventito.price}, 
+        enabled_for_enrollment=${eventito.enabled_for_enrollment},
+        max_assistance=${eventito.max_assistance},
+        id_creator_user=${eventito.id_creator_user}); 
+        WHERE id = ${eventoId}; `;
+        const query2 = `SELECT * FROM events WHERE id = ${eventoId}}`;
+        if (query2 != null) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    deleteEvent(id) {
+        const query = `DELETE * FROM events WHERE id = ${id}`;
+        const query2 = `SELECT * FROM events WHERE id = ${id}`;
+        if (query2 == null) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    verificarExistenciaUsuario(id, username) {
+        return true;
+    }
+    enrollUsuario(id, idUser, username) {
+        return true;
+    }
+    patchFeedback(id, attended, observations, rating) {
+        return "json";
     }
 }
 exports.EventRepository = EventRepository;
