@@ -1,4 +1,5 @@
 import { ProvinciaRepository } from "../repositorios/provincias-repository";
+import Provincias from "../models/Provincias";
 
 export class ProvinciaService {
     async busquedaId(id: number){
@@ -21,7 +22,7 @@ export class ProvinciaService {
         return provinciaDevolver;
     }
 
-    crearProvincia(){
+    crearProvincia(provinciaCrear: Provincias){
 
     }
 

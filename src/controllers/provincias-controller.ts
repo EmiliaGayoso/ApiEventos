@@ -11,8 +11,8 @@ router.get('/provincias/:id', async (req, res) => {
     try {
       const provincia = await provinciaService.busquedaId(Number(id));
       res.json(provincia);
-    } catch (err) {
-      res.status(500).json({ message: err.message });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
   });
   
@@ -24,8 +24,8 @@ router.get('/', async (req, res) => {
     const provinciasPaginadas = await provinciaService.traerTodas(Number(limit), Number(offset));
     console.log(provinciasPaginadas);
     res.json(provinciasPaginadas);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -33,11 +33,23 @@ router.get('/', async (req, res) => {
 //creacion de provincia
 router.post('/', async (req, res) => {
   const provinciaCrear = req.body;
+
+  try {
+    const provinciaCreada = await provinciaService.crearProvincia(provinciaCrear)
+    return res.status(201).json({
+      message: "La provincia se creó de manera correcta",
+      data: provinciaCreada,
+    });
+  }
+  catch (error) {
+    console.error("Error al crear la provincia: ", error);
+    return res.status(500).json({ message: "Error creando provincia" });
+  }
 });
 
 //modificar la provcincia
 router.patch('/', async (req, res) => {
-
+  
 });
 
 //eliminar la provincia
