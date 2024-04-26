@@ -1,3 +1,4 @@
+import Eventos from "../models/Eventos";
 import { EventRepository } from "../repositorios/eventos-repository";
 
 export class EventService {
@@ -90,14 +91,14 @@ export class EventService {
 
 
 /*8*/
-    createEvent(eventito) {
+    createEvent(eventito: Eventos) {
         const eventRepository = new EventRepository();
         const evento= eventRepository.createEvent(eventito);
         return evento;
     }
-    updateEvent(eventito){
+    updateEvent(eventito: Eventos,eventoId:Number){
         const eventRepository = new EventRepository();
-        const evento= eventRepository.createEvent(eventito);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
+        const evento= eventRepository.createEvent(eventito,eventoId);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
         
         return evento;
     }
