@@ -83,7 +83,7 @@ router.post("/:id/enrollment", (req: Request, res: Response) => {
 import Eventos from './../models/Eventos'; // no se porque da error
 
 router.post("/", async (req: Request, res: Response) => {
-  const eventito= new Eventos();
+  const eventito = req.body
 
   try {
     const createdEvent = await eventService.createEvent(eventito);
