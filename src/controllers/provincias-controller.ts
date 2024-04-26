@@ -48,7 +48,7 @@ router.post('/', async (req, res) => {
 });
 
 //modificar la provcincia
-router.patch('/', async (req, res) => {
+router.put('/', async (req, res) => {
   
 });
 
