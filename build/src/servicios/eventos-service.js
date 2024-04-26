@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EventService = void 0;
 const eventos_repository_1 = require("../repositorios/eventos-repository");
 class EventService {
-    getAllEventos(pageSize, requestedPage, name, cat, fecha, tag) {
+    async getAllEventos(pageSize, requestedPage, name, cat, fecha, tag) {
         var queryWhere = ``;
         if (name) {
             queryWhere += `WHERE name = ${name},`;
@@ -34,8 +34,9 @@ class EventService {
                 queryWhere += ` WHERE tags.tag = ${tag}`;
             }
         }
+        console.log("Despues de todas las query: ", queryWhere);
         const eventRepository = new eventos_repository_1.EventRepository();
-        const [allEvents, cantidadEvents] = eventRepository.getAllEvents(name, cat, fecha, tag, pageSize, requestedPage, queryWhere);
+        const [allEvents, cantidadEvents] = await eventRepository.getAllEvents(name, cat, fecha, tag, pageSize, requestedPage, queryWhere);
         return {
             collection: allEvents,
             pagination: {
@@ -46,12 +47,14 @@ class EventService {
             },
         };
     }
-    getEventoById(id) {
+    async getEventoById(id) {
         const eventRepository = new eventos_repository_1.EventRepository();
-        const evento = eventRepository.getEventById(id);
-        return evento;
+        const evento = await eventRepository.getEventById(id);
+        const returnEntity = evento.rows[0];
+        console.log("ESTOY EN EVENTOS-SERVICE Y MANDO: ", evento);
+        return returnEntity;
     }
-    getParticipants(limit, offset, id, fName, lName, username, attended, rating) {
+    async getParticipants(limit, offset, id, fName, lName, username, attended, rating) {
         var queryWhere = ``;
         if (fName) {
             queryWhere += `AND u.first_name = ${fName},`;
@@ -69,22 +72,22 @@ class EventService {
             queryWhere += ` AND er.rating = ${rating}`;
         }
         const eventRepository = new eventos_repository_1.EventRepository();
-        const participants = eventRepository.getParticipants(id, limit, offset, queryWhere);
+        const participants = await eventRepository.getParticipants(id, limit, offset, queryWhere);
         return participants;
     }
-    createEvent(eventito) {
+    async createEvent(eventito) {
         const eventRepository = new eventos_repository_1.EventRepository();
-        const evento = eventRepository.createEvent(eventito);
+        const evento = await eventRepository.createEvent(eventito);
         return evento;
     }
-    updateEvent(eventito, eventoId) {
+    async updateEvent(eventito, eventoId) {
         const eventRepository = new eventos_repository_1.EventRepository();
-        const evento = eventRepository.updateEvent(eventito, eventoId);
+        const evento = await eventRepository.updateEvent(eventito, eventoId);
         return evento;
     }
-    deleteEvent(id) {
+    async deleteEvent(id) {
         const eventRepository = new eventos_repository_1.EventRepository();
-        const evento = eventRepository.deleteEvent(id);
+        const evento = await eventRepository.deleteEvent(id);
         return evento;
     }
     verificarExistenciaUsuario(idUser, username) {
@@ -92,9 +95,9 @@ class EventService {
         const user = eventRepository.verificarExistenciaUsuario(idUser, username);
         return user;
     }
-    enrollUser(id, idUser, username) {
+    async enrollUser(id, idUser, username) {
         const eventRepository = new eventos_repository_1.EventRepository();
-        const sePudo = eventRepository.enrollUsuario(id, idUser, username);
+        const sePudo = await eventRepository.enrollUsuario(id, idUser, username);
         return sePudo;
     }
     patchFeedback(id, attended, observations, rating) {

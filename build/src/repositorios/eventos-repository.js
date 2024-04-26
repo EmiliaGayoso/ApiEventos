@@ -1,6 +1,14 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EventRepository = void 0;
+const pg_1 = __importDefault(require("pg"));
+const bd_1 = require("../repositorios/bd");
+const client = new pg_1.default.Client(bd_1.config);
+console.log('config', bd_1.config);
+client.connect();
 class EventRepository {
     getAllEvents(name, cat, fecha, tag, pageSize, requestedPage, queryWhere) {
         const query = `SELECT * FROM collection limit ${pageSize} offset ${requestedPage}
@@ -43,27 +51,27 @@ class EventRepository {
                 }
             }
         ];
-        return [collection];
+        return [query, query1];
     }
     getEventById(id) {
-        const queryId = `SELECT event.*, location.*, provinces.*, event_categories.*, users.*, event_enrollments.*, event_tag.*, tags.* FROM events e
-        
-        LEFT JOIN location l ON e.id_location = l.id
-        LEFT JOIN provinces p ON l.id_province = p.id
+        console.log("ESTOY EN EVENTOS-REPOSITORY con id: ", id);
+        const queryId = `SELECT e.*, l.*, pr.*, et.*, u.*, ee.*, tg.* FROM events e
+        LEFT JOIN locations l ON e.id_event_location = l.id
+        LEFT JOIN provinces pr ON l.id_province = pr.id
 
         LEFT JOIN event_tags et ON e.id = et.id_event
-        LEFT JOIN tags t ON et.id_tag = t.id
+
+        LEFT JOIN tags tg ON et.id_tag = tg.id
 
         LEFT JOIN event_categories ec ON e.id_event_category = ec.id
-
-        LEFT JOIN user u ON e.id_creator_user = u.id
-
-        LEFT JOIN location l ON e.id_location = l.id
+        LEFT JOIN users u ON e.id_creator_user = u.id
 
         LEFT JOIN event_enrollments ee ON e.id = ee.id_event
-        LEFT JOIN event_enrollments ee ON u.id = ee.id_user
-        
+        LEFT JOIN event_enrollments ON u.id = ee.id_user 
         WHERE e.id = ${id}`;
+        const values = client.query(queryId);
+        console.log(values);
+        return values;
     }
     getParticipants(id, limit, offset, queryWhere) {
         const query = `SELECT event_enrollment.*,u.first_name,u.last_name,u.username,e.name FROM event_enrollment er limit ${limit} offset ${offset}
@@ -84,7 +92,7 @@ class EventRepository {
             return false;
         }
     }
-    updateEvent(eventito, eventoId) {
+    async updateEvent(eventito, eventoId) {
         const query = `UPDATE events 
         SET name=${eventito.name}, 
         description=${eventito.description},
@@ -98,6 +106,7 @@ class EventRepository {
         id_creator_user=${eventito.id_creator_user}); 
         WHERE id = ${eventoId}; `;
         const query2 = `SELECT * FROM events WHERE id = ${eventoId}}`;
+        const { rows: categoryRows } = await client.query(query2);
         if (query2 != null) {
             return true;
         }

@@ -36,7 +36,7 @@ export class EventService {
                 queryWhere += ` WHERE tags.tag = ${tag}`;
             }
         }
-
+        console.log("Despues de todas las query: ", queryWhere)
         const eventRepository = new EventRepository();
         const [allEvents, cantidadEvents] = await eventRepository.getAllEvents(name, cat, fecha, tag, pageSize, requestedPage, queryWhere);
         //throw new Error("Error en el servicio  de eventos");
@@ -58,7 +58,9 @@ export class EventService {
         //se tiene que verificar que id EXISTA
         const eventRepository = new EventRepository();
         const evento = await eventRepository.getEventById(id);
-        return evento;
+        const returnEntity = evento.rows[0];
+        console.log("ESTOY EN EVENTOS-SERVICE Y MANDO: ", evento)
+        return returnEntity;
 
     }
 

@@ -1,8 +1,12 @@
-import { query } from "express";
+import pg from "pg";
+import { config } from "../repositorios/bd"; 
 
+
+const client = new pg.Client(config);
+console.log('config', config)
+client.connect();
 //const respuesta = await client.query(sql);
 
-//tercera parte de la travesia, aquí se ingresa la query y se obtiene la respuesta en rows
 export class EventRepository{
     getAllEvents(name, cat, fecha, tag, pageSize, requestedPage, queryWhere) {
         
@@ -59,30 +63,30 @@ export class EventRepository{
             }]
         
         
-        return [collection];//const [allEvents, cantidadEvents] en el service
+        return [query,query1];//const [allEvents, cantidadEvents] en el service
     }
 
     getEventById(id)
     {
-        const queryId = `SELECT event.*, location.*, provinces.*, event_categories.*, users.*, event_enrollments.*, event_tag.*, tags.* FROM events e
-        
-        LEFT JOIN location l ON e.id_location = l.id
-        LEFT JOIN provinces p ON l.id_province = p.id
+        console.log("ESTOY EN EVENTOS-REPOSITORY con id: ", id)
+        const queryId = `SELECT e.*, l.*, pr.*, et.*, u.*, ee.*, tg.* FROM events e
+        LEFT JOIN locations l ON e.id_event_location = l.id
+        LEFT JOIN provinces pr ON l.id_province = pr.id
 
         LEFT JOIN event_tags et ON e.id = et.id_event
-        LEFT JOIN tags t ON et.id_tag = t.id
+
+        LEFT JOIN tags tg ON et.id_tag = tg.id
 
         LEFT JOIN event_categories ec ON e.id_event_category = ec.id
-
-        LEFT JOIN user u ON e.id_creator_user = u.id
-
-        LEFT JOIN location l ON e.id_location = l.id
+        LEFT JOIN users u ON e.id_creator_user = u.id
 
         LEFT JOIN event_enrollments ee ON e.id = ee.id_event
-        LEFT JOIN event_enrollments ee ON u.id = ee.id_user
-        
+        LEFT JOIN event_enrollments ON u.id = ee.id_user 
         WHERE e.id = ${id}`;
 
+        const values = client.query(queryId);
+        console.log(values);
+        return values;
         
     }
 
@@ -112,7 +116,7 @@ export class EventRepository{
             return false
         }
     }
-    updateEvent(eventito, eventoId) {
+    async updateEvent(eventito, eventoId) {
         // Lógica para crear un nuevo evento en la base de datos
         const query= `UPDATE events 
         SET name=${eventito.name}, 
@@ -128,6 +132,8 @@ export class EventRepository{
         WHERE id = ${eventoId}; `;
 
         const query2=`SELECT * FROM events WHERE id = ${eventoId}}`
+        const { rows: categoryRows } = await client.query(query2);
+
         // Suponiendo que tienes un método create en tu clase Database
         if(query2!=null)
         {
@@ -151,24 +157,7 @@ export class EventRepository{
         }
 
     }
-    /*
-    async editEvent(eventId: number, eventData: Event): Promise<Event | null> {
-        // Lógica para editar un evento existente en la base de datos
-        const updatedEvent: Event | null = await this.db.update(eventId, eventData); // Suponiendo que tienes un método update en tu clase Database
-        return updatedEvent;
-    }
-
-    async deleteEvent(eventId: number): Promise<boolean> {
-        // Lógica para eliminar un evento existente de la base de datos
-        const deleted: boolean = await this.db.delete(eventId); // Suponiendo que tienes un método delete en tu clase Database
-        return deleted;
-    }
-
-    async getEventById(eventId: number): Promise<Event | null> {
-        // Lógica para obtener un evento por su ID de la base de datos
-        const event: Event | null = await this.db.findById(eventId); // Suponiendo que tienes un método findById en tu clase Database
-        return event;
-    }*/
+    
 
     /*9*/
     //verificar si el usuario existe

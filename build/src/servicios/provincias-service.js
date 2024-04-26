@@ -7,23 +7,32 @@ class ProvinciaService {
         const provinciaRepository = new provincias_repository_1.ProvinciaRepository();
         let provinciaDevolver = null;
         console.log("buscarProvinciaId");
-        provinciaDevolver = provinciaRepository.buscarId(id);
+        provinciaDevolver = await provinciaRepository.buscarId(id);
         console.log(provinciaDevolver);
         return provinciaDevolver;
     }
-    traerTodas(limit, offset) {
+    async traerTodas(limit, offset) {
         const provinciaRepository = new provincias_repository_1.ProvinciaRepository();
         let provinciaDevolver = null;
         console.log("traerTodasProvincias");
-        provinciaDevolver = provinciaRepository.traerTodas(limit, offset);
+        provinciaDevolver = await provinciaRepository.traerTodas(limit, offset);
         console.log(provinciaDevolver);
         return provinciaDevolver;
     }
-    crearProvincia() {
+    async crearProvincia(provinciaCrear) {
+        const provinciaRepository = new provincias_repository_1.ProvinciaRepository();
+        const provincia = await provinciaRepository.crearProvincia(provinciaCrear);
+        return provincia;
     }
-    modificarProvincia() {
+    async modificarProvincia(provinciaId, provinciaModificar) {
+        const provinciaRepository = new provincias_repository_1.ProvinciaRepository();
+        const provincia = await provinciaRepository.modificarProvincia(provinciaModificar, provinciaId);
+        return provincia;
     }
-    borrarProvincia() {
+    async borrarProvincia(provinciaId) {
+        const provinciaRepository = new provincias_repository_1.ProvinciaRepository();
+        const provincia = await provinciaRepository.borrarProvincia(provinciaId);
+        return provincia;
     }
 }
 exports.ProvinciaService = ProvinciaService;

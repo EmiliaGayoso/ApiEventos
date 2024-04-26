@@ -8,6 +8,7 @@ const eventos_service_1 = require("../servicios/eventos-service");
 const router = express_1.default.Router();
 const eventService = new eventos_service_1.EventService();
 router.get("/", (req, res) => {
+    console.log("PAJARO LOCO");
     const limit = req.query.limit;
     const offset = req.query.offset;
     const name = req.query.name;
@@ -25,9 +26,10 @@ router.get("/", (req, res) => {
         return res.json("Un Error");
     }
 });
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
+    console.log("ESTOY EN EVENTOS-CONTROLLER");
     try {
-        const event = eventService.getEventoById(Number(req.params.id));
+        const event = await eventService.getEventoById(Number(req.params.id));
         return res.json(event);
     }
     catch (error) {

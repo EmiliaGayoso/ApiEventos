@@ -28,6 +28,12 @@ class ProvinciaRepository {
         console.log(result);
         return devolver;
     }
+    crearProvincia(provinciaCrear) {
+    }
+    modificarProvincia(provinciaModificar, provinciaId) {
+    }
+    borrarProvincia(provinciaId) {
+    }
 }
 exports.ProvinciaRepository = ProvinciaRepository;
 //# sourceMappingURL=provincias-repository.js.map

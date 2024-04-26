@@ -3,10 +3,12 @@ import {EventService} from "../servicios/eventos-service";
 
 
 const router = express.Router();
-const eventService = new EventService();
+const  eventService = new EventService();
 // /event, el punto 2
-router.get("/", (req: Request, res: Response) => {
+router.get("/", async (req: Request, res: Response) => {
   
+  console.log("PAJARO LOCO")
+
   const limit = req.query.limit;
   const offset = req.query.offset;
   const name = req.query.name;
@@ -21,7 +23,7 @@ router.get("/", (req: Request, res: Response) => {
   try 
   {
     //te llama la funcion en eventos-service que activa la query
-    const allEvent = eventService.getAllEventos(Number(limit), Number(offset), String(name), String(cat), new Date(fechaString), String(tag)); 
+    const allEvent = await eventService.getAllEventos(Number(limit), Number(offset), String(name), String(cat), new Date(fechaString), String(tag)); 
     
     return res.json(allEvent);
 
@@ -34,12 +36,12 @@ router.get("/", (req: Request, res: Response) => {
 });
 
 
-router.get("/:id", (req: Request, res: Response) => {
+router.get("/:id", async (req: Request, res: Response) => {
   //hacer una query para getear 
   /* todos los atributos del Evento, como así también su localizacion (localidad y la provincia) */
-
+  console.log("ESTOY EN EVENTOS-CONTROLLER")
   try{
-    const event = eventService.getEventoById(Number(req.params.id));
+    const event = await await eventService.getEventoById(Number(req.params.id));
 
     return res.json(event);
   }
@@ -51,7 +53,7 @@ router.get("/:id", (req: Request, res: Response) => {
 });
 
 /*5*/
-router.post("/:id/enrollment", (req: Request, res: Response) => {
+router.post("/:id/enrollment", async (req: Request, res: Response) => {
   //hacer una query para getear
   
   const limit = req.query.limit;
@@ -63,7 +65,7 @@ router.post("/:id/enrollment", (req: Request, res: Response) => {
   const rating = req.query.rating;
 
   try {
-    const event = eventService.getParticipants(Number(limit), Number(offset), Number(req.params.id), String(first_name), String(last_name), String(username), Boolean(attended), Number(rating));
+    const event = await eventService.getParticipants(Number(limit), Number(offset), Number(req.params.id), String(first_name), String(last_name), String(username), Boolean(attended), Number(rating));
     /*if(!event){
       return res.status(405).json({error: `El formato ingresado es inválido`})
     }else {}*/
@@ -116,7 +118,7 @@ router.put("/:id", async (req: Request, res: Response) => {
 });
 
 /*delete*/
- router.delete( "/:id", (req,res) =>{
+ router.delete( "/:id", async(req,res) =>{
   const id=req.params.id;
   if(eventService.deleteEvent(Number(id))){
       return res.status(232).send({
@@ -127,19 +129,19 @@ router.put("/:id", async (req: Request, res: Response) => {
 });
 
 /*9*/
-router.post("/:id/enrollment", (req: Request, res: Response) => {
+router.post("/:id/enrollment", async(req: Request, res: Response) => {
   
   const id = req.params.id;
   const idUser = req.body.id_user;
   const username = req.body.username;
 
   try {
-    const usuarioExistente = eventService.verificarExistenciaUsuario(Number(idUser), String(username));
+    const usuarioExistente = await eventService.verificarExistenciaUsuario(Number(idUser), String(username));
     
     if(!usuarioExistente){
       return res.status(405).json({error: `El usuario ingresado es inválido`});
     } else {
-      const event = eventService.enrollUser(Number(id), Number(idUser), String(username));
+      const event = await eventService.enrollUser(Number(id), Number(idUser), String(username));
     }
     return res.json("Te pudiste inscribir bien")
   }
@@ -151,7 +153,7 @@ router.post("/:id/enrollment", (req: Request, res: Response) => {
 
 /*10*/
 /*id del evento, idUser, attended (para verificar), rating (1 a 10) feedback*/
-router.patch("/:id/enrollment", (req: Request, res: Response) => {
+router.patch("/:id/enrollment", async(req: Request, res: Response) => {
   
   const id = req.params.id;
   const attended = req.body.attended;
@@ -162,7 +164,7 @@ router.patch("/:id/enrollment", (req: Request, res: Response) => {
     if(attended==0 && !(Number.isInteger(Number(rating)))){
       return res.status(405).json({error: `El formato ingresado es inválido`});
     }
-    const feedback = eventService.patchFeedback(Number(id), Number(attended), String(observations), Number(rating));
+    const feedback = await eventService.patchFeedback(Number(id), Number(attended), String(observations), Number(rating));
     return res.json("El feedback se pudo cargar de manera exitosa");
   }
   catch {
