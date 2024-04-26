@@ -112,22 +112,22 @@ export class EventRepository{
             return false
         }
     }
-    updateEvent(id, name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance,id_creator_user) {
+    updateEvent(eventito,eventoId) {
         // Lógica para crear un nuevo evento en la base de datos
         const query= `UPDATE events 
-        SET name=${name}, 
-        description=${description},
-        id_event_category=${id_event_category},
-        id_event_location=${id_event_location},
-        start_date= ${start_date}, 
-        duration_in_minutes =${duration_in_minutes},
-        price=${price}, 
-        enabled_for_enrollment=${enabled_for_enrollment},
-        max_assistance=${max_assistance},
-        id_creator_user=${id_creator_user}); 
-        WHERE id = ${id}; `;
+        SET name=${eventito.name}, 
+        description=${eventito.description},
+        id_event_category=${eventito.id_event_category},
+        id_event_location=${eventito.id_event_location},
+        start_date= ${eventito.start_date}, 
+        duration_in_minutes =${eventito.duration_in_minutes},
+        price=${eventito.price}, 
+        enabled_for_enrollment=${eventito.enabled_for_enrollment},
+        max_assistance=${eventito.max_assistance},
+        id_creator_user=${eventito.id_creator_user}); 
+        WHERE id = ${eventoId}; `;
 
-        const query2=`SELECT * FROM events WHERE id = ${id}`
+        const query2=`SELECT * FROM events WHERE id = ${eventoId}}`
         // Suponiendo que tienes un método create en tu clase Database
         if(query2!=null)
         {

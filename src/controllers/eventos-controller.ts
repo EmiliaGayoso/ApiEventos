@@ -83,7 +83,7 @@ router.post("/:id/enrollment", (req: Request, res: Response) => {
 import Eventos from './../models/Eventos'; // no se porque da error
 
 router.post("/", async (req: Request, res: Response) => {
-  const eventito = req.body
+const eventito = req.body; // tenes que crear en postman un objeto
 
   try {
     const createdEvent = await eventService.createEvent(eventito);
@@ -100,10 +100,11 @@ router.post("/", async (req: Request, res: Response) => {
 /*update*/
 router.put("/id", async (req: Request, res: Response) => {
   
-  const eventito= new Eventos();//crea un nuevo objeto dentro de la clase Eventos pero no funciona
+  const eventoId = req.params.id;
+  const eventito = req.body;//crea un nuevo objeto dentro de la clase Eventos pero no funciona
 
   try {
-    const updatedEvent = await eventService.updateEvent(eventito);
+    const updatedEvent = await eventService.updateEvent(eventito, eventoId);
     return res.status(201).json({
       message: "Evento creado correctamente",
       data: updatedEvent, 
