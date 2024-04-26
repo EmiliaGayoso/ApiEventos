@@ -112,7 +112,7 @@ export class EventRepository{
             return false
         }
     }
-    updateEvent(eventito,eventoId) {
+    updateEvent(eventito, eventoId) {
         // Lógica para crear un nuevo evento en la base de datos
         const query= `UPDATE events 
         SET name=${eventito.name}, 

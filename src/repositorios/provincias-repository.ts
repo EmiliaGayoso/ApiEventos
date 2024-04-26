@@ -26,4 +26,16 @@ export class ProvinciaRepository {
         console.log(result);
         return devolver;
     }
+
+    crearProvincia (provinciaCrear){
+
+    }
+
+    modificarProvincia(provinciaModificar, provinciaId){
+
+    }
+
+    borrarProvincia(provinciaId){
+        
+    }
 }

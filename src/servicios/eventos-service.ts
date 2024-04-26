@@ -3,7 +3,7 @@ import { EventRepository } from "../repositorios/eventos-repository";
 
 export class EventService {
     
-    getAllEventos(pageSize: number, requestedPage:number, name ?: string, cat ?: string, fecha ?: Date, tag ?: string) //el ?: (segun gemini) es para definir que el parametro es opcional
+    async getAllEventos(pageSize: number, requestedPage:number, name ?: string, cat ?: string, fecha ?: Date, tag ?: string) //el ?: (segun gemini) es para definir que el parametro es opcional
     {   
         //se tiene que verificar que name, cat, fecha y tag EXISTAN
         var queryWhere = ``;
@@ -38,7 +38,7 @@ export class EventService {
         }
 
         const eventRepository = new EventRepository();
-        const [allEvents, cantidadEvents] = eventRepository.getAllEvents(name, cat, fecha, tag, pageSize, requestedPage, queryWhere);
+        const [allEvents, cantidadEvents] = await eventRepository.getAllEvents(name, cat, fecha, tag, pageSize, requestedPage, queryWhere);
         //throw new Error("Error en el servicio  de eventos");
         return {
             collection: allEvents, //aca deberia ir un array de elementos, esta es una version harcodeada
@@ -53,17 +53,17 @@ export class EventService {
 
     }
 
-    getEventoById(id: number)
+    async getEventoById(id: number)
     {
         //se tiene que verificar que id EXISTA
         const eventRepository = new EventRepository();
-        const evento = eventRepository.getEventById(id);
+        const evento = await eventRepository.getEventById(id);
         return evento;
 
     }
 
     /*5*/
-    getParticipants(limit: number, offset: number, id: number, fName ?: string, lName ?: string, username ?: string, attended ?: boolean, rating ?: number){
+    async getParticipants(limit: number, offset: number, id: number, fName ?: string, lName ?: string, username ?: string, attended ?: boolean, rating ?: number){
         //se tiene que verificar que id EXISTA
         var queryWhere = ``;
         
@@ -85,27 +85,26 @@ export class EventService {
         }
 
         const eventRepository = new EventRepository();
-        const participants = eventRepository.getParticipants(id, limit, offset, queryWhere);
+        const participants = await eventRepository.getParticipants(id, limit, offset, queryWhere);
         return participants;
     }
 
 
 /*8*/
-    createEvent(eventito: Eventos) {
+    async createEvent(eventito: Eventos) {
         const eventRepository = new EventRepository();
-        const evento= eventRepository.createEvent(eventito);
+        const evento = await eventRepository.createEvent(eventito);
         return evento;
     }
-    updateEvent(eventito: Eventos, eventoId:Number){
+    async updateEvent(eventito: Eventos, eventoId:Number){
         const eventRepository = new EventRepository();
-        const evento= eventRepository.updateEvent(eventito, eventoId);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
-        
+        const evento = await eventRepository.updateEvent(eventito, eventoId);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
         return evento;
     }
 
-    deleteEvent(id:number){
+    async deleteEvent(id:number){
         const eventRepository = new EventRepository();
-        const evento= eventRepository.deleteEvent(id);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
+        const evento = await eventRepository.deleteEvent(id);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
         
         return evento;
     }
@@ -147,10 +146,10 @@ export class EventService {
     }
 
     //inscribirlo
-    enrollUser(id: number, idUser: number, username: string){
+    async enrollUser(id: number, idUser: number, username: string){
         const eventRepository = new EventRepository();
         //insertar el idUser a la BD de inscriptos
-        const sePudo = eventRepository.enrollUsuario(id, idUser, username)
+        const sePudo = await eventRepository.enrollUsuario(id, idUser, username)
         return sePudo;
     }
     /*10*/
