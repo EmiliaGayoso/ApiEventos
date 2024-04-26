@@ -80,7 +80,7 @@ router.post("/:id/enrollment", (req: Request, res: Response) => {
 /*8*/
 
 /*create*/
-import Eventos from './../models/Eventos'; // no se porque da error
+// import Eventos from './../entities/Eventos'; // no se porque da error
 
 router.post("/", async (req: Request, res: Response) => {
 const eventito = req.body; // tenes que crear en postman un objeto

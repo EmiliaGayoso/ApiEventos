@@ -1,3 +1,4 @@
+import Eventos from "../entities/Eventos";
 export declare class EventService {
     getAllEventos(pageSize: number, requestedPage: number, name?: string, cat?: string, fecha?: Date, tag?: string): {
         collection: {
@@ -66,4 +67,10 @@ export declare class EventService {
     };
     getEventoById(id: number): void;
     getParticipants(limit: number, offset: number, id: number, fName?: string, lName?: string, username?: string, attended?: boolean, rating?: number): void;
+    createEvent(eventito: Eventos): boolean;
+    updateEvent(eventito: Eventos, eventoId: Number): boolean;
+    deleteEvent(id: number): boolean;
+    verificarExistenciaUsuario(idUser: number, username: string): boolean;
+    enrollUser(id: number, idUser: number, username: string): boolean;
+    patchFeedback(id: number, attended: number, observations: string, rating: number): string;
 }

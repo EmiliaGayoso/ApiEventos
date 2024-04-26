@@ -1,4 +1,4 @@
-import Eventos from "../models/Eventos";
+import Eventos from "../entities/Eventos";
 import { EventRepository } from "../repositorios/eventos-repository";
 
 export class EventService {
