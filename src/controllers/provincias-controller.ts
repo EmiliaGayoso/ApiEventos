@@ -47,14 +47,27 @@ router.post('/', async (req, res) => {
   }
 });
 
-//modificar la provcincia
-router.put('/', async (req, res) => {
-  
+//modificar la provincia
+router.put('/:id', async (req, res) => {
+  const provinciaId = req.params.id;
+  const provinciaModificar = req.body;
+
+  try {
+    const provinciaModificada = await provinciaService.modificarProvincia(Number(provinciaId), provinciaModificar);
+    return res.status(201).json({
+      message: "Provincia modificada correctamente",
+      data: provinciaModificada,
+    });
+  }
+  catch(error) {
+    console.error("Error al modificar la provincia: ", error);
+    return res.status(500).json({ message: "Error modificando provincia" });
+  }
 });
 
 //eliminar la provincia
 router.delete('/', async (req, res) => {
-
+  
 });
   
   export default router;

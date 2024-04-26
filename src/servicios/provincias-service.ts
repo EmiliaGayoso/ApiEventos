@@ -26,7 +26,7 @@ export class ProvinciaService {
 
     }
 
-    modificarProvincia(){
+    modificarProvincia(provinciaId: number, provinciaModificar: Provincias){
 
     }
 
