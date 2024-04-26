@@ -98,13 +98,13 @@ const eventito = req.body; // tenes que crear en postman un objeto
 });
 
 /*update*/
-router.put("/id", async (req: Request, res: Response) => {
+router.put("/:id", async (req: Request, res: Response) => {
   
   const eventoId = req.params.id;
   const eventito = req.body;//crea un nuevo objeto dentro de la clase Eventos pero no funciona
 
   try {
-    const updatedEvent = await eventService.updateEvent(eventito, eventoId);
+    const updatedEvent = await eventService.updateEvent(eventito, Number(eventoId));
     return res.status(201).json({
       message: "Evento creado correctamente",
       data: updatedEvent, 

@@ -96,9 +96,9 @@ export class EventService {
         const evento= eventRepository.createEvent(eventito);
         return evento;
     }
-    updateEvent(eventito: Eventos,eventoId:Number){
+    updateEvent(eventito: Eventos, eventoId:Number){
         const eventRepository = new EventRepository();
-        const evento= eventRepository.createEvent(eventito,eventoId);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
+        const evento= eventRepository.updateEvent(eventito,eventoId);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
         
         return evento;
     }
