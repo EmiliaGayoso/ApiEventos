@@ -1,9 +1,10 @@
 import Eventos from "../entities/Eventos";
 import { EventRepository } from "../repositorios/eventos-repository";
+import { Pagination } from "../entities/Pagination";
 
 export class EventService {
     
-    async getAllEventos(pageSize: number, requestedPage:number, name ?: string, cat ?: string, fecha ?: Date, tag ?: string) //el ?: (segun gemini) es para definir que el parametro es opcional
+    async getAllEventos(limit: number, offset:number, url: string, name ?: string, cat ?: string, fecha ?: Date, tag ?: string) //el ?: (segun gemini) es para definir que el parametro es opcional
     {   
         //se tiene que verificar que name, cat, fecha y tag EXISTAN
         var queryWhere = ``;
@@ -37,19 +38,34 @@ export class EventService {
             }
         }
         console.log("Despues de todas las query: ", queryWhere)
+        const pag = new Pagination();
+        const parsedLimit = pag.parseLimit(limit);
+        const parsedOffset = pag.parseOffset(offset);
+
         const eventRepository = new EventRepository();
-        const [allEvents, cantidadEvents] = await eventRepository.getAllEvents(name, cat, fecha, tag, pageSize, requestedPage, queryWhere);
+        const [allEvents, cantidadEvents] = await eventRepository.getAllEvents(name, cat, fecha, tag, parsedLimit, parsedOffset, queryWhere);
         //throw new Error("Error en el servicio  de eventos");
-        return {
+        
+        const resultado=
+        {
             collection: allEvents, //aca deberia ir un array de elementos, esta es una version harcodeada
-            pagination: 
+            
+            pagination: {
+                limit: parsedLimit,
+                offset: parsedOffset,
+                nextPage: ((offset + 1) * limit <= Number(cantidadEvents)) ? null : process.env.URL_BASE,
+                total: Number(cantidadEvents)
+            }
+        }
+        return resultado;
+            /*pagination: 
             {
               limit: pageSize, //la cantidad de elementos por pagina
               offset: requestedPage,// la pagina en la que estas
               nextPage: "http://localhost:5050/event?limit=15&offset=1",
               total: cantidadEvents, // cantidad de elementos, lo mismo de arriba
-            },
-        };
+            },*/
+        ;
 
     }
 
@@ -98,46 +114,31 @@ export class EventService {
         const evento = await eventRepository.createEvent(eventito);
         return evento;
     }
-    async updateEvent(eventito: Eventos, eventoId:Number){
+    async updateEvent(eventito: Eventos, eventoId: number, user_id: number){
         const eventRepository = new EventRepository();
-        const evento = await eventRepository.updateEvent(eventito, eventoId);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
-        return evento;
-    }
+        if(eventito.id_creator_user=user_id){
 
-    async deleteEvent(id:number){
-        const eventRepository = new EventRepository();
-        const evento = await eventRepository.deleteEvent(id);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
+            const evento = await eventRepository.updateEvent(eventito, eventoId);
+            return evento;
+        }///validacion de que las modificaciones son del mismo usuarios que lo creo
+        else{
+            return null;
+        }
+        // Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
         
-        return evento;
     }
-/*
-    async editEvent(eventId: number, eventData: Event): Promise<Event | null> {
-        // Verificar si el evento existe
-        const existingEvent: Event | null = await this.eventRepository.getEventById(eventId);
-        if (!existingEvent) {
-            return null; // Evento no encontrado
+
+    async deleteEvent(eventito: Eventos,id: number, user_id: number,){
+        const eventRepository = new EventRepository();
+        if(eventito.id_creator_user=user_id)
+        {
+            const eliminado = await eventRepository.deleteEvent(id);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
+            return eliminado;
+        }///validacion de que las modificaciones son del mismo usuarios que lo creo
+        else{
+            return null;
         }
-
-        // Aquí podrías realizar validaciones adicionales antes de editar el evento, si es necesario.
-        return await this.eventRepository.editEvent(eventId, eventData);
     }
-
-    async deleteEvent(eventId: number): Promise<boolean> {
-        // Verificar si el evento existe
-        const existingEvent: Event | null = await this.eventRepository.getEventById(eventId);
-        if (!existingEvent) {
-            return false; // Evento no encontrado
-        }
-
-        return await this.eventRepository.deleteEvent(eventId);
-    }
-
-    async isUserEventCreator(eventId: number, userId: number): Promise<boolean> {
-        // Verificar si el usuario es el creador del evento
-        const event: Event | null = await this.eventRepository.getEventById(eventId);
-        return event !== null && event.creatorUserId === userId;
-    }
-*/
 
     /*9*/
     //verificar si el nombre de usuario coincide con el id

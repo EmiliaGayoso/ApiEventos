@@ -11,6 +11,8 @@ router.get("/", async (req: Request, res: Response) => {
 
   const limit = req.query.limit;
   const offset = req.query.offset;
+  const url = req.originalUrl;
+
   const name = req.query.name;
   const cat = req.query.cat;
   const fecha = req.query.fecha;
@@ -23,7 +25,7 @@ router.get("/", async (req: Request, res: Response) => {
   try 
   {
     //te llama la funcion en eventos-service que activa la query
-    const allEvent = await eventService.getAllEventos(Number(limit), Number(offset), String(name), String(cat), new Date(fechaString), String(tag)); 
+    const allEvent = await eventService.getAllEventos(Number(limit), Number(offset), String(url), String(name), String(cat), new Date(fechaString), String(tag)); 
     
     return res.json(allEvent);
 
@@ -85,7 +87,8 @@ router.post("/:id/enrollment", async (req: Request, res: Response) => {
 // import Eventos from './../entities/Eventos'; // no se porque da error
 
 router.post("/", async (req: Request, res: Response) => {
-const eventito = req.body; // tenes que crear en postman un objeto
+const eventito = req.body;
+const user= req.body; // tenes que crear en postman un objeto
 
   try {
     const createdEvent = await eventService.createEvent(eventito);
@@ -104,9 +107,9 @@ router.put("/:id", async (req: Request, res: Response) => {
   
   const eventoId = req.params.id;
   const eventito = req.body;//crea un nuevo objeto dentro de la clase Eventos pero no funciona
-
+  const user = req.body;
   try {
-    const updatedEvent = await eventService.updateEvent(eventito, Number(eventoId));
+    const updatedEvent = await eventService.updateEvent(eventito, Number(eventoId),user);
     return res.status(201).json({
       message: "Evento creado correctamente",
       data: updatedEvent, 
@@ -120,7 +123,9 @@ router.put("/:id", async (req: Request, res: Response) => {
 /*delete*/
  router.delete( "/:id", async(req,res) =>{
   const id=req.params.id;
-  if(eventService.deleteEvent(Number(id))){
+  const eventito = req.body;
+  const user = req.body;
+  if(eventService.deleteEvent(eventito,Number(id),user)){
       return res.status(232).send({
           valido: "evento eliminado correctamente"
       });
