@@ -12,6 +12,7 @@ export class ProvinciaRepository {
     }
     
     async buscarId(id){
+        console.log("llegue a provincia buscarId");
         let devolver = null;
         //se pone un try catch, para que si el sql falle, se sepa que es eso y no te devuelve null o algo parecido
         try {
@@ -33,25 +34,47 @@ export class ProvinciaRepository {
     }
 
     async traerTodas(limit, offset){
-        const query = {
-            text: 'SELECT * FROM provinces LIMIT $1 OFFSET $2',
-            values: [limit, offset]
-        };
-        const result = await this.BDClient.query(query);
-        const devolver = result.rows[0];
-        console.log(result);
+        console.log("llegue a provincia traerTodas");
+        let devolver = null;
+        try {
+            const query = {
+                text: 'SELECT * FROM provinces LIMIT $1 OFFSET $2',
+                values: [limit, offset]
+            };
+            const result = await this.BDClient.query(query);
+            devolver = result.rows[0];
+            console.log(result);
+        }
+        catch(error) {
+            console.log("error en prov traerTodas");
+        }
+        console.log(devolver);
         return devolver;
     }
 
-    crearProvincia (provinciaCrear){
-
+    async crearProvincia (provinciaCrear){
+        console.log("llego a prov crearProvincia");
+        let devolver = null;
+        try {
+            const query = {
+                text: '',
+                values: []
+            };
+            const result = await this.BDClient.query(query);
+            devolver = result.rows[0];
+        }catch (error){
+            cons
+        }
+        return devolver;
     }
 
     modificarProvincia(provinciaModificar, provinciaId){
-
+        console.log("llego a prov modificarProvincia");
+        let devolver = null;
     }
 
     borrarProvincia(provinciaId){
-        
+        console.log("llego a prov borrarProvincia");
+        let devolver = null;
     }
 }

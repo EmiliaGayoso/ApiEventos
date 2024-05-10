@@ -9,9 +9,9 @@ const port = 5050;
 //Middlewares
 app.use(express.json()); // Middleware to parse JSON
 
-app.use("/event", EventosController);
-app.use("/user", UserController);
-app.use("/provincias", ProvinciasController);
+app.use("/api/event", EventosController);
+app.use("/api/user", UserController);
+app.use("/api/provincias", ProvinciasController);
 //app.use(unknownEndpoint);
 
 app.listen(port, () => {

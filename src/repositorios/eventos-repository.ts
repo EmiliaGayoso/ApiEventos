@@ -158,7 +158,7 @@ export class EventRepository{
 
    async deleteEvent(id)
     {
-        const query= `DELETE * FROM events WHERE id = ${id}`
+        const query= `DELETE FROM events WHERE id = ${id}`
         const query2=`SELECT * FROM events WHERE id = ${id}`
         
         let retornar = null;

@@ -1,5 +1,6 @@
 import { ProvinciaRepository } from "../repositorios/provincias-repository";
 import Provincias from "../entities/Provincias";
+import { Pagination } from "../entities/Pagination"; 
 
 export class ProvinciaService {
     async busquedaId(id: number){
@@ -14,9 +15,13 @@ export class ProvinciaService {
 
     async traerTodas(limit: number, offset: number){
         const provinciaRepository = new ProvinciaRepository();
+        const pag = new Pagination();
+        const parsedLimit = pag.parseLimit(limit);
+        const parsedOffset = pag.parseOffset(offset);
+
         let provinciaDevolver = null;
         console.log("traerTodasProvincias");
-        provinciaDevolver = await provinciaRepository.traerTodas(limit, offset);
+        provinciaDevolver = await provinciaRepository.traerTodas(parsedLimit, parsedOffset);
         console.log(provinciaDevolver);
 
         return provinciaDevolver;
