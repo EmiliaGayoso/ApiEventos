@@ -77,16 +77,23 @@ class EventRepository {
             return ("Query Error");
         }
     }
-    createEvent(eventito) {
+    async createEvent(eventito) {
         const query = `INSERT INTO events (name,description,id_event_category,id_event_location, start_date,duration_in_minutes,price,enabled_for_enrollment,max_assistance,id_creator_user)
-        VALUES (${eventito.name},${eventito.description},${eventito.id_event_category},${eventito.id_event_location}, ${eventito.start_date},${eventito.duration_in_minutes},${eventito.price},${eventito.enabled_for_enrollment},${eventito.max_assistance},${eventito.id_creator_user}); `;
-        const query2 = `SELECT * FROM events WHERE title = ${name}`;
-        if (query2 != null) {
-            return true;
+        VALUES ('${eventito.name}','${eventito.description}',${eventito.id_event_category},${eventito.id_event_location}, '${eventito.start_date}',${eventito.duration_in_minutes},${eventito.price},${eventito.enabled_for_enrollment},${eventito.max_assistance},${eventito.id_creator_user}); `;
+        const query2 = `SELECT * FROM events WHERE title = ${eventito.name}`;
+        let retornar = null;
+        try {
+            console.log("llega a la query1");
+            const { rows: seCreo } = await client.query(query);
+            console.log(seCreo);
+            const { rows: eventoCreado } = await client.query(query2);
+            console.log(eventoCreado);
+            retornar = eventoCreado;
         }
-        else {
-            return false;
+        catch (_a) {
+            console.log("Error en query, no se pudo crear el evento");
         }
+        return retornar;
     }
     async updateEvent(eventito, eventoId) {
         const query = `UPDATE events 

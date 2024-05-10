@@ -147,7 +147,7 @@ export class EventService {
     }
     async updateEvent(eventito: Eventos, eventoId: number, user_id: number){
         const eventRepository = new EventRepository();
-        if(eventito.id_creator_user=user_id){
+        if(eventito.id_creator_user == user_id){
 
             const evento = await eventRepository.updateEvent(eventito, eventoId);
             return evento;
@@ -161,7 +161,7 @@ export class EventService {
 
     async deleteEvent(eventito: Eventos,id: number, user_id: number,){
         const eventRepository = new EventRepository();
-        if(eventito.id_creator_user=user_id)
+        if(eventito.id_creator_user == user_id)
         {
             const eliminado = await eventRepository.deleteEvent(id);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
             return eliminado;

@@ -112,12 +112,12 @@ router.put("/:id", async (req: Request, res: Response) => {
   try {
     const updatedEvent = await eventService.updateEvent(eventito, Number(eventoId),user);
     return res.status(201).json({
-      message: "Evento creado correctamente",
+      message: "Evento modificado correctamente",
       data: updatedEvent, 
     });
   } catch (error) {
-    console.error("Error creating event:", error);
-    return res.status(500).json({ message: "Error creando evento" });
+    console.error("Error modificando event:", error);
+    return res.status(500).json({ message: "Error modificando evento" });
   }
 });
 

@@ -105,59 +105,75 @@ export class EventRepository{
 
 
     /*8*/
-   createEvent(eventito){// Lógica para crear un nuevo evento en la base de datos
+   async createEvent(eventito){// Lógica para crear un nuevo evento en la base de datos
         const query= `INSERT INTO events (name,description,id_event_category,id_event_location, start_date,duration_in_minutes,price,enabled_for_enrollment,max_assistance,id_creator_user)
-        VALUES (${eventito.name},${eventito.description},${eventito.id_event_category},${eventito.id_event_location}, ${eventito.start_date},${eventito.duration_in_minutes},${eventito.price},${eventito.enabled_for_enrollment},${eventito.max_assistance},${eventito.id_creator_user}); `;
-        const query2=`SELECT * FROM events WHERE title = ${name}`
+        VALUES ('${eventito.name}','${eventito.description}',${eventito.id_event_category},${eventito.id_event_location}, '${eventito.start_date}',${eventito.duration_in_minutes},${eventito.price},${eventito.enabled_for_enrollment},${eventito.max_assistance},${eventito.id_creator_user}); `;
+        
+        const query2=`SELECT * FROM events WHERE title = ${eventito.name}`
         // Suponiendo que tienes un método create en tu clase Database
-        if(query2!=null)
-        {
-            return true;
+        let retornar = null;
+        try {
+            console.log("llega a la query1");
+            const { rows: seCreo} = await client.query(query);
+            console.log(seCreo);
+            const { rows: eventoCreado } = await client.query(query2);
+            console.log(eventoCreado);
+            retornar = eventoCreado;
         }
-        else{
-            return false
+        catch{
+            console.log("Error en query, no se pudo crear el evento");
         }
+        return retornar;
     }
     async updateEvent(eventito, eventoId) {
         // Lógica para crear un nuevo evento en la base de datos
         const query= `UPDATE events 
-        SET name=${eventito.name}, 
-        description=${eventito.description},
-        id_event_category=${eventito.id_event_category},
-        id_event_location=${eventito.id_event_location},
-        start_date= ${eventito.start_date}, 
+        SET name= '${eventito.name}', 
+        description= '${eventito.description}',
+        id_event_category= ${eventito.id_event_category},
+        id_event_location= ${eventito.id_event_location},
+        start_date= '${eventito.start_date}', 
         duration_in_minutes =${eventito.duration_in_minutes},
         price=${eventito.price}, 
         enabled_for_enrollment=${eventito.enabled_for_enrollment},
         max_assistance=${eventito.max_assistance},
-        id_creator_user=${eventito.id_creator_user}); 
+        id_creator_user=${eventito.id_creator_user} 
         WHERE id = ${eventoId}; `;
 
         const query2=`SELECT * FROM events WHERE id = ${eventoId}}`
-        const { rows: categoryRows } = await client.query(query2);
-
-        // Suponiendo que tienes un método create en tu clase Database
-        if(query2!=null)
-        {
-            return true;
+        let retornar = null;
+        try {
+            console.log("llega a la query1");
+            const { rows: seModifico} = await client.query(query);
+            console.log(seModifico);
+            const { rows: eventoModificado } = await client.query(query2);
+            console.log(eventoModificado);
+            retornar = eventoModificado;
         }
-        else{
-            return false
+        catch{
+            console.log("Error en query, no se pudo modificar el evento");
         }
+        return retornar;
     }
 
-   deleteEvent(id)
+   async deleteEvent(id)
     {
         const query= `DELETE * FROM events WHERE id = ${id}`
         const query2=`SELECT * FROM events WHERE id = ${id}`
-        if(query2==null)
-        {
-            return true;//se borro correctamente
+        
+        let retornar = null;
+        try {
+            console.log("llega a la query1");
+            const { rows: chauEvento} = await client.query(query);
+            console.log(chauEvento);
+            const { rows: eventoMuerto } = await client.query(query2);
+            console.log(eventoMuerto);
+            retornar = eventoMuerto;
         }
-        else{
-            return false
+        catch{
+            console.log("Error en query, no se pudo eliminar el evento");
         }
-
+        return retornar;
     }
     
 
