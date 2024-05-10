@@ -80,7 +80,7 @@ export class EventRepository{
     async getParticipants(id, limit, offset, queryWhere){
         console.log("llega a getParticipant repository")
         //por ahora sin limit ni offset
-        const query = `SELECT er.*,u.first_name,u.last_name,u.username,e.name FROM event_enrollments er
+        const queryParticipants = `SELECT er.*,u.first_name,u.last_name,u.username,e.name FROM event_enrollments er
         LEFT JOIN users u ON er.id_user = u.id
         LEFT JOIN events e ON er.id_event = e.id 
 		LEFT JOIN event_tags et ON e.id = et.id_event
@@ -89,7 +89,7 @@ export class EventRepository{
         const query2= `select count(*) from event_enrollments`;
         try {
             console.log("llega a la query1");
-            const { rows: participants } = await client.query(query);
+            const { rows: participants } = await client.query(queryParticipants);
             console.log(participants);
 
             console.log("llega a query2")
