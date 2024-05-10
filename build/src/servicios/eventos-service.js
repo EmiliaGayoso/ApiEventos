@@ -63,14 +63,24 @@ class EventService {
         ;
     }
     async getEventoById(id) {
+        console.log(id);
         const eventRepository = new eventos_repository_1.EventRepository();
         const evento = await eventRepository.getEventById(id);
         const returnEntity = evento.rows[0];
-        console.log("ESTOY EN EVENTOS-SERVICE Y MANDO: ", evento);
+        console.log("ESTOY EN EVENTOS-SERVICE Y MANDO: ", returnEntity);
         return returnEntity;
     }
     async getParticipants(limit, offset, id, fName, lName, username, attended, rating) {
         var queryWhere = ``;
+        console.log("llega a getParticipant service");
+        console.log(fName);
+        console.log(lName);
+        console.log(username);
+        console.log(attended);
+        console.log(rating);
+        const pag = new Pagination_1.Pagination();
+        const parsedLimit = pag.parseLimit(limit);
+        const parsedOffset = pag.parseOffset(offset);
         if (fName) {
             queryWhere += `AND u.first_name = ${fName},`;
         }
@@ -87,7 +97,18 @@ class EventService {
             queryWhere += ` AND er.rating = ${rating}`;
         }
         const eventRepository = new eventos_repository_1.EventRepository();
-        const participants = await eventRepository.getParticipants(id, limit, offset, queryWhere);
+        console.log(queryWhere);
+        const [participants, countParticipants] = await eventRepository.getParticipants(id, parsedLimit, parsedOffset, queryWhere);
+        const resultado = {
+            collection: participants,
+            pagination: {
+                limit: parsedLimit,
+                offset: parsedOffset,
+                nextPage: ((offset + 1) * limit <= Number(countParticipants)) ? null : process.env.URL_BASE,
+                total: Number(countParticipants)
+            }
+        };
+        return resultado;
         return participants;
     }
     async createEvent(eventito) {

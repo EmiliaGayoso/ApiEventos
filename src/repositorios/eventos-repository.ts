@@ -12,9 +12,9 @@ export class EventRepository{
         
         console.log("llego a getAllEvents");
         //FIJARSE PORQUE FALLA EL HARCODEO, QUE FALTA AGREGAR
-        const query1 = `SELECT * FROM events
-        LEFT JOIN event_categories ON events.id_event_category = event_categories.id
-        LEFT JOIN event_tags ON event_tags.id_event = events.id 
+        const query1 = `SELECT e.name, e.description, e.start_date, e.duration_in_minutes, e.price, e.max_assistance FROM events e
+        LEFT JOIN event_categories ON e.id_event_category = event_categories.id
+        LEFT JOIN event_tags ON event_tags.id_event = e.id 
         LEFT JOIN tags ON event_tags.id_tag = tags.id
         ` + queryWhere;
         const query2= `select count(*) from events`; //te da la cantidad de eventos
@@ -48,10 +48,11 @@ export class EventRepository{
         //const [allEvents, cantidadEvents] en el service
     }
 
-    getEventById(id)
+    async getEventById(id)
     {
         console.log("ESTOY EN EVENTOS-REPOSITORY con id: ", id)
-        const queryId = `SELECT e.*, l.*, pr.*, et.*, u.*, ee.*, tg.* FROM events e
+        //por alguna razón el e.name lo toma como si sería ec.name, aparece doble en el json lo mismo en el punto de arriba
+        const queryId = `SELECT e.name, e.description, e.start_date, e.duration_in_minutes, e.price, e.max_assistance, l.name, pr.name, tg.name, ec.name FROM events e
         LEFT JOIN locations l ON e.id_event_location = l.id
         LEFT JOIN provinces pr ON l.id_province = pr.id
 
@@ -61,26 +62,45 @@ export class EventRepository{
 
         LEFT JOIN event_categories ec ON e.id_event_category = ec.id
         LEFT JOIN users u ON e.id_creator_user = u.id
-
-        LEFT JOIN event_enrollments ee ON e.id = ee.id_event
-        LEFT JOIN event_enrollments ON u.id = ee.id_user 
         WHERE e.id = ${id}`;
-
-        const values = client.query(queryId);
-        console.log(values);
-        return values;
-        
+        let retornar = null;
+        try {
+            console.log("llega a la query1");
+            const { rows: values }= await client.query(queryId);
+            console.log(values);
+            retornar = values;
+        }
+        catch {
+            console.log("Error en query");
+        }
+        return retornar;
     }
 
     /*5*/
-    getParticipants(id, limit, offset, queryWhere){
-        const query = `SELECT event_enrollment.*,u.first_name,u.last_name,u.username,e.name FROM event_enrollment er limit ${limit} offset ${offset}
+    async getParticipants(id, limit, offset, queryWhere){
+        console.log("llega a getParticipant repository")
+        //por ahora sin limit ni offset
+        const query = `SELECT er.*,u.first_name,u.last_name,u.username,e.name FROM event_enrollments er
         LEFT JOIN users u ON er.id_user = u.id
         LEFT JOIN events e ON er.id_event = e.id 
-        LEFT JOIN tags ON event_tags.id_tag = tags.id
+		LEFT JOIN event_tags et ON e.id = et.id_event
+        LEFT JOIN tags ON et.id = tags.id
         WHERE e.id = ${id}` + queryWhere;
+        const query2= `select count(*) from event_enrollments`;
+        try {
+            console.log("llega a la query1");
+            const { rows: participants } = await client.query(query);
+            console.log(participants);
 
-        return
+            console.log("llega a query2")
+            const { rows: countParticipants } = await client.query(query2);
+
+            return [participants, countParticipants];
+        }
+        catch {
+            console.log("Error en query");
+            return("Query Error")
+        }
     }
 
 

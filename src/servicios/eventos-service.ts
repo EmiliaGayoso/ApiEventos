@@ -80,10 +80,11 @@ export class EventService {
     async getEventoById(id: number)
     {
         //se tiene que verificar que id EXISTA
+        console.log(id);
         const eventRepository = new EventRepository();
         const evento = await eventRepository.getEventById(id);
         const returnEntity = evento.rows[0];
-        console.log("ESTOY EN EVENTOS-SERVICE Y MANDO: ", evento)
+        console.log("ESTOY EN EVENTOS-SERVICE Y MANDO: ", returnEntity)
         return returnEntity;
 
     }
@@ -92,7 +93,15 @@ export class EventService {
     async getParticipants(limit: number, offset: number, id: number, fName ?: string, lName ?: string, username ?: string, attended ?: boolean, rating ?: number){
         //se tiene que verificar que id EXISTA
         var queryWhere = ``;
-        
+        console.log("llega a getParticipant service")
+        console.log(fName);
+        console.log(lName);
+        console.log(username);
+        console.log(attended);
+        console.log(rating);
+        const pag = new Pagination();
+        const parsedLimit = pag.parseLimit(limit);
+        const parsedOffset = pag.parseOffset(offset);
         //falta agregar cosas, ya que en el caso que no exista name, pero si las demas, el WHERE debería seguir funcionando
         if (fName){
             queryWhere += `AND u.first_name = ${fName},`;
@@ -111,7 +120,21 @@ export class EventService {
         }
 
         const eventRepository = new EventRepository();
-        const participants = await eventRepository.getParticipants(id, limit, offset, queryWhere);
+        console.log(queryWhere);
+        const [participants, countParticipants] = await eventRepository.getParticipants(id, parsedLimit, parsedOffset, queryWhere);
+        const resultado=
+        {
+            collection: participants, //aca deberia ir un array de elementos, esta es una version harcodeada
+            
+            pagination: {
+                limit: parsedLimit,
+                offset: parsedOffset,
+                nextPage: ((offset + 1) * limit <= Number(countParticipants)) ? null : process.env.URL_BASE,
+                total: Number(countParticipants)
+            }
+        }
+        return resultado;
+
         return participants;
     }
 

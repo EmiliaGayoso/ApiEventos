@@ -55,9 +55,10 @@ router.get("/:id", async (req: Request, res: Response) => {
 });
 
 /*5*/
-router.post("/:id/enrollment", async (req: Request, res: Response) => {
+router.get("/:id/enrollment", async (req: Request, res: Response) => {
   //hacer una query para getear
   
+  console.log("llego al de enrollment");
   const limit = req.query.limit;
   const offset = req.query.offset;
   const first_name = req.query.first_name;
@@ -67,7 +68,7 @@ router.post("/:id/enrollment", async (req: Request, res: Response) => {
   const rating = req.query.rating;
 
   try {
-    const event = await eventService.getParticipants(Number(limit), Number(offset), Number(req.params.id), String(first_name), String(last_name), String(username), Boolean(attended), Number(rating));
+    const event = await eventService.getParticipants(Number(limit), Number(offset), Number(req.params.id ?? 1), String(first_name ?? ''), String(last_name ?? ''), String(username ?? ''), Boolean(attended ?? 'true'), Number(rating ?? '5'));
     /*if(!event){
       return res.status(405).json({error: `El formato ingresado es inválido`})
     }else {}*/

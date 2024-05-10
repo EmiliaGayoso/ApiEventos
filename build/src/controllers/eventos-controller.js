@@ -39,7 +39,9 @@ router.get("/:id", async (req, res) => {
         return res.json("Un Error");
     }
 });
-router.post("/:id/enrollment", async (req, res) => {
+router.get("/:id/enrollment", async (req, res) => {
+    var _a;
+    console.log("llego al de enrollment");
     const limit = req.query.limit;
     const offset = req.query.offset;
     const first_name = req.query.first_name;
@@ -48,10 +50,10 @@ router.post("/:id/enrollment", async (req, res) => {
     const attended = req.query.attended;
     const rating = req.query.rating;
     try {
-        const event = await eventService.getParticipants(Number(limit), Number(offset), Number(req.params.id), String(first_name), String(last_name), String(username), Boolean(attended), Number(rating));
+        const event = await eventService.getParticipants(Number(limit), Number(offset), Number((_a = req.params.id) !== null && _a !== void 0 ? _a : 1), String(first_name !== null && first_name !== void 0 ? first_name : ''), String(last_name !== null && last_name !== void 0 ? last_name : ''), String(username !== null && username !== void 0 ? username : ''), Boolean(attended !== null && attended !== void 0 ? attended : 'true'), Number(rating !== null && rating !== void 0 ? rating : '5'));
         return res.json(event);
     }
-    catch (_a) {
+    catch (_b) {
         console.log("Un Error");
         return res.json("Un Error");
     }

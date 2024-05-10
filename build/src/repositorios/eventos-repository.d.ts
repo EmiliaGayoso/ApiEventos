@@ -1,7 +1,7 @@
 export declare class EventRepository {
-    getAllEvents(name: any, cat: any, fecha: any, tag: any, pageSize: any, requestedPage: any, queryWhere: any): Promise<any[] | "Query Error">;
-    getEventById(id: any): any;
-    getParticipants(id: any, limit: any, offset: any, queryWhere: any): void;
+    getAllEvents(name: any, cat: any, fecha: any, tag: any, pageSize: any, requestedPage: any, queryWhere: any): Promise<any[][] | "Query Error">;
+    getEventById(id: any): Promise<any>;
+    getParticipants(id: any, limit: any, offset: any, queryWhere: any): Promise<any[][] | "Query Error">;
     createEvent(eventito: any): boolean;
     updateEvent(eventito: any, eventoId: any): Promise<boolean>;
     deleteEvent(id: any): boolean;
