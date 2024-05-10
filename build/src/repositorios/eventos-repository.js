@@ -18,18 +18,17 @@ class EventRepository {
         LEFT JOIN tags ON event_tags.id_tag = tags.id
         ` + queryWhere;
         const query2 = `select count(*) from events`;
-        let resultado1 = '';
-        let resultado2 = '';
         try {
             console.log("llega a la query1");
-            resultado1 = await client.query(query1);
+            const { rows: resultado1 } = await client.query(query1);
             console.log("llega a query2");
-            resultado2 = await client.query(query2);
+            const { rows: resultado2 } = await client.query(query2);
+            return [resultado1, resultado2];
         }
         catch (_a) {
             console.log("Error en query");
+            return ("Query Error");
         }
-        return [resultado1, resultado2];
     }
     getEventById(id) {
         console.log("ESTOY EN EVENTOS-REPOSITORY con id: ", id);

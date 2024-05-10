@@ -16,7 +16,7 @@ router.get("/", async (req: Request, res: Response) => {
   const name = req.query.name;
   const cat = req.query.category;
   const fecha = req.query.startDate;
-  const tag = req.query.tag;
+  const tag = req.query.tags;
   const fechaString = String(fecha);
   let fecha2 = new Date(fechaString);
 

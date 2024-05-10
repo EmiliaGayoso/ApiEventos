@@ -1,7 +1,7 @@
 import Eventos from "../entities/Eventos";
 export declare class EventService {
     getAllEventos(limit: number, offset: number, url: string, name?: string, cat?: string, fecha?: Date, tag?: string): Promise<{
-        collection: string;
+        collection: any;
         pagination: {
             limit: number;
             offset: number;

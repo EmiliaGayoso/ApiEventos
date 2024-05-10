@@ -19,30 +19,30 @@ export class EventService {
         let currentDate = new Date()
         //falta agregar cosas, ya que en el caso que no exista name, pero si las demas, el WHERE debería seguir funcionando
         if (name){
-            queryWhere += `WHERE name ILIKE '%${name}%'`;
+            queryWhere += `WHERE events.name ILIKE '%${name}%'`;
         }
         if (cat){
             if(queryWhere.includes("WHERE")){
-                queryWhere += ` AND event_categories.category = ${cat}`;
+                queryWhere += ` AND event_categories.name = '${cat}'`;
             }
             else{
-                queryWhere += ` WHERE event_categories.category = ${cat}`;
+                queryWhere += ` WHERE event_categories.name = '${cat}'`;
             };
         }
         if (!(fechaNew == currentDate.toISOString().split('T')[0])){
             if(queryWhere.includes("WHERE")){
-                queryWhere += ` AND startDate = ${fecha}`;
+                queryWhere += ` AND startDate = '${fecha}'`;
             }
             else{
-                queryWhere += ` WHERE startDate = ${fecha}`;
+                queryWhere += ` WHERE startDate = '${fecha}'`;
             };
         }
         if (tag){
             if(queryWhere.includes("WHERE")){
-                queryWhere += ` AND tags.tag = ${tag}`;
+                queryWhere += ` AND tags.name = '${tag}'`;
             }
             else{
-                queryWhere += ` WHERE tags.tag = ${tag}`;
+                queryWhere += ` WHERE tags.name = '${tag}'`;
             }
         }
         console.log("Despues de todas las query: ", queryWhere)
