@@ -8,8 +8,8 @@ const eventos_controller_1 = __importDefault(require("./src/controllers/eventos-
 const provincias_controller_1 = __importDefault(require("./src/controllers/provincias-controller"));
 const user_controller_1 = __importDefault(require("./src/controllers/user-controller"));
 const app = (0, express_1.default)();
-app.use(express_1.default.json());
 const port = 5050;
+app.use(express_1.default.json());
 app.use("/event", eventos_controller_1.default);
 app.use("/user", user_controller_1.default);
 app.use("/provincias", provincias_controller_1.default);

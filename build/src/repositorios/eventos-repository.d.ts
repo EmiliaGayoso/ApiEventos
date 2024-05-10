@@ -1,5 +1,5 @@
 export declare class EventRepository {
-    getAllEvents(name: any, cat: any, fecha: any, tag: any, pageSize: any, requestedPage: any, queryWhere: any): string[];
+    getAllEvents(name: any, cat: any, fecha: any, tag: any, pageSize: any, requestedPage: any, queryWhere: any): Promise<string[]>;
     getEventById(id: any): any;
     getParticipants(id: any, limit: any, offset: any, queryWhere: any): void;
     createEvent(eventito: any): boolean;

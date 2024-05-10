@@ -7,18 +7,20 @@ const express_1 = __importDefault(require("express"));
 const eventos_service_1 = require("../servicios/eventos-service");
 const router = express_1.default.Router();
 const eventService = new eventos_service_1.EventService();
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
     console.log("PAJARO LOCO");
-    const limit = req.query.limit;
-    const offset = req.query.offset;
+    const limit = req.query.pageSize;
+    const offset = req.query.page;
+    const url = req.originalUrl;
     const name = req.query.name;
-    const cat = req.query.cat;
-    const fecha = req.query.fecha;
+    const cat = req.query.category;
+    const fecha = req.query.startDate;
     const tag = req.query.tag;
     const fechaString = String(fecha);
-    new Date(fechaString);
+    let fecha2 = new Date(fechaString);
+    let nuevaFecha = fecha2 && !isNaN(fecha2.getTime()) ? new Date(fecha2) : new Date();
     try {
-        const allEvent = eventService.getAllEventos(Number(limit), Number(offset), String(name), String(cat), new Date(fechaString), String(tag));
+        const allEvent = await eventService.getAllEventos(Number(limit !== null && limit !== void 0 ? limit : 0), Number(offset !== null && offset !== void 0 ? offset : 0), String(url !== null && url !== void 0 ? url : ''), String(name !== null && name !== void 0 ? name : ''), String(cat !== null && cat !== void 0 ? cat : ''), nuevaFecha, String(tag !== null && tag !== void 0 ? tag : ''));
         return res.json(allEvent);
     }
     catch (error) {
@@ -29,7 +31,7 @@ router.get("/", (req, res) => {
 router.get("/:id", async (req, res) => {
     console.log("ESTOY EN EVENTOS-CONTROLLER");
     try {
-        const event = await eventService.getEventoById(Number(req.params.id));
+        const event = await await eventService.getEventoById(Number(req.params.id));
         return res.json(event);
     }
     catch (error) {
@@ -37,7 +39,7 @@ router.get("/:id", async (req, res) => {
         return res.json("Un Error");
     }
 });
-router.post("/:id/enrollment", (req, res) => {
+router.post("/:id/enrollment", async (req, res) => {
     const limit = req.query.limit;
     const offset = req.query.offset;
     const first_name = req.query.first_name;
@@ -46,7 +48,7 @@ router.post("/:id/enrollment", (req, res) => {
     const attended = req.query.attended;
     const rating = req.query.rating;
     try {
-        const event = eventService.getParticipants(Number(limit), Number(offset), Number(req.params.id), String(first_name), String(last_name), String(username), Boolean(attended), Number(rating));
+        const event = await eventService.getParticipants(Number(limit), Number(offset), Number(req.params.id), String(first_name), String(last_name), String(username), Boolean(attended), Number(rating));
         return res.json(event);
     }
     catch (_a) {
@@ -56,6 +58,7 @@ router.post("/:id/enrollment", (req, res) => {
 });
 router.post("/", async (req, res) => {
     const eventito = req.body;
+    const user = req.body;
     try {
         const createdEvent = await eventService.createEvent(eventito);
         return res.status(201).json({
@@ -71,8 +74,9 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
     const eventoId = req.params.id;
     const eventito = req.body;
+    const user = req.body;
     try {
-        const updatedEvent = await eventService.updateEvent(eventito, Number(eventoId));
+        const updatedEvent = await eventService.updateEvent(eventito, Number(eventoId), user);
         return res.status(201).json({
             message: "Evento creado correctamente",
             data: updatedEvent,
@@ -83,26 +87,28 @@ router.put("/:id", async (req, res) => {
         return res.status(500).json({ message: "Error creando evento" });
     }
 });
-router.delete("/:id", (req, res) => {
+router.delete("/:id", async (req, res) => {
     const id = req.params.id;
-    if (eventService.deleteEvent(Number(id))) {
+    const eventito = req.body;
+    const user = req.body;
+    if (eventService.deleteEvent(eventito, Number(id), user)) {
         return res.status(232).send({
             valido: "evento eliminado correctamente"
         });
     }
     return res.status(400).send("Error en los campos");
 });
-router.post("/:id/enrollment", (req, res) => {
+router.post("/:id/enrollment", async (req, res) => {
     const id = req.params.id;
     const idUser = req.body.id_user;
     const username = req.body.username;
     try {
-        const usuarioExistente = eventService.verificarExistenciaUsuario(Number(idUser), String(username));
+        const usuarioExistente = await eventService.verificarExistenciaUsuario(Number(idUser), String(username));
         if (!usuarioExistente) {
             return res.status(405).json({ error: `El usuario ingresado es inválido` });
         }
         else {
-            const event = eventService.enrollUser(Number(id), Number(idUser), String(username));
+            const event = await eventService.enrollUser(Number(id), Number(idUser), String(username));
         }
         return res.json("Te pudiste inscribir bien");
     }
@@ -111,7 +117,7 @@ router.post("/:id/enrollment", (req, res) => {
         return res.json("Un Error");
     }
 });
-router.patch("/:id/enrollment", (req, res) => {
+router.patch("/:id/enrollment", async (req, res) => {
     const id = req.params.id;
     const attended = req.body.attended;
     const rating = req.body.rating;
@@ -120,7 +126,7 @@ router.patch("/:id/enrollment", (req, res) => {
         if (attended == 0 && !(Number.isInteger(Number(rating)))) {
             return res.status(405).json({ error: `El formato ingresado es inválido` });
         }
-        const feedback = eventService.patchFeedback(Number(id), Number(attended), String(observations), Number(rating));
+        const feedback = await eventService.patchFeedback(Number(id), Number(attended), String(observations), Number(rating));
         return res.json("El feedback se pudo cargar de manera exitosa");
     }
     catch (_a) {

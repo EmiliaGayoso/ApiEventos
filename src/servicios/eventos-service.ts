@@ -8,10 +8,18 @@ export class EventService {
     {   
         //se tiene que verificar que name, cat, fecha y tag EXISTAN
         var queryWhere = ``;
-        
+        console.log(limit)
+        console.log(offset)
+        console.log(url)
+        console.log(name)
+        console.log(cat)
+        console.log(fecha)
+        console.log(tag)
+        let fechaNew = fecha.toISOString().split('T')[0]
+        let currentDate = new Date()
         //falta agregar cosas, ya que en el caso que no exista name, pero si las demas, el WHERE debería seguir funcionando
         if (name){
-            queryWhere += `WHERE name = ${name},`;
+            queryWhere += `WHERE name ILIKE '%${name}%'`;
         }
         if (cat){
             if(queryWhere.includes("WHERE")){
@@ -21,7 +29,7 @@ export class EventService {
                 queryWhere += ` WHERE event_categories.category = ${cat}`;
             };
         }
-        if (fecha){
+        if (!(fechaNew == currentDate.toISOString().split('T')[0])){
             if(queryWhere.includes("WHERE")){
                 queryWhere += ` AND startDate = ${fecha}`;
             }

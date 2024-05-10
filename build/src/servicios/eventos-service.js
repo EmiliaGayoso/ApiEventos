@@ -2,11 +2,21 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EventService = void 0;
 const eventos_repository_1 = require("../repositorios/eventos-repository");
+const Pagination_1 = require("../entities/Pagination");
 class EventService {
-    async getAllEventos(pageSize, requestedPage, name, cat, fecha, tag) {
+    async getAllEventos(limit, offset, url, name, cat, fecha, tag) {
         var queryWhere = ``;
+        console.log(limit);
+        console.log(offset);
+        console.log(url);
+        console.log(name);
+        console.log(cat);
+        console.log(fecha);
+        console.log(tag);
+        let fechaNew = fecha.toISOString().split('T')[0];
+        let currentDate = new Date();
         if (name) {
-            queryWhere += `WHERE name = ${name},`;
+            queryWhere += `WHERE name ILIKE '%${name}%'`;
         }
         if (cat) {
             if (queryWhere.includes("WHERE")) {
@@ -17,7 +27,7 @@ class EventService {
             }
             ;
         }
-        if (fecha) {
+        if (!(fechaNew == currentDate.toISOString().split('T')[0])) {
             if (queryWhere.includes("WHERE")) {
                 queryWhere += ` AND startDate = ${fecha}`;
             }
@@ -35,17 +45,22 @@ class EventService {
             }
         }
         console.log("Despues de todas las query: ", queryWhere);
+        const pag = new Pagination_1.Pagination();
+        const parsedLimit = pag.parseLimit(limit);
+        const parsedOffset = pag.parseOffset(offset);
         const eventRepository = new eventos_repository_1.EventRepository();
-        const [allEvents, cantidadEvents] = await eventRepository.getAllEvents(name, cat, fecha, tag, pageSize, requestedPage, queryWhere);
-        return {
+        const [allEvents, cantidadEvents] = await eventRepository.getAllEvents(name, cat, fecha, tag, parsedLimit, parsedOffset, queryWhere);
+        const resultado = {
             collection: allEvents,
             pagination: {
-                limit: pageSize,
-                offset: requestedPage,
-                nextPage: "http://localhost:5050/event?limit=15&offset=1",
-                total: cantidadEvents,
-            },
+                limit: parsedLimit,
+                offset: parsedOffset,
+                nextPage: ((offset + 1) * limit <= Number(cantidadEvents)) ? null : process.env.URL_BASE,
+                total: Number(cantidadEvents)
+            }
         };
+        return resultado;
+        ;
     }
     async getEventoById(id) {
         const eventRepository = new eventos_repository_1.EventRepository();
@@ -80,15 +95,25 @@ class EventService {
         const evento = await eventRepository.createEvent(eventito);
         return evento;
     }
-    async updateEvent(eventito, eventoId) {
+    async updateEvent(eventito, eventoId, user_id) {
         const eventRepository = new eventos_repository_1.EventRepository();
-        const evento = await eventRepository.updateEvent(eventito, eventoId);
-        return evento;
+        if (eventito.id_creator_user = user_id) {
+            const evento = await eventRepository.updateEvent(eventito, eventoId);
+            return evento;
+        }
+        else {
+            return null;
+        }
     }
-    async deleteEvent(id) {
+    async deleteEvent(eventito, id, user_id) {
         const eventRepository = new eventos_repository_1.EventRepository();
-        const evento = await eventRepository.deleteEvent(id);
-        return evento;
+        if (eventito.id_creator_user = user_id) {
+            const eliminado = await eventRepository.deleteEvent(id);
+            return eliminado;
+        }
+        else {
+            return null;
+        }
     }
     verificarExistenciaUsuario(idUser, username) {
         const eventRepository = new eventos_repository_1.EventRepository();

@@ -4,5 +4,5 @@ export declare const config: {
     password: string;
     database: string;
     host: string;
-    port: string;
+    port: number;
 };

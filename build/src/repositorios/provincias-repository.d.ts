@@ -1,4 +1,7 @@
+import pg from "pg";
 export declare class ProvinciaRepository {
+    BDClient: pg.Client;
+    constructor();
     buscarId(id: any): Promise<any>;
     traerTodas(limit: any, offset: any): Promise<any>;
     crearProvincia(provinciaCrear: any): void;

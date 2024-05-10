@@ -9,26 +9,26 @@ router.get("/", async (req: Request, res: Response) => {
   
   console.log("PAJARO LOCO")
 
-  const limit = req.query.limit;
-  const offset = req.query.offset;
+  const limit = req.query.pageSize;
+  const offset = req.query.page;
   const url = req.originalUrl;
 
   const name = req.query.name;
-  const cat = req.query.cat;
-  const fecha = req.query.fecha;
+  const cat = req.query.category;
+  const fecha = req.query.startDate;
   const tag = req.query.tag;
   const fechaString = String(fecha);
-  new Date(fechaString);
+  let fecha2 = new Date(fechaString);
 
+  let nuevaFecha = fecha2 && !isNaN(fecha2.getTime()) ? new Date(fecha2) : new Date();
   //Verificar si limit y offset son numeros y existen
 
   try 
   {
     //te llama la funcion en eventos-service que activa la query
-    const allEvent = await eventService.getAllEventos(Number(limit), Number(offset), String(url), String(name), String(cat), new Date(fechaString), String(tag)); 
+    const allEvent = await eventService.getAllEventos(Number(limit ?? 0), Number(offset ?? 0), String(url ?? ''), String(name ?? ''), String(cat ?? ''), nuevaFecha, String(tag ?? '')); 
     
     return res.json(allEvent);
-
   } 
   catch (error) 
   {

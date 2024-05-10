@@ -10,48 +10,26 @@ const client = new pg_1.default.Client(bd_1.config);
 console.log('config', bd_1.config);
 client.connect();
 class EventRepository {
-    getAllEvents(name, cat, fecha, tag, pageSize, requestedPage, queryWhere) {
-        const query = `SELECT * FROM collection limit ${pageSize} offset ${requestedPage}
-        LEFT JOIN event_categories ON event.id_event_category = event_categories.id
-        LEFT JOIN event_tags ON event_tags.id_event = event.id 
+    async getAllEvents(name, cat, fecha, tag, pageSize, requestedPage, queryWhere) {
+        console.log("llego a getAllEvents");
+        const query1 = `SELECT * FROM events
+        LEFT JOIN event_categories ON events.id_event_category = event_categories.id
+        LEFT JOIN event_tags ON event_tags.id_event = events.id 
         LEFT JOIN tags ON event_tags.id_tag = tags.id
         ` + queryWhere;
-        const query1 = `select count(*) from events`;
-        const collection = [
-            {
-                "id": 2,
-                "name": "Taylor Swift",
-                "description": "Un alto show",
-                "start_date": "2024-03-21T03:00:00.000Z",
-                "duration_in_minutes": 210,
-                "price": "15500",
-                "enabled_for_enrollment": true,
-                "max_assistance": 120000,
-                "tags": [
-                    "Rock",
-                    "Pop"
-                ],
-                "creator_user": {
-                    "id": 3,
-                    "username": "Jschiffer",
-                    "first_name": "Julian",
-                    "last_name": "Schiffer"
-                },
-                "event_category": {
-                    "id": 1,
-                    "name": "Musica"
-                },
-                "event_location": {
-                    "id": 1,
-                    "name": "River",
-                    "full_address": "Av. Pres. Figueroa Alcorta 7597",
-                    "latitude": -34.5453,
-                    "longitude": -58.4498,
-                    "max_capacity": "84567"
-                }
-            }
-        ];
-        return [query, query1];
+        const query2 = `select count(*) from events`;
+        let resultado1 = '';
+        let resultado2 = '';
+        try {
+            console.log("llega a la query1");
+            resultado1 = await client.query(query1);
+            console.log("llega a query2");
+            resultado2 = await client.query(query2);
+        }
+        catch (_a) {
+            console.log("Error en query");
+        }
+        return [resultado1, resultado2];
     }
     getEventById(id) {
         console.log("ESTOY EN EVENTOS-REPOSITORY con id: ", id);
