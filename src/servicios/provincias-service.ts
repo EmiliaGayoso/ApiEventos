@@ -28,14 +28,29 @@ export class ProvinciaService {
     }
 
     async crearProvincia(provinciaCrear: Provincias){
+        let provincia = null;
         const provinciaRepository = new ProvinciaRepository();
-        const provincia = await provinciaRepository.crearProvincia(provinciaCrear);
+        try {
+            provincia = await provinciaRepository.crearProvincia(provinciaCrear);
+            console.log("se pudo crear la provincia")
+        }
+        catch (error){
+            if (provinciaCrear.name == null || provinciaCrear.name.length<=3 || typeof provinciaCrear.latitude != 'number'|| typeof provinciaCrear.longitude != 'number'){
+                throw new Error ('Bad Request'); 
+            }
+        }
         return provincia;
     }
 
     async modificarProvincia(provinciaId: number, provinciaModificar: Provincias){
+        let provincia = null;
         const provinciaRepository = new ProvinciaRepository();
-        const provincia = await provinciaRepository.modificarProvincia(provinciaModificar,provinciaId);
+        try {
+            provincia = await provinciaRepository.modificarProvincia(provinciaModificar,provinciaId);
+            console.log("se pudo modificar la pregunta")
+        } catch (error) {
+            
+        }
         return provincia;
     }
 

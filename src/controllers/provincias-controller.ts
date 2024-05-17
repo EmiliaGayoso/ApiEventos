@@ -42,8 +42,11 @@ router.post('/', async (req, res) => {
     });
   }
   catch (error) {
-    console.error("Error al crear la provincia: ", error);
-    return res.status(400).json({ message: "Error creando provincia" });
+    if (error.message === 'Bad Request'){
+      return res.status(400).json({ message: "Error creando provincia, los valores ingresados no conciden con lo pedido"});
+    }else {
+      return res.status(500).json({ message: error.message});
+    }
   }
 });
 

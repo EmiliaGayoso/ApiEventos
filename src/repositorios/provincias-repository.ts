@@ -57,24 +57,41 @@ export class ProvinciaRepository {
         let devolver = null;
         try {
             const query = {
-                text: '',
-                values: []
+                text: 'INSERT INTO provinces (name,full_name,latitude,longitude) VALUES ($1,$2,$3,$4)',
+                values: [provinciaCrear.name,provinciaCrear.full_name,provinciaCrear.latitude,provinciaCrear.longitude]
             };
             const result = await this.BDClient.query(query);
             devolver = result.rows[0];
+            console.log("se creo la provincia");
         }catch (error){
-            cons
+            console.log("Error creando la provincia")
         }
         return devolver;
     }
 
-    modificarProvincia(provinciaModificar, provinciaId){
+    async modificarProvincia(provinciaModificar, provinciaId){
         console.log("llego a prov modificarProvincia");
         let devolver = null;
+        try {
+            const query = {
+                text: 'UPDATE provinces SET name = $1, full_name = $2, latitude = $3, longitude = $4 WHERE id = $5',
+                values: [provinciaModificar.name, provinciaModificar.full_name, provinciaModificar.latitude, provinciaModificar.longitude, provinciaId]
+            };
+            const result = await this.BDClient.query(query);
+            devolver = result.rows[0];
+            console.log("se modifico la provincia");
+        } catch (error) {
+            console.log("Error al modificar la prov");
+        }
     }
 
-    borrarProvincia(provinciaId){
+    async borrarProvincia(provinciaId){
         console.log("llego a prov borrarProvincia");
         let devolver = null;
+        try {
+            
+        } catch (error) {
+            
+        }
     }
 }
