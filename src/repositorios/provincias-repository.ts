@@ -89,9 +89,14 @@ export class ProvinciaRepository {
         console.log("llego a prov borrarProvincia");
         let devolver = null;
         try {
-            
+            const query = {
+                text: 'DELETE FROM provinces WHERE id = $1',
+                values: [provinciaId]
+            };
+            const result = await this.BDClient.query(query);
+            devolver = result.rows[0];
         } catch (error) {
-            
+            console.log("error eliminando la prov");
         }
     }
 }

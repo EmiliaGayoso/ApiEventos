@@ -7,7 +7,12 @@ export class ProvinciaService {
         const provinciaRepository = new ProvinciaRepository();
         let provinciaDevolver = null;
         console.log("buscarProvinciaId");
-        provinciaDevolver = await provinciaRepository.buscarId(id);
+        
+        try {
+            provinciaDevolver = await provinciaRepository.buscarId(id);
+        } catch (error) {
+            throw new Error ('Not Found');
+        }
         console.log(provinciaDevolver);
 
         return provinciaDevolver;
@@ -49,14 +54,26 @@ export class ProvinciaService {
             provincia = await provinciaRepository.modificarProvincia(provinciaModificar,provinciaId);
             console.log("se pudo modificar la pregunta")
         } catch (error) {
-            
+            if (provinciaModificar.name == null || provinciaModificar.name.length<=3 || typeof provinciaModificar.latitude != 'number'|| typeof provinciaModificar.longitude != 'number'){
+                throw new Error ('Bad Request'); 
+            }else if (this.busquedaId(provinciaId) == null){
+                throw new Error ('Not Found');
+            }
         }
         return provincia;
     }
 
     async borrarProvincia(provinciaId: number){
         const provinciaRepository = new ProvinciaRepository();
-        const provincia = await provinciaRepository.borrarProvincia(provinciaId);
+        let provincia = null;
+        try {
+            provincia = await provinciaRepository.borrarProvincia(provinciaId);
+        } catch (error) {
+            if (this.busquedaId(provinciaId) == null){
+                throw new Error ('Not Found');
+            }
+        }
+        
         return provincia;
     }
 }

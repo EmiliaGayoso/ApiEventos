@@ -79,11 +79,18 @@ router.delete('/:id', async (req, res) => {
 
   try {
     await provinciaService.borrarProvincia(Number(provinciaId));
-    return res.json("Provincia eliminada");
+    return res.status(200).json({
+      message: "Provincia eliminada"
+    });
   }
   catch (error) {
     console.error("Error al eliminar la provincia: ", error);
-    return res.status(404).json({ message: "No se encontro una provincia con ese ID" });
+    if (error.message === 'Not Found'){
+      return res.status(404).json({ message: "No se encontro una provincia con ese ID" });
+    }else {
+      return res.status(400).json({ message: error.message });
+    }
+    
   }
 });
   
