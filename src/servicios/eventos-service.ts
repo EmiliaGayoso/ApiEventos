@@ -3,7 +3,7 @@ import { EventRepository } from "../repositorios/eventos-repository";
 import { Pagination } from "../entities/Pagination";
 
 export class EventService {
-    
+    /*2 y 3*/
     async getAllEventos(limit: number, offset:number, url: string, name ?: string, cat ?: string, fecha ?: Date, tag ?: string) //el ?: (segun gemini) es para definir que el parametro es opcional
     {   
         //se tiene que verificar que name, cat, fecha y tag EXISTAN
@@ -59,8 +59,8 @@ export class EventService {
             collection: allEvents, //aca deberia ir un array de elementos, esta es una version harcodeada
             
             pagination: {
-                limit: parsedLimit,
-                offset: parsedOffset,
+                pageSize: parsedLimit,
+                page: parsedOffset,
                 nextPage: ((offset + 1) * limit <= Number(cantidadEvents)) ? null : process.env.URL_BASE,
                 total: Number(cantidadEvents)
             }
@@ -73,16 +73,17 @@ export class EventService {
               nextPage: "http://localhost:5050/event?limit=15&offset=1",
               total: cantidadEvents, // cantidad de elementos, lo mismo de arriba
             },*/
-        ;
-
     }
-
+    /*4*/
     async getEventoById(id: number)
     {
         //se tiene que verificar que id EXISTA
         console.log(id);
         const eventRepository = new EventRepository();
         const evento = await eventRepository.getEventById(id);
+        if (evento == null){
+            throw new Error ('Not Found');
+        }
         const returnEntity = evento.rows[0];
         console.log("ESTOY EN EVENTOS-SERVICE Y MANDO: ", returnEntity)
         return returnEntity;

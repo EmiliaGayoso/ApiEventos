@@ -3,7 +3,7 @@ import { config } from "../repositorios/bd";
 
 
 const client = new pg.Client(config);
-console.log('config', config)
+console.log('config', config);
 client.connect();
 //const respuesta = await client.query(sql);
 

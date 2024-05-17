@@ -7,7 +7,7 @@ const  eventService = new EventService();
 // /event, el punto 2
 router.get("/", async (req: Request, res: Response) => {
   
-  console.log("PAJARO LOCO")
+  console.log("event 2 y 3")
 
   const limit = req.query.pageSize;
   const offset = req.query.page;
@@ -43,14 +43,17 @@ router.get("/:id", async (req: Request, res: Response) => {
   /* todos los atributos del Evento, como así también su localizacion (localidad y la provincia) */
   console.log("ESTOY EN EVENTOS-CONTROLLER")
   try{
-    const event = await await eventService.getEventoById(Number(req.params.id));
-
+    const event = await eventService.getEventoById(Number(req.params.id));
     return res.json(event);
   }
   catch (error) 
   {
     console.log("Un Error");
-    return res.json("Un Error");
+    if (error.message === 'Not Found'){
+      return res.status(404).json({ message: 'El ID ingresado no corresponde a ningún evento'})
+    }else {
+      return res.status(400).json({ message: 'Un Error' });
+    }
   }
 });
 
@@ -179,5 +182,7 @@ router.patch("/:id/enrollment", async(req: Request, res: Response) => {
   }
 
 });
+
+
 
 export default router;

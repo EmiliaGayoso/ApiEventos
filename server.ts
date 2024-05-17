@@ -2,6 +2,7 @@ import express from "express";
 import EventosController from "./src/controllers/eventos-controller";
 import ProvinciasController from "./src/controllers/provincias-controller";
 import UserController from "./src/controllers/user-controller";
+import CategoryController from "./src/controllers/category-controller";
 
 const app = express(); // Init API REST
 const port = 5050;
@@ -12,6 +13,7 @@ app.use(express.json()); // Middleware to parse JSON
 app.use("/api/event", EventosController);
 app.use("/api/user", UserController);
 app.use("/api/provincias", ProvinciasController);
+app.use("/api/event-category", CategoryController);
 //app.use(unknownEndpoint);
 
 app.listen(port, () => {
