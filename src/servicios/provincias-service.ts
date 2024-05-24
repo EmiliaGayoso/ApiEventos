@@ -21,18 +21,28 @@ export class ProvinciaService {
         return provinciaDevolver;
     }
 
-    async traerTodas(limit: number, offset: number){
+    async traerTodas(limit: number, offset: number, url: string){
         const provinciaRepository = new ProvinciaRepository();
         const pag = new Pagination();
         const parsedLimit = pag.parseLimit(limit);
         const parsedOffset = pag.parseOffset(offset);
-
-        let provinciaDevolver = null;
+        
         console.log("traerTodasProvincias");
-        provinciaDevolver = await provinciaRepository.traerTodas(parsedLimit, parsedOffset);
-        console.log(provinciaDevolver);
+        const [allProv, countProv] = await provinciaRepository.traerTodas(parsedLimit, parsedOffset);
 
-        return provinciaDevolver;
+        const resultado = {
+            collection: allProv, //aca deberia ir un array de elementos, esta es una version harcodeada
+            
+            pagination: {
+                pageSize: parsedLimit,
+                page: parsedOffset,
+                nextPage: pag.buildNextPage(url,parsedLimit,parsedOffset),
+                total: Number(countProv)
+            }
+        }
+
+
+        return resultado;
     }
 
     async crearProvincia(provinciaCrear: Provincias){

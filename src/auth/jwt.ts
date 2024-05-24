@@ -16,7 +16,7 @@ export const createToken = (user) =>
 
     const token= jwt.sign(payload, secretKey, options);//genera el token con los datos que se los brindo 
     console.log(token); 
-    return token
+    return token;
 }
 
 export const descriptedToken = async (ptoken:string) =>
@@ -30,4 +30,5 @@ export const descriptedToken = async (ptoken:string) =>
     } catch(e){
         console.error(e);
     }
+    return payloadOriginal;
 }

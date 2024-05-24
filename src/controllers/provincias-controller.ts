@@ -20,8 +20,9 @@ router.get('/provincias/:id', async (req, res) => {
 router.get('/', async (req, res) => {
   const limit = req.query.limit;
   const offset = req.query.offset;
+  const url = req.originalUrl;
   try {
-    const provinciasPaginadas = await provinciaService.traerTodas(Number(limit), Number(offset));
+    const provinciasPaginadas = await provinciaService.traerTodas(Number(limit), Number(offset), url);
     console.log(provinciasPaginadas);
     res.json(provinciasPaginadas);
   } catch (error) {

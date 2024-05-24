@@ -61,7 +61,7 @@ export class EventService {
             pagination: {
                 pageSize: parsedLimit,
                 page: parsedOffset,
-                nextPage: ((offset + 1) * limit <= Number(cantidadEvents)) ? null : process.env.URL_BASE,
+                nextPage: pag.buildNextPage(url,parsedLimit,parsedOffset),
                 total: Number(cantidadEvents)
             }
         }

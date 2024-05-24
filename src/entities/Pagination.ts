@@ -1,6 +1,6 @@
 //seguir con lo de build next page, poque no se que hacer
-
 import 'dotenv/config';
+
 export class PaginationDto{
     limit;
     offset;
@@ -9,6 +9,9 @@ export class PaginationDto{
 }
 
 export class Pagination {
+    limitRegex = /limit=\d+/;
+    offsetRegex = /offset=\d+/;
+
     parseLimit(limit){
         return !isNaN(parseInt(limit))? parseInt(limit): 10;
     }
@@ -23,7 +26,10 @@ export class Pagination {
         response.total = total;
         
         if (limit !== -1){
-            response.nextPage = limit + currentOffset < total ? this.buildNextPage(path, limit, currentOffset) : null;
+            response.nextPage = 
+            limit + currentOffset < total
+            ? this.buildNextPage(path, limit, currentOffset) 
+            : null;
         }
 
         return response;
@@ -32,8 +38,18 @@ export class Pagination {
     buildNextPage(path, limit, currentOffset){
         let url = process.env.BASE_URL + path;
 
-        /*if ()
-        return url;*/
+        if(this.limitRegex.test(url)){
+            url = url.replace(this.limitRegex, `limit=${limit}`);
+        } else {
+            url = `${url}${url.includes("?") ? "&" : "?"}limit=${limit}`;
+        }
+
+        if (this.offsetRegex.test(url)){
+            url = url.replace(this.offsetRegex, `offset=${currentOffset + limit}`);
+        } else {
+            url = `${url}${url.includes("?") ? "&" : "?"} offset=${currentOffset + limit}`;
+        }
+        return url;
     }
 }
 

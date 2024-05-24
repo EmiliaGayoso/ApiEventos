@@ -5,18 +5,26 @@ import { UserService } from "../servicios/user-service";
 const router = express.Router();
 const userService = new UserService();
 
-router.post("/login", (req: Request, res: Response) => {
+router.post("/login", async(req: Request, res: Response) => {
   const {username, password} = req.body;
-  
-  const userExistence = userService.verificarExistenciaUsuario(String(username), String(password));
-
   console.log(username, password);
+  
+  const userExistence = await userService.verificarExistenciaUsuario(String(username), String(password));
+  
   if (userExistence != null){
     const token = userService.creacionToken(String(username),Number(password));
-    return token;
+    return res.status(200).send({
+      success: true,
+      message: "Usuario existe",
+      token: token
+  });
   } else {
     console.log("error")
-    return res.json("El usuario no fue encontrado")
+    return res.status(401).send({
+      success: false,
+      message: "Usuario no existe",
+      token: ""
+  });
   }
 
   /*res.json({

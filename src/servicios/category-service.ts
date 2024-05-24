@@ -4,7 +4,7 @@ import Categories from "../entities/Categorias";
 
 export class CategoryService {
 
-    async getAll(limit: number, offset: number){
+    async getAll(limit: number, offset: number, url: string){
         
         const pag = new Pagination();
         const parsedLimit = pag.parseLimit(limit);
@@ -18,7 +18,7 @@ export class CategoryService {
             pagination: {
                 pageSize: parsedLimit,
                 page: parsedOffset,
-                nextPage: ((offset + 1) * limit <= Number(cantidadCategories)) ? null : process.env.URL_BASE,
+                nextPage: pag.buildNextPage(url,parsedLimit,parsedOffset),
                 total: Number(cantidadCategories)
             }
         }
