@@ -34,7 +34,7 @@ export class CategoryService {
         } catch (error) {
             console.log("error")
         }
-        if (cat === null){
+        if (cat === null || cat.rows.length === 0){
             throw new Error ('Not Found')
         }
         return cat;

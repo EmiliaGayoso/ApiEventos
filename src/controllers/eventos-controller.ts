@@ -1,5 +1,6 @@
 import express, {Request, Response} from "express";
 import {EventService} from "../servicios/eventos-service";
+import { AuthMiddleware } from "../auth/authMiddleware";
 
 
 const router = express.Router();
@@ -90,7 +91,7 @@ router.get("/:id/enrollment", async (req: Request, res: Response) => {
 /*create*/
 // import Eventos from './../entities/Eventos'; // no se porque da error
 
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", AuthMiddleware, async (req: Request, res: Response) => {
 const eventito = req.body;
 const user= req.body; // tenes que crear en postman un objeto
 
@@ -107,7 +108,7 @@ const user= req.body; // tenes que crear en postman un objeto
 });
 
 /*update*/
-router.put("/:id", async (req: Request, res: Response) => {
+router.put("/:id", AuthMiddleware, async (req: Request, res: Response) => {
   
   const eventoId = req.params.id;
   const eventito = req.body;//crea un nuevo objeto dentro de la clase Eventos pero no funciona
@@ -125,7 +126,7 @@ router.put("/:id", async (req: Request, res: Response) => {
 });
 
 /*delete*/
- router.delete( "/:id", async(req,res) =>{
+ router.delete( "/:id", AuthMiddleware, async(req,res) =>{
   const id=req.params.id;
   const eventito = req.body;
   const user = req.body;
@@ -138,7 +139,7 @@ router.put("/:id", async (req: Request, res: Response) => {
 });
 
 /*9*/
-router.post("/:id/enrollment", async(req: Request, res: Response) => {
+router.post("/:id/enrollment", AuthMiddleware, async(req: Request, res: Response) => {
   
   const id = req.params.id;
   const idUser = req.body.id_user;
@@ -162,7 +163,7 @@ router.post("/:id/enrollment", async(req: Request, res: Response) => {
 
 /*10*/
 /*id del evento, idUser, attended (para verificar), rating (1 a 10) feedback*/
-router.patch("/:id/enrollment", async(req: Request, res: Response) => {
+router.patch("/:id/enrollment", AuthMiddleware, async(req: Request, res: Response) => {
   
   const id = req.params.id;
   const attended = req.body.attended;

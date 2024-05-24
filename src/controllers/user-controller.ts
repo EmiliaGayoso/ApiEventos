@@ -11,20 +11,7 @@ router.post("/login", async(req: Request, res: Response) => {
   
   const userExistence = await userService.verificarExistenciaUsuario(String(username), String(password));
   
-  if (userExistence != null){
-    const token = userService.creacionToken(String(username),Number(password));
-    return res.status(200).send({
-      success: true,
-      message: "Usuario existe",
-      token: token
-  });
-  } else {
-    console.log("error")
-    return res.status(401).send({
-      success: false,
-      message: "Usuario no existe",
-      token: ""
-  });
+  
   }
 
   /*res.json({
@@ -32,7 +19,7 @@ router.post("/login", async(req: Request, res: Response) => {
     username: username,
     password: password,
   });*/
-});
+);
 
 router.post("/register", (req:Request,res:Response) => {
   const { fName, lName, username, password } = req.body;

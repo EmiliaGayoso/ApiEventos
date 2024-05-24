@@ -1,5 +1,6 @@
 import express, {Request, Response} from "express";
 import { LocationService } from "../servicios/location-service";
+import { AuthMiddleware } from "../auth/authMiddleware";
 
 const router = express.Router();
 const locationService = new LocationService();
@@ -32,11 +33,19 @@ router.get("/:id", async (req: Request, res: Response) => {
 });
 
 //Se necesita autenticacion
-router.get("/:id/event-location", async (req: Request, res: Response) => {
+router.get("/:id/event-location", AuthMiddleware, async (req: Request, res: Response) => {
+    const limit = req.query.pageSize;
+    const offset = req.query.page;
+    const url = req.originalUrl;
+    
     try {
-        const eventLocations = locationService.getAllEventLocations(Number(req.params.id));
+        const eventLocations = locationService.getAllEventLocations(Number(req.params.id), Number(limit), Number(offset), url);
+        return res.status(200).json(eventLocations);
     } catch (error) {
-        
+        if (error.message === 'Not Found'){
+            return res.status(404).json({ message: 'El ID ingresado no corresponde a ninguna locación'})
+        }
+        return res.status(400).json({ message: error.message})
     }
 });
 

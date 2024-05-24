@@ -38,4 +38,8 @@ export class LocationRepository {
         }
         return devolver;
     }
+
+    async getAllEventsLocations(id){
+        return "algo";
+    }
 }

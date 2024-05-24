@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
+import User from '../entities/User'
 
-export const createToken = (user) => 
+export const createToken = (user:User) => 
 {
     const payload = 
     {
@@ -30,5 +31,6 @@ export const descriptedToken = async (ptoken:string) =>
     } catch(e){
         console.error(e);
     }
+
     return payloadOriginal;
 }

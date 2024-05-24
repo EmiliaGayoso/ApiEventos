@@ -11,9 +11,9 @@ export class ProvinciaService {
         try {
             provinciaDevolver = await provinciaRepository.buscarId(id);
         } catch (error) {
-            throw new Error ('Not Found');
+            console.log("error");
         }
-        if (provinciaDevolver === null){
+        if (provinciaDevolver === null || provinciaDevolver.rows.length === 0){
             throw new Error ('Not Found');
         }
         console.log(provinciaDevolver);
