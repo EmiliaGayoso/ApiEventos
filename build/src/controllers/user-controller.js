@@ -24,7 +24,7 @@ router.post("/register", (req, res) => {
     const { fName, lName, username, password } = req.body;
     console.log(fName, lName, username, password);
     const crearUsuario = userService.crearUsuario(String(fName), String(lName), String(username), String(password));
-    if (crearUsuario == true) {
+    if (crearUsuario === true) {
         return res.json("El usuario fue creado exitosamente");
     }
     else {

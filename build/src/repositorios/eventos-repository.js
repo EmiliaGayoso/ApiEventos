@@ -120,7 +120,7 @@ class EventRepository {
     deleteEvent(id) {
         const query = `DELETE * FROM events WHERE id = ${id}`;
         const query2 = `SELECT * FROM events WHERE id = ${id}`;
-        if (query2 == null) {
+        if (query2 === null) {
             return true;
         }
         else {

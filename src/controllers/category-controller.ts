@@ -31,15 +31,44 @@ router.get("/:id", async (req: Request, res: Response) => {
 });
 
 router.post("/", async (req: Request, res: Response) => {
-    
+    const catCrear = req.body;
+    try {
+        const creada = await categoryService.crearCategoria(catCrear);
+        return res.status(200).json(creada);
+    } catch (error) {
+        if (error.message === 'Bad Request'){
+            return res.status(400).json({   message: 'El nombre está vacío o tiene menos de 3 caracteres' });
+        }
+        return res.status(500).json({ message: error.message});
+    }
 });
 
 router.put("/", async (req: Request, res: Response) => {
-    
+    const catModificar = req.body;
+    try {
+        const modificada = await categoryService.modificarCategoria(catModificar);
+        return res.status(200).json(modificada);
+    } catch (error) {
+        if (error.message === 'Bad Request'){
+            return res.status(400).json({   message: 'El nombre está vacío o tiene menos de 3 caracteres' });
+        }else if (error.message === 'Not Found'){
+            return res.status(404).json({   message: 'El id ingresado no corresponde a ninguna Categoria' });
+        }
+        return res.status(500).json({ message: error.message});
+    }
 });
 
 router.delete("/:id", async (req: Request, res: Response) => {
-    
+    const id = req.params.id
+    try {
+        await categoryService.eliminarCategoria(Number(id));
+        return res.status(200).json({   message: 'Categoria eliminada'  });
+    } catch (error) {
+        if (error.message === 'Not Found'){
+            return res.status(404).json({   message: 'El id ingresado no corresponde a ninguna Categoria' });
+        }
+        return res.status(500).json({ message: error.message});
+    }
 });
 
 export default router;

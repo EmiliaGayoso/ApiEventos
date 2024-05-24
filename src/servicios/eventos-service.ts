@@ -29,7 +29,7 @@ export class EventService {
                 queryWhere += ` WHERE event_categories.name = '${cat}'`;
             };
         }
-        if (!(fechaNew == currentDate.toISOString().split('T')[0])){
+        if (!(fechaNew === currentDate.toISOString().split('T')[0])){
             if(queryWhere.includes("WHERE")){
                 queryWhere += ` AND startDate = '${fecha}'`;
             }
@@ -81,7 +81,7 @@ export class EventService {
         console.log(id);
         const eventRepository = new EventRepository();
         const evento = await eventRepository.getEventById(id);
-        if (evento == null){
+        if (evento === null){
             throw new Error ('Not Found');
         }
         const returnEntity = evento.rows[0];
@@ -148,7 +148,7 @@ export class EventService {
     }
     async updateEvent(eventito: Eventos, eventoId: number, user_id: number){
         const eventRepository = new EventRepository();
-        if(eventito.id_creator_user == user_id){
+        if(eventito.id_creator_user === user_id){
 
             const evento = await eventRepository.updateEvent(eventito, eventoId);
             return evento;
@@ -162,7 +162,7 @@ export class EventService {
 
     async deleteEvent(eventito: Eventos,id: number, user_id: number,){
         const eventRepository = new EventRepository();
-        if(eventito.id_creator_user == user_id)
+        if(eventito.id_creator_user === user_id)
         {
             const eliminado = await eventRepository.deleteEvent(id);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
             return eliminado;

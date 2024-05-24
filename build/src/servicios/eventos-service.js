@@ -27,7 +27,7 @@ class EventService {
             }
             ;
         }
-        if (!(fechaNew == currentDate.toISOString().split('T')[0])) {
+        if (!(fechaNew === currentDate.toISOString().split('T')[0])) {
             if (queryWhere.includes("WHERE")) {
                 queryWhere += ` AND startDate = '${fecha}'`;
             }

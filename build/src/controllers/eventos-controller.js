@@ -125,7 +125,7 @@ router.patch("/:id/enrollment", async (req, res) => {
     const rating = req.body.rating;
     const observations = req.body.observations;
     try {
-        if (attended == 0 && !(Number.isInteger(Number(rating)))) {
+        if (attended === 0 && !(Number.isInteger(Number(rating)))) {
             return res.status(405).json({ error: `El formato ingresado es inválido` });
         }
         const feedback = await eventService.patchFeedback(Number(id), Number(attended), String(observations), Number(rating));

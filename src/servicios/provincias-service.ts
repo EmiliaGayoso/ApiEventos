@@ -13,6 +13,9 @@ export class ProvinciaService {
         } catch (error) {
             throw new Error ('Not Found');
         }
+        if (provinciaDevolver === null){
+            throw new Error ('Not Found');
+        }
         console.log(provinciaDevolver);
 
         return provinciaDevolver;
@@ -36,13 +39,15 @@ export class ProvinciaService {
         let provincia = null;
         const provinciaRepository = new ProvinciaRepository();
         try {
+            
             provincia = await provinciaRepository.crearProvincia(provinciaCrear);
             console.log("se pudo crear la provincia")
         }
         catch (error){
-            if (provinciaCrear.name == null || provinciaCrear.name.length<=3 || typeof provinciaCrear.latitude != 'number'|| typeof provinciaCrear.longitude != 'number'){
-                throw new Error ('Bad Request'); 
-            }
+            console.log("error en crearProvincia");
+        }
+        if (provinciaCrear.name === null || provinciaCrear.name.length<=3 || typeof provinciaCrear.latitude != 'number'|| typeof provinciaCrear.longitude != 'number'){
+            throw new Error ('Bad Request'); 
         }
         return provincia;
     }
@@ -51,14 +56,16 @@ export class ProvinciaService {
         let provincia = null;
         const provinciaRepository = new ProvinciaRepository();
         try {
+            
             provincia = await provinciaRepository.modificarProvincia(provinciaModificar,provinciaId);
             console.log("se pudo modificar la pregunta")
         } catch (error) {
-            if (provinciaModificar.name == null || provinciaModificar.name.length<=3 || typeof provinciaModificar.latitude != 'number'|| typeof provinciaModificar.longitude != 'number'){
-                throw new Error ('Bad Request'); 
-            }else if (this.busquedaId(provinciaId) == null){
-                throw new Error ('Not Found');
-            }
+            console.log("error en modificarProvincia");
+        }
+        if (provinciaModificar.name === null || provinciaModificar.name.length<=3 || typeof provinciaModificar.latitude != 'number'|| typeof provinciaModificar.longitude != 'number'){
+            throw new Error ('Bad Request'); 
+        }else if (this.busquedaId(provinciaId) === null){
+            throw new Error ('Not Found');
         }
         return provincia;
     }
@@ -67,13 +74,14 @@ export class ProvinciaService {
         const provinciaRepository = new ProvinciaRepository();
         let provincia = null;
         try {
+            
             provincia = await provinciaRepository.borrarProvincia(provinciaId);
         } catch (error) {
-            if (this.busquedaId(provinciaId) == null){
-                throw new Error ('Not Found');
-            }
+            console.log("error en borrando Provincia");
         }
-        
+        if (this.busquedaId(provinciaId) === null){
+            throw new Error ('Not Found');
+        }
         return provincia;
     }
 }

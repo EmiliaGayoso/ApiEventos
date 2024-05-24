@@ -1,5 +1,7 @@
 import express, {Request, Response} from "express";
+import {AuthMiddleware} from '../auth/authMiddleware'
 import { UserService } from "../servicios/user-service";
+
 const router = express.Router();
 const userService = new UserService();
 
@@ -10,7 +12,7 @@ router.post("/login", (req: Request, res: Response) => {
 
   console.log(username, password);
   if (userExistence != null){
-    const token = userService.creacionToken(String(username));
+    const token = userService.creacionToken(String(username),Number(password));
     return token;
   } else {
     console.log("error")
@@ -29,7 +31,7 @@ router.post("/register", (req:Request,res:Response) => {
   console.log(fName, lName, username, password);
 
   const crearUsuario = userService.crearUsuario(String(fName), String(lName), String(username), String(password));
-  if (crearUsuario == true){
+  if (crearUsuario === true){
     return res.json("El usuario fue creado exitosamente");
   } else {
     return res.json("El usuario no se pudo crear");

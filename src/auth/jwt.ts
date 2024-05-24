@@ -14,20 +14,20 @@ export const createToken = (user) =>
         issuer: 'localhost'
     }
 
-    const token= jwt.sign(payload, secretKey, options);
+    const token= jwt.sign(payload, secretKey, options);//genera el token con los datos que se los brindo 
     console.log(token); 
-
+    return token
 }
 
-export const descriptedToken = async () =>
+export const descriptedToken = async (ptoken:string) =>
 {
     const secretKey = 'kklovers'
-    let token= 'ey....';
+    let token= ptoken;
     let payloadOriginal=null;
 
     try{
         payloadOriginal = await jwt.verify(token,secretKey);
     } catch(e){
-
+        console.error(e);
     }
 }

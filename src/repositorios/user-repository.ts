@@ -1,7 +1,7 @@
 import { query } from "express";
 
 export class UserRepository{
-    verificarExistencia(username, password){
+    verificarExistenciaUsuario(username, password){
         //acá iría la query que debe verificar si existe o no el usuario que se manda
         //si existe, deberia retornar al usuario
         //si no, deberia retornar null
