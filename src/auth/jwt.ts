@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import User from '../entities/User'
 
-export const createToken = (user:User) => 
+export const createToken = (user: User) => 
 {
     const payload = 
     {

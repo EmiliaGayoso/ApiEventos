@@ -3,8 +3,8 @@ export declare class EventService {
     getAllEventos(limit: number, offset: number, url: string, name?: string, cat?: string, fecha?: Date, tag?: string): Promise<{
         collection: string | any[];
         pagination: {
-            limit: number;
-            offset: number;
+            pageSize: number;
+            page: number;
             nextPage: string;
             total: number;
         };
@@ -20,8 +20,8 @@ export declare class EventService {
         };
     }>;
     createEvent(eventito: Eventos): Promise<any>;
-    updateEvent(eventito: Eventos, eventoId: number, user_id: number): Promise<boolean>;
-    deleteEvent(eventito: Eventos, id: number, user_id: number): Promise<boolean>;
+    updateEvent(eventito: Eventos, eventoId: number, user_id: number): Promise<any>;
+    deleteEvent(eventito: Eventos, id: number, user_id: number): Promise<any>;
     verificarExistenciaUsuario(idUser: number, username: string): boolean;
     enrollUser(id: number, idUser: number, username: string): Promise<boolean>;
     patchFeedback(id: number, attended: number, observations: string, rating: number): string;

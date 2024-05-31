@@ -2,36 +2,87 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProvinciaService = void 0;
 const provincias_repository_1 = require("../repositorios/provincias-repository");
+const Pagination_1 = require("../entities/Pagination");
 class ProvinciaService {
     async busquedaId(id) {
         const provinciaRepository = new provincias_repository_1.ProvinciaRepository();
         let provinciaDevolver = null;
         console.log("buscarProvinciaId");
-        provinciaDevolver = await provinciaRepository.buscarId(id);
+        try {
+            provinciaDevolver = await provinciaRepository.buscarId(id);
+        }
+        catch (error) {
+            console.log("error");
+        }
+        if (provinciaDevolver === null || provinciaDevolver.rows.length === 0) {
+            throw new Error('Not Found');
+        }
         console.log(provinciaDevolver);
         return provinciaDevolver;
     }
-    async traerTodas(limit, offset) {
+    async traerTodas(limit, offset, url) {
         const provinciaRepository = new provincias_repository_1.ProvinciaRepository();
-        let provinciaDevolver = null;
+        const pag = new Pagination_1.Pagination();
+        const parsedLimit = pag.parseLimit(limit);
+        const parsedOffset = pag.parseOffset(offset);
         console.log("traerTodasProvincias");
-        provinciaDevolver = await provinciaRepository.traerTodas(limit, offset);
-        console.log(provinciaDevolver);
-        return provinciaDevolver;
+        const [allProv, countProv] = await provinciaRepository.traerTodas(parsedLimit, parsedOffset);
+        const resultado = {
+            collection: allProv,
+            pagination: {
+                pageSize: parsedLimit,
+                page: parsedOffset,
+                nextPage: pag.buildNextPage(url, parsedLimit, parsedOffset),
+                total: Number(countProv)
+            }
+        };
+        return resultado;
     }
     async crearProvincia(provinciaCrear) {
+        let provincia = null;
         const provinciaRepository = new provincias_repository_1.ProvinciaRepository();
-        const provincia = await provinciaRepository.crearProvincia(provinciaCrear);
+        try {
+            provincia = await provinciaRepository.crearProvincia(provinciaCrear);
+            console.log("se pudo crear la provincia");
+        }
+        catch (error) {
+            console.log("error en crearProvincia");
+        }
+        if (provinciaCrear.name === null || provinciaCrear.name.length <= 3 || typeof provinciaCrear.latitude != 'number' || typeof provinciaCrear.longitude != 'number') {
+            throw new Error('Bad Request');
+        }
         return provincia;
     }
     async modificarProvincia(provinciaId, provinciaModificar) {
+        let provincia = null;
         const provinciaRepository = new provincias_repository_1.ProvinciaRepository();
-        const provincia = await provinciaRepository.modificarProvincia(provinciaModificar, provinciaId);
+        try {
+            provincia = await provinciaRepository.modificarProvincia(provinciaModificar, provinciaId);
+            console.log("se pudo modificar la pregunta");
+        }
+        catch (error) {
+            console.log("error en modificarProvincia");
+        }
+        if (provinciaModificar.name === null || provinciaModificar.name.length <= 3 || typeof provinciaModificar.latitude != 'number' || typeof provinciaModificar.longitude != 'number') {
+            throw new Error('Bad Request');
+        }
+        else if (this.busquedaId(provinciaId) === null) {
+            throw new Error('Not Found');
+        }
         return provincia;
     }
     async borrarProvincia(provinciaId) {
         const provinciaRepository = new provincias_repository_1.ProvinciaRepository();
-        const provincia = await provinciaRepository.borrarProvincia(provinciaId);
+        let provincia = null;
+        try {
+            provincia = await provinciaRepository.borrarProvincia(provinciaId);
+        }
+        catch (error) {
+            console.log("error en borrando Provincia");
+        }
+        if (this.busquedaId(provinciaId) === null) {
+            throw new Error('Not Found');
+        }
         return provincia;
     }
 }

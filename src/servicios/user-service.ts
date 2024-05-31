@@ -17,7 +17,7 @@ export class UserService {
             try 
             {
                 userExistence= userRepository.verificarExistenciaUsuario(username, password);
-                console.log("se pudo crear la provincia")
+                console.log("llega a repo user login")
                 
             }
             catch (error)

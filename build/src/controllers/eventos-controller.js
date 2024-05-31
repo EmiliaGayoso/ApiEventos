@@ -5,10 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const eventos_service_1 = require("../servicios/eventos-service");
+const authMiddleware_1 = require("../auth/authMiddleware");
 const router = express_1.default.Router();
 const eventService = new eventos_service_1.EventService();
 router.get("/", async (req, res) => {
-    console.log("PAJARO LOCO");
+    console.log("event 2 y 3");
     const limit = req.query.pageSize;
     const offset = req.query.page;
     const url = req.originalUrl;
@@ -31,12 +32,17 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
     console.log("ESTOY EN EVENTOS-CONTROLLER");
     try {
-        const event = await await eventService.getEventoById(Number(req.params.id));
+        const event = await eventService.getEventoById(Number(req.params.id));
         return res.json(event);
     }
     catch (error) {
         console.log("Un Error");
-        return res.json("Un Error");
+        if (error.message === 'Not Found') {
+            return res.status(404).json({ message: 'El ID ingresado no corresponde a ningún evento' });
+        }
+        else {
+            return res.status(400).json({ message: 'Un Error' });
+        }
     }
 });
 router.get("/:id/enrollment", async (req, res) => {
@@ -58,7 +64,7 @@ router.get("/:id/enrollment", async (req, res) => {
         return res.json("Un Error");
     }
 });
-router.post("/", async (req, res) => {
+router.post("/", authMiddleware_1.AuthMiddleware, async (req, res) => {
     const eventito = req.body;
     const user = req.body;
     try {
@@ -73,34 +79,34 @@ router.post("/", async (req, res) => {
         return res.status(500).json({ message: "Error creando evento" });
     }
 });
-router.put("/:id", async (req, res) => {
+router.put("/:id", authMiddleware_1.AuthMiddleware, async (req, res) => {
     const eventoId = req.params.id;
     const eventito = req.body;
-    const user = req.body;
+    const userId = req.user.id;
     try {
-        const updatedEvent = await eventService.updateEvent(eventito, Number(eventoId), user);
+        const updatedEvent = await eventService.updateEvent(eventito, Number(eventoId), userId);
         return res.status(201).json({
-            message: "Evento creado correctamente",
+            message: "Evento modificado correctamente",
             data: updatedEvent,
         });
     }
     catch (error) {
-        console.error("Error creating event:", error);
-        return res.status(500).json({ message: "Error creando evento" });
+        console.error("Error modificando event:", error);
+        return res.status(500).json({ message: "Error modificando evento" });
     }
 });
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authMiddleware_1.AuthMiddleware, async (req, res) => {
     const id = req.params.id;
     const eventito = req.body;
-    const user = req.body;
-    if (eventService.deleteEvent(eventito, Number(id), user)) {
+    const userId = req.user.id;
+    if (eventService.deleteEvent(eventito, Number(id), userId)) {
         return res.status(232).send({
             valido: "evento eliminado correctamente"
         });
     }
     return res.status(400).send("Error en los campos");
 });
-router.post("/:id/enrollment", async (req, res) => {
+router.post("/:id/enrollment", authMiddleware_1.AuthMiddleware, async (req, res) => {
     const id = req.params.id;
     const idUser = req.body.id_user;
     const username = req.body.username;
@@ -119,13 +125,13 @@ router.post("/:id/enrollment", async (req, res) => {
         return res.json("Un Error");
     }
 });
-router.patch("/:id/enrollment", async (req, res) => {
+router.patch("/:id/enrollment", authMiddleware_1.AuthMiddleware, async (req, res) => {
     const id = req.params.id;
     const attended = req.body.attended;
     const rating = req.body.rating;
     const observations = req.body.observations;
     try {
-        if (attended === 0 && !(Number.isInteger(Number(rating)))) {
+        if (attended == 0 && !(Number.isInteger(Number(rating)))) {
             return res.status(405).json({ error: `El formato ingresado es inválido` });
         }
         const feedback = await eventService.patchFeedback(Number(id), Number(attended), String(observations), Number(rating));

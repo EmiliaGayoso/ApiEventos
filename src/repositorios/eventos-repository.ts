@@ -106,10 +106,11 @@ export class EventRepository{
 
     /*8*/
    async createEvent(eventito){// Lógica para crear un nuevo evento en la base de datos
-        const query= `INSERT INTO events (name,description,id_event_category,id_event_location, start_date,duration_in_minutes,price,enabled_for_enrollment,max_assistance,id_creator_user)
-        VALUES ('${eventito.name}','${eventito.description}',${eventito.id_event_category},${eventito.id_event_location}, '${eventito.start_date}',${eventito.duration_in_minutes},${eventito.price},${eventito.enabled_for_enrollment},${eventito.max_assistance},${eventito.id_creator_user}); `;
-        
-        const query2=`SELECT * FROM events WHERE title = ${eventito.name}`
+        const query = {
+            text: 'INSERT INTO events (name,description,id_event_category,id_event_location, start_date,duration_in_minutes,price,enabled_for_enrollment,max_assistance,id_creator_user) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)',
+            values: [eventito.name,eventito.description,eventito.id_event_category,eventito.id_event_location,eventito.start_date,eventito.duration_in_minutes,eventito.price,eventito.enabled_for_enrollment,eventito.max_assistance,eventito.id_creator_user]
+        };
+        const query2 = 'SELECT * FROM events WHERE title = ${eventito.name}';
         // Suponiendo que tienes un método create en tu clase Database
         let retornar = null;
         try {

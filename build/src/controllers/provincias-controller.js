@@ -11,17 +11,18 @@ router.get('/provincias/:id', async (req, res) => {
     const id = req.params.id;
     try {
         const provincia = await provinciaService.busquedaId(Number(id));
-        res.json(provincia);
+        res.status(200).json(provincia);
     }
     catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(404).json({ message: error.message });
     }
 });
 router.get('/', async (req, res) => {
     const limit = req.query.limit;
     const offset = req.query.offset;
+    const url = req.originalUrl;
     try {
-        const provinciasPaginadas = await provinciaService.traerTodas(Number(limit), Number(offset));
+        const provinciasPaginadas = await provinciaService.traerTodas(Number(limit), Number(offset), url);
         console.log(provinciasPaginadas);
         res.json(provinciasPaginadas);
     }
@@ -39,8 +40,12 @@ router.post('/', async (req, res) => {
         });
     }
     catch (error) {
-        console.error("Error al crear la provincia: ", error);
-        return res.status(500).json({ message: "Error creando provincia" });
+        if (error.message === 'Bad Request') {
+            return res.status(400).json({ message: "Error creando provincia, los valores ingresados no conciden con lo pedido" });
+        }
+        else {
+            return res.status(500).json({ message: error.message });
+        }
     }
 });
 router.put('/:id', async (req, res) => {
@@ -48,25 +53,38 @@ router.put('/:id', async (req, res) => {
     const provinciaModificar = req.body;
     try {
         const provinciaModificada = await provinciaService.modificarProvincia(Number(provinciaId), provinciaModificar);
-        return res.status(201).json({
+        console.log("se creo la provincia");
+        res.status(200).json({
             message: "Provincia modificada correctamente",
             data: provinciaModificada,
         });
     }
     catch (error) {
+        if (error.message === 'Not found') {
+            res.status(404).json({ message: "No se encontro la provincia con ese id" });
+        }
+        else {
+            res.status(400).json({ message: error.message });
+        }
         console.error("Error al modificar la provincia: ", error);
-        return res.status(500).json({ message: "Error modificando provincia" });
     }
 });
 router.delete('/:id', async (req, res) => {
     const provinciaId = req.params.id;
     try {
         await provinciaService.borrarProvincia(Number(provinciaId));
-        return res.json("Provincia eliminada");
+        return res.status(200).json({
+            message: "Provincia eliminada"
+        });
     }
     catch (error) {
         console.error("Error al eliminar la provincia: ", error);
-        return res.status(500).json({ message: "Error eliminando provincia" });
+        if (error.message === 'Not Found') {
+            return res.status(404).json({ message: "No se encontro una provincia con ese ID" });
+        }
+        else {
+            return res.status(400).json({ message: error.message });
+        }
     }
 });
 exports.default = router;

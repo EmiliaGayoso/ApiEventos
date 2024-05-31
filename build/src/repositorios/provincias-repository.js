@@ -13,6 +13,7 @@ class ProvinciaRepository {
         this.BDClient.connect();
     }
     async buscarId(id) {
+        console.log("llegue a provincia buscarId");
         let devolver = null;
         try {
             const query = {
@@ -31,20 +32,69 @@ class ProvinciaRepository {
         return devolver;
     }
     async traerTodas(limit, offset) {
-        const query = {
-            text: 'SELECT * FROM provinces LIMIT $1 OFFSET $2',
-            values: [limit, offset]
-        };
-        const result = await this.BDClient.query(query);
-        const devolver = result.rows[0];
-        console.log(result);
+        console.log("llegue a provincia traerTodas");
+        let devolver = null;
+        const query1 = 'SELECT * FROM provinces';
+        const query2 = 'SELECT count(*) FROM provinces';
+        try {
+            const { rows: result1 } = await this.BDClient.query(query1);
+            console.log(result1);
+            const { rows: result2 } = await this.BDClient.query(query2);
+            return [result1, result2];
+        }
+        catch (error) {
+            console.log("error en prov traerTodas");
+            return ("Query error");
+        }
+        console.log(devolver);
+    }
+    async crearProvincia(provinciaCrear) {
+        console.log("llego a prov crearProvincia");
+        let devolver = null;
+        try {
+            const query = {
+                text: 'INSERT INTO provinces (name,full_name,latitude,longitude) VALUES ($1,$2,$3,$4)',
+                values: [provinciaCrear.name, provinciaCrear.full_name, provinciaCrear.latitude, provinciaCrear.longitude]
+            };
+            const result = await this.BDClient.query(query);
+            devolver = result.rows[0];
+            console.log("se creo la provincia");
+        }
+        catch (error) {
+            console.log("Error creando la provincia");
+        }
         return devolver;
     }
-    crearProvincia(provinciaCrear) {
+    async modificarProvincia(provinciaModificar, provinciaId) {
+        console.log("llego a prov modificarProvincia");
+        let devolver = null;
+        try {
+            const query = {
+                text: 'UPDATE provinces SET name = $1, full_name = $2, latitude = $3, longitude = $4 WHERE id = $5',
+                values: [provinciaModificar.name, provinciaModificar.full_name, provinciaModificar.latitude, provinciaModificar.longitude, provinciaId]
+            };
+            const result = await this.BDClient.query(query);
+            devolver = result.rows[0];
+            console.log("se modifico la provincia");
+        }
+        catch (error) {
+            console.log("Error al modificar la prov");
+        }
     }
-    modificarProvincia(provinciaModificar, provinciaId) {
-    }
-    borrarProvincia(provinciaId) {
+    async borrarProvincia(provinciaId) {
+        console.log("llego a prov borrarProvincia");
+        let devolver = null;
+        try {
+            const query = {
+                text: 'DELETE FROM provinces WHERE id = $1',
+                values: [provinciaId]
+            };
+            const result = await this.BDClient.query(query);
+            devolver = result.rows[0];
+        }
+        catch (error) {
+            console.log("error eliminando la prov");
+        }
     }
 }
 exports.ProvinciaRepository = ProvinciaRepository;

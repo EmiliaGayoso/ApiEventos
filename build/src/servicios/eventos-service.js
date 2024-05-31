@@ -53,19 +53,21 @@ class EventService {
         const resultado = {
             collection: allEvents,
             pagination: {
-                limit: parsedLimit,
-                offset: parsedOffset,
-                nextPage: ((offset + 1) * limit <= Number(cantidadEvents)) ? null : process.env.URL_BASE,
+                pageSize: parsedLimit,
+                page: parsedOffset,
+                nextPage: pag.buildNextPage(url, parsedLimit, parsedOffset),
                 total: Number(cantidadEvents)
             }
         };
         return resultado;
-        ;
     }
     async getEventoById(id) {
         console.log(id);
         const eventRepository = new eventos_repository_1.EventRepository();
         const evento = await eventRepository.getEventById(id);
+        if (evento === null) {
+            throw new Error('Not Found');
+        }
         const returnEntity = evento.rows[0];
         console.log("ESTOY EN EVENTOS-SERVICE Y MANDO: ", returnEntity);
         return returnEntity;
@@ -118,7 +120,7 @@ class EventService {
     }
     async updateEvent(eventito, eventoId, user_id) {
         const eventRepository = new eventos_repository_1.EventRepository();
-        if (eventito.id_creator_user = user_id) {
+        if (eventito.id_creator_user === user_id) {
             const evento = await eventRepository.updateEvent(eventito, eventoId);
             return evento;
         }
@@ -128,7 +130,7 @@ class EventService {
     }
     async deleteEvent(eventito, id, user_id) {
         const eventRepository = new eventos_repository_1.EventRepository();
-        if (eventito.id_creator_user = user_id) {
+        if (eventito.id_creator_user === user_id) {
             const eliminado = await eventRepository.deleteEvent(id);
             return eliminado;
         }

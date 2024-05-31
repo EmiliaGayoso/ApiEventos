@@ -77,7 +77,7 @@ export class CategoryService {
         try {
             cat = await categoryRepository.eliminarCat(id);
         } catch (error) {
-            console.log("error en eliminar categoria")
+            console.log("error en service eliminar categoria")
         }
         const buscada = await this.getByID(id);
         if (buscada.rows.length === 0){

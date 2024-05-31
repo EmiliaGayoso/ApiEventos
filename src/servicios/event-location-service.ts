@@ -37,10 +37,10 @@ export class EventLocationService {
         return buscada;
     }
 
-    async crearEventLoc(eventIngresado: EventLocaciones){
+    async crearEventLoc(eventIngresado: EventLocaciones, user: number){
         let crear = null;
         try {
-            crear = await eventLocRepository.crearEventLoc(eventIngresado);
+            crear = await eventLocRepository.crearEventLoc(eventIngresado, user);
         } catch (error) {
             console.log("error en crear event loc");
         }
@@ -50,23 +50,30 @@ export class EventLocationService {
         return crear;
     }
 
-    async modificarEventLoc(eventModificar: EventLocaciones){
+    async modificarEventLoc(eventModificar: EventLocaciones, user: number){
         let modificar = null;
         try {
-            modificar = await eventLocRepository.modificarEventLoc(eventModificar);
+            modificar = await eventLocRepository.modificarEventLoc(eventModificar, user);
         } catch (error) {
             console.log("error en modificar evento loc");
         }
-        const buscada = await this.getById(eventModificar.id);
         if((eventModificar.name || eventModificar.full_address) === null || (eventModificar.name || eventModificar.full_address).length <= 3 || eventModificar.id_location === null || eventModificar.max_capacity <= 0){
             throw new Error('Bad Request');
-        }else if (buscada.rows.length === 0 /*|| lo de si el usuario está autenticado*/){
+        }else if (modificar.rows.length === 0 /*|| lo de si el usuario está autenticado*/){
             throw new Error('Not Found');
         }
         return modificar;
     }
 
-    async borrarEventLoc(id: number){
-        
+    async borrarEventLoc(id: number, user: number){
+        let eliminar = null;
+        try {
+            eliminar = await  eventLocRepository.borrarEventLoc(id, user);
+        } catch (error) {
+            console.log("error en service borrar evento loc");
+        }
+        if (eliminar.rows.length === 0){
+            throw new Error ('Not Found');
+        }
     }
 }

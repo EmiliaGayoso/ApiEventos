@@ -8,9 +8,6 @@ import RequestUser from "../entities/RequestUser";
 const router = express.Router();
 const eventLocService = new EventLocationService();
 
-interface RequestUser extends Request {
-    user: UserToken;
-}
 
 
 router.get("/", AuthMiddleware, async (req: RequestUser, res: Response) => {
@@ -41,10 +38,11 @@ router.get("/:id", AuthMiddleware, async (req: Request, res: Response) => {
     }
 });
 
-router.post("/", AuthMiddleware, async (req: Request, res: Response) => {
+router.post("/", AuthMiddleware, async (req: RequestUser, res: Response) => {
     try {
+        const user = req.user.id;
         const crear = req.body;
-        const creda = await eventLocService.crearEventLoc(crear);
+        const creda = await eventLocService.crearEventLoc(crear, user);
         return res.status(200).json(creda);
     } catch (error) {
         if(error.message === 'Bad Request'){
@@ -54,10 +52,11 @@ router.post("/", AuthMiddleware, async (req: Request, res: Response) => {
     }
 });
 
-router.put("/", AuthMiddleware, async (req: Request, res: Response) => {
+router.put("/", AuthMiddleware, async (req: RequestUser, res: Response) => {
     try {
+        const user = req.user.id;
         const modificar = req.body;
-        const modificada = await eventLocService.modificarEventLoc(modificar);
+        const modificada = await eventLocService.modificarEventLoc(modificar,user);
         return res.status(200).json(modificada);
     } catch (error) {
         if(error.message === 'Bad Request'){
@@ -69,10 +68,10 @@ router.put("/", AuthMiddleware, async (req: Request, res: Response) => {
     }
 });
 
-router.delete("/:id", AuthMiddleware, async (req: Request, res: Response) => {
+router.delete("/:id", AuthMiddleware, async (req: RequestUser, res: Response) => {
     try {
         const user = req.user.id;
-        const eliminado = eventLocService.borrarEventLoc(Number(req.params.id))
+        const eliminado = eventLocService.borrarEventLoc(Number(req.params.id),user)
         return res.status(200).json(eliminado)
     } catch (error) {
         if(error.message === 'Not Found'){

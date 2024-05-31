@@ -1,7 +1,7 @@
 import express, {Request, Response} from "express";
 import {EventService} from "../servicios/eventos-service";
 import { AuthMiddleware } from "../auth/authMiddleware";
-
+import RequestUser from "../entities/RequestUser";
 
 const router = express.Router();
 const  eventService = new EventService();
@@ -108,13 +108,13 @@ const user= req.body; // tenes que crear en postman un objeto
 });
 
 /*update*/
-router.put("/:id", AuthMiddleware, async (req: Request, res: Response) => {
+router.put("/:id", AuthMiddleware, async (req: RequestUser, res: Response) => {
   
   const eventoId = req.params.id;
   const eventito = req.body;//crea un nuevo objeto dentro de la clase Eventos pero no funciona
-  const user = req.body;
+  const userId = req.user.id;
   try {
-    const updatedEvent = await eventService.updateEvent(eventito, Number(eventoId),user);
+    const updatedEvent = await eventService.updateEvent(eventito, Number(eventoId),userId);
     return res.status(201).json({
       message: "Evento modificado correctamente",
       data: updatedEvent, 
@@ -126,11 +126,11 @@ router.put("/:id", AuthMiddleware, async (req: Request, res: Response) => {
 });
 
 /*delete*/
- router.delete( "/:id", AuthMiddleware, async(req,res) =>{
+ router.delete( "/:id", AuthMiddleware, async(req: RequestUser, res: Response) =>{
   const id=req.params.id;
   const eventito = req.body;
-  const user = req.body;
-  if(eventService.deleteEvent(eventito,Number(id),user)){
+  const userId = req.user.id;
+  if(eventService.deleteEvent(eventito,Number(id),userId)){
       return res.status(232).send({
           valido: "evento eliminado correctamente"
       });
