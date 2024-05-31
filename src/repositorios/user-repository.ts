@@ -15,17 +15,11 @@ export class UserRepository{
         let devolver = null;
         try {
                 const query = {
+                    
                     text: 'SELECT * FROM users WHERE username = $1 AND password = $2',
                     values: [username, password]
                 }
-                const result = await client.query(query);
-                let userNuevo = new User()
-                userNuevo = result;
-                if(result){
-                    const token = createToken(userNuevo);
-                    console.log(token);
-                    return token;
-                }
+                devolver = await client.query(query);
             } catch (error) {
                 console.log("error en repo event loc crear");
             }
@@ -40,14 +34,26 @@ export class UserRepository{
 
         let devolver = null;
         try {
-            const query = {
-                text: 'SELECT * FROM user where username=$1 AND password=$2',
-                values: [username, password]
+            let result = null;
+            const verUsername= {
+                text:'SELECT * FROM users WHERE username= $1',/*verifica si existe, si no existe se devuelve null */
+                values:[username]
+            } 
+            if(verUsername===null){
+                const query = {
+                
+                    text: 'INSERT INTO user VALUES ($1,$2, $3, $4) RETURNING * ',/*EL RETURNING ES PARA NO HACER UNA QUERY MAS PARA QUE ME DEVUELVA LO QUE ME ACABA DE CCREAR */
+                    values: [fName,lName,username, password]
+                }
+                
+                result= client.query(query);
+                devolver = result.rows[0];/*esto es el usuario completo creado */
             }
-            const result = await client.query(query);
-            devolver = result.rows[0];
+            
+            
+            
         } catch (error) {
-            console.log("error en repo event loc crear");
+            console.log("error en repo regitro usuario");
         }
         return devolver;
 

@@ -143,9 +143,19 @@ export class EventService {
 /*8*/
     async createEvent(eventito: Eventos) {
         const eventRepository = new EventRepository();
-        const evento = await eventRepository.createEvent(eventito);
+        let evento = null;
+        const maxCapacityLoc = eventRepository.getMaxCapacity(eventito.id_event_location);
+        if((eventito.description || eventito.name) === null || (eventito.description || eventito.name).length <= 3 || eventito.max_assistance > Number(maxCapacityLoc)){
+            throw new Error ('Bad Request');
+        }
+        try {
+            evento = await eventRepository.createEvent(eventito);
+        } catch (error) {
+            console.log("error en evento service creat");
+        }
         return evento;
     }
+
     async updateEvent(eventito: Eventos, eventoId: number, user_id: number){
         const eventRepository = new EventRepository();
         if(eventito.id_creator_user === user_id){
@@ -174,11 +184,6 @@ export class EventService {
 
     /*9*/
     //verificar si el nombre de usuario coincide con el id
-    verificarExistenciaUsuario(idUser: number, username: string){
-        const eventRepository = new EventRepository();
-        const user = eventRepository.verificarExistenciaUsuario(idUser, username);
-        return user;
-    }
 
     //inscribirlo
     async enrollUser(id: number, idUser: number, username: string){
@@ -187,6 +192,8 @@ export class EventService {
         const sePudo = await eventRepository.enrollUsuario(id, idUser, username)
         return sePudo;
     }
+
+    
     /*10*/
     patchFeedback(id: number, attended: number, observations: string, rating: number){
         const eventRepository = new EventRepository();

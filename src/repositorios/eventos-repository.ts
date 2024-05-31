@@ -126,6 +126,13 @@ export class EventRepository{
         }
         return retornar;
     }
+
+    async getMaxCapacity(id){
+        const query = `SELECT max_capacity FROM event_locations WHERE id = '${id}'`
+        const retornado = await client.query(query);
+        return retornado;
+    }
+
     async updateEvent(eventito, eventoId) {
         // Lógica para crear un nuevo evento en la base de datos
         const query= `UPDATE events 

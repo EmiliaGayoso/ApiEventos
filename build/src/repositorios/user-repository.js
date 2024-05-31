@@ -14,11 +14,10 @@ class UserRepository {
         let devolver = null;
         try {
             const query = {
-                text: 'SELECT * FROM user where username=$1 AND password=$2',
+                text: 'SELECT * FROM users WHERE username = $1 AND password = $2',
                 values: [username, password]
             };
-            const result = await client.query(query);
-            devolver = result.rows[0];
+            devolver = await client.query(query);
         }
         catch (error) {
             console.log("error en repo event loc crear");
