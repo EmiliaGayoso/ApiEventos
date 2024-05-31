@@ -53,14 +53,25 @@ router.put("/", AuthMiddleware, async (req: Request, res: Response) => {
         const modificada = await eventLocService.modificarEventLoc(modificar);
         return res.status(200).json(modificada);
     } catch (error) {
-        if(error.message === ''){
-
+        if(error.message === 'Bad Request'){
+            return res.status(400).json({   message: 'Hubo un error en uno de los campos ingresados' });
+        }else if (error.message === 'Not Found'){
+            return res.status(404).json({   message: 'El ID ingresado no pertence a ninguna locación o no tienes la autorización para poder modificarla' });
         }
+        return res.json(error.message)
     }
 });
 
-router.get("/:id", AuthMiddleware, async (req: Request, res: Response) => {
-    
+router.delete("/:id", AuthMiddleware, async (req: Request, res: Response) => {
+    try {
+        const eliminado = eventLocService.borrarEventLoc(Number(req.params.id))
+        return res.status(200).json(eliminado)
+    } catch (error) {
+        if(error.message === 'Not Found'){
+            return res.status(404).json({   message: 'El ID ingresado no pertenece a ninguna locación o no tienes la autorización suficiente para poder eliminarla' });
+        }
+        return res.status(error.message);
+    }
 });
 
 export default router;
