@@ -50,8 +50,6 @@ export class UserRepository{
                 devolver = result.rows[0];/*esto es el usuario completo creado */
             }
             
-            
-            
         } catch (error) {
             console.log("error en repo regitro usuario");
         }

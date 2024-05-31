@@ -81,7 +81,7 @@ export class EventService {
         console.log(id);
         const eventRepository = new EventRepository();
         const evento = await eventRepository.getEventById(id);
-        if (evento === null){
+        if (evento.rows.length === 0){
             throw new Error ('Not Found');
         }
         const returnEntity = evento.rows[0];
