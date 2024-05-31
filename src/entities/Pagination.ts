@@ -35,7 +35,7 @@ export class Pagination {
         return response;
     }
 
-    buildNextPage(path, limit, currentOffset){
+    buildNextPage(path, limit, currentOffset: number){
         let url = process.env.BASE_URL + path;
 
         if(this.limitRegex.test(url)){

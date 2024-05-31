@@ -1,16 +1,23 @@
 import express, {Request, Response} from "express";
 import { EventLocationService } from "../servicios/event-location-service";
 import { AuthMiddleware } from "../auth/authMiddleware";
+import User from "../entities/User";
+import UserToken from "../entities/UserToken";
+import RequestUser from "../entities/RequestUser";
 
 const router = express.Router();
 const eventLocService = new EventLocationService();
 
+interface RequestUser extends Request {
+    user: UserToken;
+}
 
-router.get("/", AuthMiddleware, async (req: Request, res: Response) => {
+
+router.get("/", AuthMiddleware, async (req: RequestUser, res: Response) => {
     const limit = req.query.pageSize;
     const offset = req.query.page;
     const url = req.originalUrl;
-    
+
     try {
         const allEventLoc = await eventLocService.getAll(Number(limit), Number(offset),url);
         return res.status(200).json(allEventLoc);
@@ -64,6 +71,7 @@ router.put("/", AuthMiddleware, async (req: Request, res: Response) => {
 
 router.delete("/:id", AuthMiddleware, async (req: Request, res: Response) => {
     try {
+        const user = req.user.id;
         const eliminado = eventLocService.borrarEventLoc(Number(req.params.id))
         return res.status(200).json(eliminado)
     } catch (error) {

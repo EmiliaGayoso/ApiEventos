@@ -11,7 +11,7 @@ export class CategoryService {
         const parsedOffset = pag.parseOffset(offset);
 
         const categoryRepository = new CategoryRepository();
-        const [allCategories, cantidadCategories] = await categoryRepository.getAll(parsedLimit, parsedOffset);
+        const [allCategories, cantidadCategories] = await categoryRepository.getAll();
         const devolver = {
             collection: allCategories,
 
@@ -62,11 +62,13 @@ export class CategoryService {
         } catch (error) {
             console.log("error en modificar categoria")
         }
+        const buscada = await this.getByID(catModificar.id);
         if (catModificar.name === null || catModificar.name.length <= 3){
             throw new Error ('Bad Request');
-        }else if (this.getByID(catModificar.id) === null){
+        }else if (buscada.rows.length === 0){
             throw new Error ('Not Found');
         }
+        return cat;
     }
 
     async eliminarCategoria(id: number){
@@ -77,8 +79,10 @@ export class CategoryService {
         } catch (error) {
             console.log("error en eliminar categoria")
         }
-        if (this.getByID(id) === null){
+        const buscada = await this.getByID(id);
+        if (buscada.rows.length === 0){
             throw new Error ('Not Found');
         }
+        return cat;
     }
 }

@@ -6,7 +6,7 @@ console.log('config', config);
 client.connect();
 
 export class CategoryRepository{
-    async getAll(limit, offset){
+    async getAll(){
         console.log("llego a getAll cat");
         const query1 = 'SELECT * FROM event_categories';
 
