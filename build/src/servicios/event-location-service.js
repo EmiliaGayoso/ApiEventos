@@ -5,19 +5,14 @@ const event_location_repository_1 = require("../repositorios/event-location-repo
 const Pagination_1 = require("../entities/Pagination");
 const eventLocRepository = new event_location_repository_1.EventLocationRepository();
 class EventLocationService {
-    async getAll(limit, offset, url) {
+    async getAll(limit, offset, url, path) {
         const pag = new Pagination_1.Pagination();
         const parsedLimit = pag.parseLimit(limit);
         const parsedOffset = pag.parseOffset(offset);
-        const [allEventLoc, cantidadEventLoc] = await eventLocRepository.getAll();
+        const [allEventLoc, cantidadEventLoc] = await eventLocRepository.getAll(limit, offset);
         const devolver = {
             collection: allEventLoc,
-            pagination: {
-                pageSize: parsedLimit,
-                page: parsedOffset,
-                nextPage: pag.buildNextPage(url, parsedLimit, parsedOffset),
-                total: Number(cantidadEventLoc)
-            }
+            pagination: pag.buildPagination(limit, offset, cantidadEventLoc, path, url),
         };
         return devolver;
     }

@@ -34,12 +34,12 @@ class ProvinciaRepository {
     async traerTodas(limit, offset) {
         console.log("llegue a provincia traerTodas");
         let devolver = null;
-        const query1 = 'SELECT * FROM provinces';
+        const query1 = `SELECT * FROM provinces LIMIT ${limit} OFFSET ${offset}`;
         const query2 = 'SELECT count(*) FROM provinces';
         try {
             const { rows: result1 } = await this.BDClient.query(query1);
             console.log(result1);
-            const { rows: result2 } = await this.BDClient.query(query2);
+            const result2 = result1.length;
             return [result1, result2];
         }
         catch (error) {

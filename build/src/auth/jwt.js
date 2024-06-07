@@ -7,7 +7,7 @@ exports.descriptedToken = exports.createToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const createToken = (user) => {
     const payload = {
-        id: user[0].id
+        id: user.id
     };
     const secretKey = 'kkLovers';
     const options = {

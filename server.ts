@@ -18,6 +18,8 @@ app.use("/api/provincias", ProvinciasController);
 app.use("/api/event-category", CategoryController);
 app.use("/api/location", LocationController);
 app.use("/api/event-location", EventLocationController);
+
+
 //app.use(unknownEndpoint);
 
 app.listen(port, () => {

@@ -38,19 +38,22 @@ export class EventService {
                 queryWhere += ` WHERE tags.name = '${tag}'`;
             }
         }
+        queryWhere += `LIMIT ${limit} OFFSET ${offset}`
         console.log("Despues de todas las query: ", queryWhere)
         const pag = new Pagination();
 
         const eventRepository = new EventRepository();
         const [allEvents, cantidadEvents] = await eventRepository.getAllEvents(name, cat, fecha, tag, limit, offset, queryWhere);
         //throw new Error("Error en el servicio  de eventos");
-        
+        const paginacionCreada = pag.buildPagination(limit, offset, cantidadEvents, path, url)
+        console.log(paginacionCreada);
         const resultado=
         {
             collection: allEvents,
             
-            pagination: pag.buildNextPage(url, )
+            pagination: paginacionCreada
         }
+        
         return resultado;
             /*pagination: 
             {
@@ -150,6 +153,8 @@ export class EventService {
         const buscada = await this.getEventoById(eventoId);
         if((eventito.description || eventito.name) === null || (eventito.description || eventito.name).length <= 3 || eventito.max_assistance > Number(maxCapacityLoc)){
             throw new Error ('Bad Request');
+        }else if (buscada.rows.length === 0){
+            throw new Error ('Not Found')
         }
         let evento = null;
         try {   
@@ -157,21 +162,17 @@ export class EventService {
         } catch (error) {
             console.log("error al modificar evento en service")
         }
-        if (evento === null){
-            throw new Error ('Not Found')
-        }
         return this.getEventoById(eventito.id);
     }
 
     async deleteEvent(id: number, user_id: number,){
         const eventRepository = new EventRepository();
-        const eliminado = await eventRepository.deleteEvent(id);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
-        ///validacion de que las modificaciones son del mismo usuarios que lo creo
-        /*try {
-            
-        } catch (error) {
-            
-        }*/
+        const eliminado = await eventRepository.deleteEvent(id, user_id)
+        if (eliminado === null){
+            throw new Error ('Not Found');
+        }else if (eliminado.message === 'Bad Request'){
+            throw new Error ('Bad Request');
+        }
         return eliminado;
     }
 
@@ -188,9 +189,16 @@ export class EventService {
 
     
     /*10*/
-    patchFeedback(id: number, attended: number, observations: string, rating: number){
+    patchFeedback(id: number, observations: string, rating: number){
         const eventRepository = new EventRepository();
-        const sePudo = eventRepository.patchFeedback(id, attended, observations, rating)
+        
+        let sePudo = null;
+        try {
+            
+        } catch (error) {   
+        }
+        
+        
         return sePudo;
     }
 

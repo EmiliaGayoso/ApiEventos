@@ -4,15 +4,8 @@ exports.EventService = void 0;
 const eventos_repository_1 = require("../repositorios/eventos-repository");
 const Pagination_1 = require("../entities/Pagination");
 class EventService {
-    async getAllEventos(limit, offset, url, name, cat, fecha, tag) {
+    async getAllEventos(path, url, limit, offset, name, cat, fecha, tag) {
         var queryWhere = ``;
-        console.log(limit);
-        console.log(offset);
-        console.log(url);
-        console.log(name);
-        console.log(cat);
-        console.log(fecha);
-        console.log(tag);
         let fechaNew = fecha.toISOString().split('T')[0];
         let currentDate = new Date();
         if (name) {
@@ -44,20 +37,16 @@ class EventService {
                 queryWhere += ` WHERE tags.name = '${tag}'`;
             }
         }
+        queryWhere += `LIMIT ${limit} OFFSET ${offset}`;
         console.log("Despues de todas las query: ", queryWhere);
         const pag = new Pagination_1.Pagination();
-        const parsedLimit = pag.parseLimit(limit);
-        const parsedOffset = pag.parseOffset(offset);
         const eventRepository = new eventos_repository_1.EventRepository();
-        const [allEvents, cantidadEvents] = await eventRepository.getAllEvents(name, cat, fecha, tag, parsedLimit, parsedOffset, queryWhere);
+        const [allEvents, cantidadEvents] = await eventRepository.getAllEvents(name, cat, fecha, tag, limit, offset, queryWhere);
+        const paginacionCreada = pag.buildPagination(limit, offset, cantidadEvents, path, url);
+        console.log(paginacionCreada);
         const resultado = {
             collection: allEvents,
-            pagination: {
-                pageSize: parsedLimit,
-                page: parsedOffset,
-                nextPage: pag.buildNextPage(url, parsedLimit, parsedOffset),
-                total: Number(cantidadEvents)
-            }
+            pagination: paginacionCreada
         };
         return resultado;
     }
@@ -135,6 +124,9 @@ class EventService {
         if ((eventito.description || eventito.name) === null || (eventito.description || eventito.name).length <= 3 || eventito.max_assistance > Number(maxCapacityLoc)) {
             throw new Error('Bad Request');
         }
+        else if (buscada.rows.length === 0) {
+            throw new Error('Not Found');
+        }
         let evento = null;
         try {
             evento = await eventRepository.updateEvent(eventito, userId);
@@ -142,14 +134,17 @@ class EventService {
         catch (error) {
             console.log("error al modificar evento en service");
         }
-        if (evento === null) {
-            throw new Error('Not Found');
-        }
         return this.getEventoById(eventito.id);
     }
     async deleteEvent(id, user_id) {
         const eventRepository = new eventos_repository_1.EventRepository();
-        const eliminado = await eventRepository.deleteEvent(id);
+        const eliminado = await eventRepository.deleteEvent(id, user_id);
+        if (eliminado === null) {
+            throw new Error('Not Found');
+        }
+        else if (eliminado.message === 'Bad Request') {
+            throw new Error('Bad Request');
+        }
         return eliminado;
     }
     async enrollUser(id, idUser, username) {
@@ -157,9 +152,13 @@ class EventService {
         const sePudo = await eventRepository.enrollUsuario(id, idUser, username);
         return sePudo;
     }
-    patchFeedback(id, attended, observations, rating) {
+    patchFeedback(id, observations, rating) {
         const eventRepository = new eventos_repository_1.EventRepository();
-        const sePudo = eventRepository.patchFeedback(id, attended, observations, rating);
+        let sePudo = null;
+        try {
+        }
+        catch (error) {
+        }
         return sePudo;
     }
 }

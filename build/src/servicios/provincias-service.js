@@ -20,7 +20,7 @@ class ProvinciaService {
         console.log(provinciaDevolver);
         return provinciaDevolver;
     }
-    async traerTodas(limit, offset, url) {
+    async traerTodas(limit, offset, url, path) {
         const provinciaRepository = new provincias_repository_1.ProvinciaRepository();
         const pag = new Pagination_1.Pagination();
         const parsedLimit = pag.parseLimit(limit);
@@ -29,12 +29,7 @@ class ProvinciaService {
         const [allProv, countProv] = await provinciaRepository.traerTodas(parsedLimit, parsedOffset);
         const resultado = {
             collection: allProv,
-            pagination: {
-                pageSize: parsedLimit,
-                page: parsedOffset,
-                nextPage: pag.buildNextPage(url, parsedLimit, parsedOffset),
-                total: Number(countProv)
-            }
+            pagination: pag.buildPagination(limit, offset, countProv, path, url)
         };
         return resultado;
     }

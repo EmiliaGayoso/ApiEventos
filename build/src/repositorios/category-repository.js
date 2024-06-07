@@ -10,13 +10,13 @@ const client = new pg_1.default.Client(bd_1.config);
 console.log('config', bd_1.config);
 client.connect();
 class CategoryRepository {
-    async getAll() {
+    async getAll(limit, offset) {
         console.log("llego a getAll cat");
-        const query1 = 'SELECT * FROM event_categories';
+        const query1 = `SELECT * FROM event_categories LIMIT ${limit} OFFSET ${offset}`;
         const queryCount = 'SELECT COUNT(*) FROM event_categories';
         try {
             const { rows: resp } = await client.query(query1);
-            const { rows: resp2 } = await client.query(queryCount);
+            const resp2 = resp.length;
             return [resp, resp2];
         }
         catch (error) {

@@ -4,20 +4,15 @@ exports.CategoryService = void 0;
 const category_repository_1 = require("../repositorios/category-repository");
 const Pagination_1 = require("../entities/Pagination");
 class CategoryService {
-    async getAll(limit, offset, url) {
+    async getAll(limit, offset, url, path) {
         const pag = new Pagination_1.Pagination();
         const parsedLimit = pag.parseLimit(limit);
         const parsedOffset = pag.parseOffset(offset);
         const categoryRepository = new category_repository_1.CategoryRepository();
-        const [allCategories, cantidadCategories] = await categoryRepository.getAll();
+        const [allCategories, cantidadCategories] = await categoryRepository.getAll(limit, offset);
         const devolver = {
             collection: allCategories,
-            pagination: {
-                pageSize: parsedLimit,
-                page: parsedOffset,
-                nextPage: pag.buildNextPage(url, parsedLimit, parsedOffset),
-                total: Number(cantidadCategories)
-            }
+            pagination: pag.buildPagination(parsedLimit, parsedOffset, cantidadCategories, path, url),
         };
         return devolver;
     }

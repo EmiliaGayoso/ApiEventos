@@ -11,9 +11,9 @@ const locationService = new location_service_1.LocationService();
 router.get("/", async (req, res) => {
     const limit = req.query.pageSize;
     const offset = req.query.page;
-    const url = req.originalUrl;
+    const url = "api/location";
     try {
-        const allLoc = await locationService.getAll(Number(limit !== null && limit !== void 0 ? limit : 0), Number(offset !== null && offset !== void 0 ? offset : 10), url);
+        const allLoc = await locationService.getAll(Number(limit !== null && limit !== void 0 ? limit : 0), Number(offset !== null && offset !== void 0 ? offset : 10), url, req.path);
         return res.status(200).json(allLoc);
     }
     catch (error) {
@@ -38,9 +38,9 @@ router.get("/:id", async (req, res) => {
 router.get("/:id/event-location", authMiddleware_1.AuthMiddleware, async (req, res) => {
     const limit = req.query.pageSize;
     const offset = req.query.page;
-    const url = req.originalUrl;
+    const url = "api/location";
     try {
-        const eventLocations = locationService.getAllEventLocations(Number(req.params.id), Number(limit), Number(offset), url);
+        const eventLocations = locationService.getAllEventLocations(Number(req.params.id), Number(limit), Number(offset), url, req.path);
         return res.status(200).json(eventLocations);
     }
     catch (error) {

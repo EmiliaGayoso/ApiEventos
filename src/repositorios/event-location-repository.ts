@@ -6,13 +6,13 @@ console.log('config', config);
 client.connect();
 
 export class EventLocationRepository {
-    async getAll(){
-        const query1 = 'SELECT * FROM event_locations';
+    async getAll(limit, offset){
+        const query1 = `SELECT * FROM event_locations LIMIT ${limit} OFFSET ${offset}`;
 
         const queryCount = 'SELECT COUNT(*) FROM event_locations';
         try {
             const { rows: resp } = await client.query(query1);
-            const { rows: resp2 } = await client.query(queryCount);
+            const resp2 = resp.length;
             return [resp, resp2];
         } catch (error) {
             return ("error en repo event loc getAll");

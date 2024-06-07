@@ -8,12 +8,10 @@ client.connect();
 export class LocationRepository {
     async getAll(limit, offset){
         console.log("llego a getAll loc");
-        const query1 = 'SELECT * FROM locations';
-
-        const queryCount = 'SELECT COUNT(*) FROM locations';
+        const query1 = `SELECT * FROM locations LIMIT ${limit} OFFSET ${offset}`;
         try {
             const { rows: resp } = await client.query(query1);
-            const { rows: resp2 } = await client.query(queryCount);
+            const resp2 = resp.length;
             return [resp, resp2];
         } catch (error) {
             return ("Query error");
@@ -21,7 +19,7 @@ export class LocationRepository {
     }
 
     async getById(id) {
-        console.log("llego a getById");
+        console.log("llego a getById")
         let devolver = null;
         try {
             const query = {
@@ -39,7 +37,7 @@ export class LocationRepository {
         return devolver;
     }
 
-    async getAllEventsLocations(id){
+    async getAllEventsLocations(id,limit,offset){
         return "algo";
     }
 }

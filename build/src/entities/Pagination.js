@@ -3,6 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Pagination = exports.PaginationDto = void 0;
 require("dotenv/config");
 class PaginationDto {
+    constructor(limit, currentOffset, nextPage, total) {
+        console.log("constructor");
+        console.log(limit);
+        console.log(currentOffset);
+        console.log(nextPage);
+        console.log(total);
+        this.limit = limit;
+        this.currentOffset = currentOffset;
+        this.nextPage = nextPage;
+        this.total = total;
+    }
 }
 exports.PaginationDto = PaginationDto;
 class Pagination {
@@ -12,37 +23,34 @@ class Pagination {
     }
     parseLimit(limit) {
         return !isNaN(parseInt(limit)) ? parseInt(limit) : 3;
+        ;
     }
     parseOffset(offset) {
         return !isNaN(parseInt(offset)) ? parseInt(offset) : 0;
     }
-    buildPagination(limit, currentOffset, total, path) {
-        const response = new PaginationDto();
-        response.limit = limit;
-        response.offset = currentOffset;
-        response.total = total;
-        if (limit !== -1) {
-            response.nextPage =
-                limit + currentOffset < total
-                    ? this.buildNextPage(path, limit, currentOffset)
-                    : null;
-        }
-        return response;
+    buildPagination(limit, currentOffset, total, path, url) {
+        console.log(limit);
+        console.log(currentOffset);
+        console.log(total);
+        console.log(path);
+        console.log(url);
+        console.log(limit !== -1 && limit + currentOffset < Number(total));
+        const nextPage = limit !== -1 && limit + currentOffset < total
+            ? this.buildNextPage(path, limit, currentOffset, url)
+            : null;
+        return new PaginationDto(limit, currentOffset, nextPage, total);
     }
-    buildNextPage(path, limit, currentOffset) {
-        let url = process.env.BASE_URL + path;
-        if (this.limitRegex.test(url)) {
-            url = url.replace(this.limitRegex, `limit=${limit}`);
-        }
-        else {
-            url = `${url}${url.includes("?") ? "&" : "?"}limit=${limit}`;
-        }
-        if (this.offsetRegex.test(url)) {
-            url = url.replace(this.offsetRegex, `offset=${currentOffset + limit}`);
-        }
-        else {
-            url = `${url}${url.includes("?") ? "&" : "?"} offset=${currentOffset + limit}`;
-        }
+    buildNextPage(path, limit, currentOffset, url1) {
+        let url = process.env.BASE_URL + url1 + path;
+        console.log(url);
+        url = this.limitRegex.test(url)
+            ? url.replace(this.limitRegex, `limit=${limit}`)
+            : `${url}${url.includes("?") ? "&" : "?"}limit=${limit}`;
+        console.log(url);
+        url = this.offsetRegex.test(url)
+            ? url.replace(this.offsetRegex, `offset=${currentOffset + limit}`)
+            : `${url}${url.includes("?") ? "&" : "?"}offset=${currentOffset + limit}`;
+        console.log(url);
         return url;
     }
 }

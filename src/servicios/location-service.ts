@@ -4,7 +4,7 @@ import Locaciones from "../entities/Locaciones";
 const pag = new Pagination();
 
 export class LocationService {
-    async getAll(limit: number, offset: number, url: string){
+    async getAll(limit: number, offset: number, url: string, path: string){
         
         const parsedLimit = pag.parseLimit(limit);
         const parsedOffset = pag.parseOffset(offset);
@@ -14,12 +14,7 @@ export class LocationService {
         const devolver = {
             collection: allLocations,
 
-            pagination: {
-                pageSize: parsedLimit,
-                page: parsedOffset,
-                nextPage: pag.buildNextPage(url,parsedLimit,parsedOffset),
-                total: Number(cantidadLocations)
-            }
+            pagination: pag.buildPagination(limit, offset, cantidadLocations, path, url),
         }
         return devolver;
     }
@@ -38,21 +33,16 @@ export class LocationService {
         return loc;
     }
 
-    async getAllEventLocations(id: number, limit: number, offset: number, url: string){
+    async getAllEventLocations(id: number, limit: number, offset: number, url: string, path: string){
         const locationRepository = new LocationRepository();
         let eventLocations, countLocations = null;
         let devolver = null;
         try {
-            [eventLocations, countLocations] = await locationRepository.getAllEventsLocations(id);
+            [eventLocations, countLocations] = await locationRepository.getAllEventsLocations(id,limit,offset);
             devolver = {
                 collection: eventLocations,
     
-                pagination: {
-                    pageSize: pag.parseLimit(limit),
-                    page: pag.parseOffset(offset),
-                    nextPage: pag.buildNextPage(url,pag.parseLimit(limit),pag.parseOffset(offset)),
-                    total: Number(countLocations)
-                }
+                pagination: pag.buildPagination(limit, offset, countLocations, path, url),
             }
             
         } catch (error) {

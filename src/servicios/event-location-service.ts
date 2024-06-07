@@ -5,21 +5,16 @@ import EventLocaciones from "../entities/Eventos-Locaciones";
 const eventLocRepository = new EventLocationRepository();
 
 export class EventLocationService {
-    async getAll(limit: number, offset: number, url: string){
+    async getAll(limit: number, offset: number, url: string, path: string){
         const pag = new Pagination();
         const parsedLimit = pag.parseLimit(limit);
         const parsedOffset = pag.parseOffset(offset); 
 
-        const [allEventLoc, cantidadEventLoc] = await eventLocRepository.getAll();
+        const [allEventLoc, cantidadEventLoc] = await eventLocRepository.getAll(limit, offset);
         const devolver = {
             collection: allEventLoc,
 
-            pagination: {
-                pageSize: parsedLimit,
-                page: parsedOffset,
-                nextPage: pag.buildNextPage(url, parsedLimit, parsedOffset),
-                total: Number(cantidadEventLoc)
-            }
+            pagination: pag.buildPagination(limit, offset, cantidadEventLoc, path, url),
         }
         return devolver;
     }

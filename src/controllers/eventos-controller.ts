@@ -167,22 +167,25 @@ router.post("/:id/enrollment", AuthMiddleware, async(req: Request, res: Response
 
 /*10*/
 /*id del evento, idUser, attended (para verificar), rating (1 a 10) feedback*/
-router.patch("/:id/enrollment", AuthMiddleware, async(req: Request, res: Response) => {
+router.patch("/:id/enrollment/:entero", AuthMiddleware, async(req: Request, res: Response) => {
   
   const id = req.params.id;
-  const attended = req.body.attended;
-  const rating = req.body.rating;
+  const rating = req.params.entero;
   const observations = req.body.observations;
   //hay que verificar si fue, pero si no fue se debería mandar igual y queda todo lo demas en vacio
   try {
-    if(attended==0 && !(Number.isInteger(Number(rating)))){
+    if(!(Number.isInteger(Number(rating)))){
       return res.status(405).json({error: `El formato ingresado es inválido`});
     }
-    const feedback = await eventService.patchFeedback(Number(id), Number(attended), String(observations), Number(rating));
-    return res.json("El feedback se pudo cargar de manera exitosa");
+    const feedback = await eventService.patchFeedback(Number(id), String(observations), Number(rating));
+    return res.status(200).json("El feedback se pudo cargar de manera exitosa");
   }
-  catch {
-    console.log("Un error");
+  catch (error) {
+    if (error.message === 'Not Found'){
+      return res.status(404).json({message : "El ID ingresado no corresponde a ningún evento"});
+    }else if (error.message === 'Bad Request'){
+      return res.status(400).json({ message: "El usuario ingresado no está registrado en el evento seleccionado, o a completado alguno de los campos de manera incorrecta"});
+    }
     return res.json("Un error");
   }
 

@@ -4,23 +4,18 @@ import Categories from "../entities/Categorias";
 
 export class CategoryService {
 
-    async getAll(limit: number, offset: number, url: string){
+    async getAll(limit: number, offset: number, url: string, path: string){
         
         const pag = new Pagination();
         const parsedLimit = pag.parseLimit(limit);
         const parsedOffset = pag.parseOffset(offset);
 
         const categoryRepository = new CategoryRepository();
-        const [allCategories, cantidadCategories] = await categoryRepository.getAll();
+        const [allCategories, cantidadCategories] = await categoryRepository.getAll(limit, offset);
         const devolver = {
             collection: allCategories,
 
-            pagination: {
-                pageSize: parsedLimit,
-                page: parsedOffset,
-                nextPage: pag.buildNextPage(url,parsedLimit,parsedOffset),
-                total: Number(cantidadCategories)
-            }
+            pagination: pag.buildPagination(parsedLimit, parsedOffset, cantidadCategories, path, url),
         }
         return devolver;
 

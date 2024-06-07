@@ -5,19 +5,14 @@ const location_repository_1 = require("../repositorios/location-repository");
 const Pagination_1 = require("../entities/Pagination");
 const pag = new Pagination_1.Pagination();
 class LocationService {
-    async getAll(limit, offset, url) {
+    async getAll(limit, offset, url, path) {
         const parsedLimit = pag.parseLimit(limit);
         const parsedOffset = pag.parseOffset(offset);
         const locationRepository = new location_repository_1.LocationRepository();
         const [allLocations, cantidadLocations] = await locationRepository.getAll(parsedLimit, parsedOffset);
         const devolver = {
             collection: allLocations,
-            pagination: {
-                pageSize: parsedLimit,
-                page: parsedOffset,
-                nextPage: pag.buildNextPage(url, parsedLimit, parsedOffset),
-                total: Number(cantidadLocations)
-            }
+            pagination: pag.buildPagination(limit, offset, cantidadLocations, path, url),
         };
         return devolver;
     }
@@ -35,20 +30,15 @@ class LocationService {
         }
         return loc;
     }
-    async getAllEventLocations(id, limit, offset, url) {
+    async getAllEventLocations(id, limit, offset, url, path) {
         const locationRepository = new location_repository_1.LocationRepository();
         let eventLocations, countLocations = null;
         let devolver = null;
         try {
-            [eventLocations, countLocations] = await locationRepository.getAllEventsLocations(id);
+            [eventLocations, countLocations] = await locationRepository.getAllEventsLocations(id, limit, offset);
             devolver = {
                 collection: eventLocations,
-                pagination: {
-                    pageSize: pag.parseLimit(limit),
-                    page: pag.parseOffset(offset),
-                    nextPage: pag.buildNextPage(url, pag.parseLimit(limit), pag.parseOffset(offset)),
-                    total: Number(countLocations)
-                }
+                pagination: pag.buildPagination(limit, offset, countLocations, path, url),
             };
         }
         catch (error) {

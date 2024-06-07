@@ -6,22 +6,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const eventos_service_1 = require("../servicios/eventos-service");
 const authMiddleware_1 = require("../auth/authMiddleware");
+const Pagination_1 = require("../entities/Pagination");
 const router = express_1.default.Router();
 const eventService = new eventos_service_1.EventService();
+const pag = new Pagination_1.Pagination();
 router.get("/", async (req, res) => {
     console.log("event 2 y 3");
-    const limit = req.query.pageSize;
-    const offset = req.query.page;
-    const url = req.originalUrl;
+    const limit = pag.parseLimit(req.query.pageSize);
+    const offset = pag.parseOffset(req.query.page);
+    const url = "api/event";
     const name = req.query.name;
     const cat = req.query.category;
     const fecha = req.query.startDate;
-    const tag = req.query.tags;
+    const tag = req.query.tag;
     const fechaString = String(fecha);
     let fecha2 = new Date(fechaString);
     let nuevaFecha = fecha2 && !isNaN(fecha2.getTime()) ? new Date(fecha2) : new Date();
     try {
-        const allEvent = await eventService.getAllEventos(Number(limit !== null && limit !== void 0 ? limit : 0), Number(offset !== null && offset !== void 0 ? offset : 0), String(url !== null && url !== void 0 ? url : ''), String(name !== null && name !== void 0 ? name : ''), String(cat !== null && cat !== void 0 ? cat : ''), nuevaFecha, String(tag !== null && tag !== void 0 ? tag : ''));
+        const allEvent = await eventService.getAllEventos(req.path, String(url), Number(limit !== null && limit !== void 0 ? limit : 0), Number(offset !== null && offset !== void 0 ? offset : 0), String(name !== null && name !== void 0 ? name : ''), String(cat !== null && cat !== void 0 ? cat : ''), nuevaFecha, String(tag !== null && tag !== void 0 ? tag : ''));
         return res.json(allEvent);
     }
     catch (error) {
@@ -127,20 +129,24 @@ router.post("/:id/enrollment", authMiddleware_1.AuthMiddleware, async (req, res)
         return res.json("Un Error");
     }
 });
-router.patch("/:id/enrollment", authMiddleware_1.AuthMiddleware, async (req, res) => {
+router.patch("/:id/enrollment/:entero", authMiddleware_1.AuthMiddleware, async (req, res) => {
     const id = req.params.id;
-    const attended = req.body.attended;
-    const rating = req.body.rating;
+    const rating = req.params.entero;
     const observations = req.body.observations;
     try {
-        if (attended == 0 && !(Number.isInteger(Number(rating)))) {
+        if (!(Number.isInteger(Number(rating)))) {
             return res.status(405).json({ error: `El formato ingresado es inválido` });
         }
-        const feedback = await eventService.patchFeedback(Number(id), Number(attended), String(observations), Number(rating));
-        return res.json("El feedback se pudo cargar de manera exitosa");
+        const feedback = await eventService.patchFeedback(Number(id), String(observations), Number(rating));
+        return res.status(200).json("El feedback se pudo cargar de manera exitosa");
     }
-    catch (_a) {
-        console.log("Un error");
+    catch (error) {
+        if (error.message === 'Not Found') {
+            return res.status(404).json({ message: "El ID ingresado no corresponde a ningún evento" });
+        }
+        else if (error.message === 'Bad Request') {
+            return res.status(400).json({ message: "El usuario ingresado no está registrado en el evento seleccionado, o a completado alguno de los campos de manera incorrecta" });
+        }
         return res.json("Un error");
     }
 });

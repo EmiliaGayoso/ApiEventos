@@ -10,19 +10,19 @@ const client = new pg_1.default.Client(bd_1.config);
 console.log('config', bd_1.config);
 client.connect();
 class EventRepository {
-    async getAllEvents(name, cat, fecha, tag, pageSize, requestedPage, queryWhere) {
+    async getAllEvents(name, cat, fecha, tag, limit, offset, queryWhere) {
         console.log("llego a getAllEvents");
         const query1 = `SELECT e.name, e.description, e.start_date, e.duration_in_minutes, e.price, e.max_assistance FROM events e
         LEFT JOIN event_categories ON e.id_event_category = event_categories.id
         LEFT JOIN event_tags ON event_tags.id_event = e.id 
         LEFT JOIN tags ON event_tags.id_tag = tags.id
         ` + queryWhere;
-        const query2 = `select count(*) from events`;
         try {
             console.log("llega a la query1");
             const { rows: resultado1 } = await client.query(query1);
             console.log("llega a query2");
-            const { rows: resultado2 } = await client.query(query2);
+            const resultado2 = resultado1.length;
+            console.log(Number(resultado2));
             return [resultado1, resultado2];
         }
         catch (_a) {
@@ -128,30 +128,49 @@ class EventRepository {
         }
         return retornar;
     }
-    async deleteEvent(id) {
-        const query = `DELETE FROM events WHERE id = ${id}`;
-        const query2 = `SELECT * FROM events WHERE id = ${id}`;
-        let retornar = null;
+    async deleteEvent(id, userId) {
+        const query = `DELETE FROM events WHERE id = ${id} AND id_creator_user = ${userId}`;
         try {
-            console.log("llega a la query1");
-            const { rows: chauEvento } = await client.query(query);
-            console.log(chauEvento);
-            const { rows: eventoMuerto } = await client.query(query2);
-            console.log(eventoMuerto);
-            retornar = eventoMuerto;
+            console.log("llega a la query");
+            const { rowCount } = await client.query(query);
+            if (rowCount === 0) {
+                console.log("No se encontró ningún evento para eliminar con el ID proporcionado.");
+                return null;
+            }
+            console.log("Evento eliminado correctamente.");
+            return { message: "Evento eliminado correctamente." };
         }
-        catch (_a) {
+        catch (error) {
             console.log("Error en query, no se pudo eliminar el evento");
+            console.log(error.message);
+            return { message: "Bad Request" };
         }
-        return retornar;
     }
-    verificarExistenciaUsuario(id, username) {
+    async enrollUsuario(id, idUser, username) {
+        let usuarioInscripto;
+        const usuario = 1;
+        if (usuario != null) {
+            const query = {
+                text: `INSERT INTO event_enrollments(id_event,id_user,registration_date_time) VALUES ($1, $2) `,
+                values: [id, idUser]
+            };
+            try {
+                const result = await client.query(query);
+                usuarioInscripto = result.rows[0];
+                console.log('Usuario Inscripto', usuarioInscripto);
+            }
+            catch (error) {
+                console.error('Error al insertar usuario:', error);
+            }
+            if (!usuarioInscripto) {
+                throw new Error('Not Found');
+            }
+            const values = client.query(query);
+            return values;
+        }
         return true;
     }
-    enrollUsuario(id, idUser, username) {
-        return true;
-    }
-    patchFeedback(id, attended, observations, rating) {
+    patchFeedback(id, observations, rating) {
         return "json";
     }
 }

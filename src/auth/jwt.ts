@@ -5,7 +5,7 @@ export const createToken = (user: User) =>
 {
     const payload = 
     {
-        id: user[0].id
+        id: user.id
     };
 
     const secretKey= 'kkLovers';

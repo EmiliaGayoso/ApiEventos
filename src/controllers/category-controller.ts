@@ -7,10 +7,10 @@ const categoryService = new CategoryService();
 router.get("/", async (req: Request, res: Response) => {
     const limit = req.query.pageSize;
     const offset = req.query.page;
-    const url = req.originalUrl;
+    const url = "api/category";
 
     try {
-        const allCat = await categoryService.getAll(Number(limit ?? 0), Number(offset ?? 10), url);
+        const allCat = await categoryService.getAll(Number(limit ?? 0), Number(offset ?? 10), url, req.path);
         return res.status(200).json(allCat);
     } catch (error) {
         console.log("Un Error");

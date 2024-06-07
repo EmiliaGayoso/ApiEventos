@@ -14,16 +14,16 @@ export class UserService {
     {
         const userRepository = new UserRepository(); 
         let userExistence; 
-            try 
-            {
-                userExistence= userRepository.verificarExistenciaUsuario(username, password);
-                console.log("llega a repo user login")
-                
-            }
-            catch (error)
-            {
-                console.log("Error");
-            }
+        try 
+        {
+            userExistence= userRepository.verificarExistenciaUsuario(username, password);
+            console.log("llega a repo user login")
+            
+        }
+        catch (error)
+        {
+            console.log("Error");
+        }
         
         if (userExistence !== null)
         {

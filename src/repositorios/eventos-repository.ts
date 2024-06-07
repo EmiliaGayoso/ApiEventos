@@ -8,7 +8,7 @@ client.connect();
 //const respuesta = await client.query(sql);
 
 export class EventRepository{
-    async getAllEvents(name, cat, fecha, tag, pageSize, requestedPage, queryWhere) {
+    async getAllEvents(name, cat, fecha, tag, limit, offset, queryWhere) {
         
         console.log("llego a getAllEvents");
         //FIJARSE PORQUE FALLA EL HARCODEO, QUE FALTA AGREGAR
@@ -16,14 +16,14 @@ export class EventRepository{
         LEFT JOIN event_categories ON e.id_event_category = event_categories.id
         LEFT JOIN event_tags ON event_tags.id_event = e.id 
         LEFT JOIN tags ON event_tags.id_tag = tags.id
-        ` + queryWhere;
-        const query2= `select count(*) from events`; //te da la cantidad de eventos
+        ` + queryWhere; //te da la cantidad de eventos
         try {
             console.log("llega a la query1");
-            const { rows: resultado1 }= await client.query(query1);
+            const { rows: resultado1 } = await client.query(query1);
 
             console.log("llega a query2")
-            const { rows: resultado2 } = await client.query(query2);
+            const resultado2 = resultado1.length;
+            console.log(Number(resultado2));
             return [resultado1,resultado2];
         }
         catch {
@@ -163,13 +163,13 @@ export class EventRepository{
         return retornar;
     }
 
-   async deleteEvent(id)
+   async deleteEvent(id, userId)
     {
-        const query= `DELETE FROM events WHERE id = ${id}`
+        const query= `DELETE FROM events WHERE id = ${id} AND id_creator_user = ${userId}`
         
         try {
-            console.log("llega a la query1");
-            const { rowCount } = await client.query(query);;/*si elimina bien el evento devuelve un 1 que es la cantidad de elementos eliminados. no necesito un select, porque me devolveria un array vacio, pero ya lo verifica con el 1 que devuelve el delete */
+            console.log("llega a la query");
+            const { rowCount } = await client.query(query);/*si elimina bien el evento devuelve un 1 que es la cantidad de elementos eliminados. no necesito un select, porque me devolveria un array vacio, pero ya lo verifica con el 1 que devuelve el delete */
             if (rowCount === 0) {
                 console.log("No se encontró ningún evento para eliminar con el ID proporcionado.");
                 return null; // No se encontró ningún evento para eliminar
@@ -178,27 +178,62 @@ export class EventRepository{
             return { message: "Evento eliminado correctamente." };
             /*guarda en una const las rows que le saltan, en este caso */
         }
-        catch{
+        catch (error) {
             console.log("Error en query, no se pudo eliminar el evento");
-            return { message: "Error query o database" };
+            console.log(error.message);
+            return { message: "Bad Request" };
         }
     }
     
 
     /*9*/
     //verificar si el usuario existe
-    verificarExistenciaUsuario(id, username){
-        //se debería crear la query que confirme que el id que llega coincide con el id del username
-        return true;
-    }
+    /*async verificarExistenciaUsuario(id, username){
+        //se debería crear la query que confirme que el id que llega coincide con el id del username}
+        const query= `SELECT * FROM users WHERE id = ${id} AND username=${username} `
+        
+        try {
+            const { rowCount } = await client.query(query);;
+            
+            return rowCount;
+        }
+        catch{
+            console.log("Error en query, no se pudo eliminar el evento");
+            return { message: "Error query o database" };
+        }
+    }*/
 
-    enrollUsuario(id, idUser, username){
+    async enrollUsuario(id, idUser, username){
         //se tiene que hacer lo de agregar el usuario
         //si no se pudo se manda null
-        return true;
+        let usuarioInscripto;
+        const usuario=/* this.verificarExistenciaUsuario(idUser,username)*/1;
+        
+
+        if(usuario != null)
+        {
+            const query = {
+                text: `INSERT INTO event_enrollments(id_event,id_user,registration_date_time) VALUES ($1, $2) `,
+                values: [id, idUser]
+            };
+            try{
+                const result = await client.query(query);
+                usuarioInscripto = result.rows[0];
+                console.log('Usuario Inscripto', usuarioInscripto);
+            } catch(error){
+                console.error('Error al insertar usuario:', error)
+            }
+            if(!usuarioInscripto){
+                throw new Error('Not Found')
+            } 
+            const values = client.query(query);
+            return values;
+        }
+        
+        return true
     }
 
-    patchFeedback(id, attended, observations, rating){
+    patchFeedback(id, observations, rating){
         //deberia retornar el json de como
         return "json"
     }

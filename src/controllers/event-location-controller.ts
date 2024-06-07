@@ -13,10 +13,10 @@ const eventLocService = new EventLocationService();
 router.get("/", AuthMiddleware, async (req: RequestUser, res: Response) => {
     const limit = req.query.pageSize;
     const offset = req.query.page;
-    const url = req.originalUrl;
+    const url = "api/event-location";
 
     try {
-        const allEventLoc = await eventLocService.getAll(Number(limit), Number(offset),url);
+        const allEventLoc = await eventLocService.getAll(Number(limit), Number(offset),url, req.path);
         return res.status(200).json(allEventLoc);
     } catch (error) {
         console.log("Se encontró un error en event location controller");
