@@ -4,17 +4,10 @@ import { Pagination } from "../entities/Pagination";
 
 export class EventService {
     /*2 y 3*/
-    async getAllEventos(limit: number, offset:number, url: string, name ?: string, cat ?: string, fecha ?: Date, tag ?: string) //el ?: (segun gemini) es para definir que el parametro es opcional
+    async getAllEventos(path: string, url: string, limit: number, offset:number, name ?: string, cat ?: string, fecha ?: Date, tag ?: string) //el ?: (segun gemini) es para definir que el parametro es opcional
     {   
         //se tiene que verificar que name, cat, fecha y tag EXISTAN
         var queryWhere = ``;
-        console.log(limit)
-        console.log(offset)
-        console.log(url)
-        console.log(name)
-        console.log(cat)
-        console.log(fecha)
-        console.log(tag)
         let fechaNew = fecha.toISOString().split('T')[0]
         let currentDate = new Date()
         //falta agregar cosas, ya que en el caso que no exista name, pero si las demas, el WHERE debería seguir funcionando
@@ -47,23 +40,16 @@ export class EventService {
         }
         console.log("Despues de todas las query: ", queryWhere)
         const pag = new Pagination();
-        const parsedLimit = pag.parseLimit(limit);
-        const parsedOffset = pag.parseOffset(offset);
 
         const eventRepository = new EventRepository();
-        const [allEvents, cantidadEvents] = await eventRepository.getAllEvents(name, cat, fecha, tag, parsedLimit, parsedOffset, queryWhere);
+        const [allEvents, cantidadEvents] = await eventRepository.getAllEvents(name, cat, fecha, tag, limit, offset, queryWhere);
         //throw new Error("Error en el servicio  de eventos");
         
         const resultado=
         {
-            collection: allEvents, //aca deberia ir un array de elementos, esta es una version harcodeada
+            collection: allEvents,
             
-            pagination: {
-                pageSize: parsedLimit,
-                page: parsedOffset,
-                nextPage: pag.buildNextPage(url,parsedLimit,parsedOffset),
-                total: Number(cantidadEvents)
-            }
+            pagination: pag.buildNextPage(url, )
         }
         return resultado;
             /*pagination: 
@@ -81,10 +67,10 @@ export class EventService {
         console.log(id);
         const eventRepository = new EventRepository();
         const evento = await eventRepository.getEventById(id);
-        if (evento.rows.length === 0){
+        if (evento === null){
             throw new Error ('Not Found');
         }
-        const returnEntity = evento.rows[0];
+        const returnEntity = evento;
         console.log("ESTOY EN EVENTOS-SERVICE Y MANDO: ", returnEntity)
         return returnEntity;
 
@@ -156,30 +142,37 @@ export class EventService {
         return evento;
     }
 
-    async updateEvent(eventito: Eventos, eventoId: number, user_id: number){
+    async updateEvent(eventito: Eventos, eventoId: number, userId: number){
         const eventRepository = new EventRepository();
-        if(eventito.id_creator_user === user_id){
-
-            const evento = await eventRepository.updateEvent(eventito, eventoId);
-            return evento;
-        }///validacion de que las modificaciones son del mismo usuarios que lo creo
-        else{
-            return null;
-        }
+        ///validacion de que las modificaciones son del mismo usuarios que lo creo
         // Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
-        
+        const maxCapacityLoc = eventRepository.getMaxCapacity(eventito.id_event_location);
+        const buscada = await this.getEventoById(eventoId);
+        if((eventito.description || eventito.name) === null || (eventito.description || eventito.name).length <= 3 || eventito.max_assistance > Number(maxCapacityLoc)){
+            throw new Error ('Bad Request');
+        }
+        let evento = null;
+        try {   
+            evento = await eventRepository.updateEvent(eventito, userId);
+        } catch (error) {
+            console.log("error al modificar evento en service")
+        }
+        if (evento === null){
+            throw new Error ('Not Found')
+        }
+        return this.getEventoById(eventito.id);
     }
 
-    async deleteEvent(eventito: Eventos,id: number, user_id: number,){
+    async deleteEvent(id: number, user_id: number,){
         const eventRepository = new EventRepository();
-        if(eventito.id_creator_user === user_id)
-        {
-            const eliminado = await eventRepository.deleteEvent(id);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
-            return eliminado;
-        }///validacion de que las modificaciones son del mismo usuarios que lo creo
-        else{
-            return null;
-        }
+        const eliminado = await eventRepository.deleteEvent(id);// Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
+        ///validacion de que las modificaciones son del mismo usuarios que lo creo
+        /*try {
+            
+        } catch (error) {
+            
+        }*/
+        return eliminado;
     }
 
     /*9*/

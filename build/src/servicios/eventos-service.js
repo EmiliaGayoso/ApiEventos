@@ -68,7 +68,7 @@ class EventService {
         if (evento === null) {
             throw new Error('Not Found');
         }
-        const returnEntity = evento.rows[0];
+        const returnEntity = evento;
         console.log("ESTOY EN EVENTOS-SERVICE Y MANDO: ", returnEntity);
         return returnEntity;
     }
@@ -115,33 +115,42 @@ class EventService {
     }
     async createEvent(eventito) {
         const eventRepository = new eventos_repository_1.EventRepository();
-        const evento = await eventRepository.createEvent(eventito);
+        let evento = null;
+        const maxCapacityLoc = eventRepository.getMaxCapacity(eventito.id_event_location);
+        if ((eventito.description || eventito.name) === null || (eventito.description || eventito.name).length <= 3 || eventito.max_assistance > Number(maxCapacityLoc)) {
+            throw new Error('Bad Request');
+        }
+        try {
+            evento = await eventRepository.createEvent(eventito);
+        }
+        catch (error) {
+            console.log("error en evento service creat");
+        }
         return evento;
     }
-    async updateEvent(eventito, eventoId, user_id) {
+    async updateEvent(eventito, eventoId, userId) {
         const eventRepository = new eventos_repository_1.EventRepository();
-        if (eventito.id_creator_user === user_id) {
-            const evento = await eventRepository.updateEvent(eventito, eventoId);
-            return evento;
+        const maxCapacityLoc = eventRepository.getMaxCapacity(eventito.id_event_location);
+        const buscada = await this.getEventoById(eventoId);
+        if ((eventito.description || eventito.name) === null || (eventito.description || eventito.name).length <= 3 || eventito.max_assistance > Number(maxCapacityLoc)) {
+            throw new Error('Bad Request');
         }
-        else {
-            return null;
+        let evento = null;
+        try {
+            evento = await eventRepository.updateEvent(eventito, userId);
         }
+        catch (error) {
+            console.log("error al modificar evento en service");
+        }
+        if (evento === null) {
+            throw new Error('Not Found');
+        }
+        return this.getEventoById(eventito.id);
     }
-    async deleteEvent(eventito, id, user_id) {
+    async deleteEvent(id, user_id) {
         const eventRepository = new eventos_repository_1.EventRepository();
-        if (eventito.id_creator_user === user_id) {
-            const eliminado = await eventRepository.deleteEvent(id);
-            return eliminado;
-        }
-        else {
-            return null;
-        }
-    }
-    verificarExistenciaUsuario(idUser, username) {
-        const eventRepository = new eventos_repository_1.EventRepository();
-        const user = eventRepository.verificarExistenciaUsuario(idUser, username);
-        return user;
+        const eliminado = await eventRepository.deleteEvent(id);
+        return eliminado;
     }
     async enrollUser(id, idUser, username) {
         const eventRepository = new eventos_repository_1.EventRepository();

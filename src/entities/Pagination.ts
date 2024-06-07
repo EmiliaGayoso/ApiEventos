@@ -2,10 +2,12 @@
 import 'dotenv/config';
 
 export class PaginationDto{
-    limit;
-    offset;
-    nextPage;
-    total;
+    constructor (limit, currentOffset, nextPage, total){
+        limit;
+        currentOffset;
+        nextPage;
+        total;
+    }
 }
 
 export class Pagination {
@@ -13,29 +15,22 @@ export class Pagination {
     offsetRegex = /offset=\d+/;
 
     parseLimit(limit){
-        return !isNaN(parseInt(limit))? parseInt(limit): 10;
+        return !isNaN(parseInt(limit))? parseInt(limit): 3;
     }
     parseOffset(offset){
         return !isNaN(parseInt(offset))? parseInt(offset): 0;
     }
 
     buildPagination(limit, currentOffset, total, path){
-        const response = new PaginationDto();
-        response.limit = limit;
-        response.offset = currentOffset;
-        response.total = total;
-        
-        if (limit !== -1){
-            response.nextPage = 
-            limit + currentOffset < total
-            ? this.buildNextPage(path, limit, currentOffset) 
-            : null;
-        }
+        const nextPage = 
+        limit !== -1 && limit + currentOffset < total
+        ? this.buildNextPage(path, limit, currentOffset) 
+        : null;
 
-        return response;
+        return new PaginationDto(limit, currentOffset, nextPage, total);
     }
 
-    buildNextPage(path, limit, currentOffset: number){
+    buildNextPage(url1, path, limit, currentOffset: number){
         let url = process.env.BASE_URL + path;
 
         if(this.limitRegex.test(url)){

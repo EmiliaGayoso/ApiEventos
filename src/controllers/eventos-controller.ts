@@ -2,22 +2,24 @@ import express, {Request, Response} from "express";
 import {EventService} from "../servicios/eventos-service";
 import { AuthMiddleware } from "../auth/authMiddleware";
 import RequestUser from "../entities/RequestUser";
+import { Pagination } from "../entities/Pagination";
 
 const router = express.Router();
 const  eventService = new EventService();
+const pag = new Pagination();
 // /event, el punto 2
 router.get("/", async (req: Request, res: Response) => {
   
   console.log("event 2 y 3")
 
-  const limit = req.query.pageSize;
-  const offset = req.query.page;
-  const url = req.originalUrl;
+  const limit = pag.parseLimit(req.query.pageSize);
+  const offset = pag.parseOffset(req.query.page);
+  const url = "api/event";
 
   const name = req.query.name;
   const cat = req.query.category;
   const fecha = req.query.startDate;
-  const tag = req.query.tags;
+  const tag = req.query.tag;
   const fechaString = String(fecha);
   let fecha2 = new Date(fechaString);
 
@@ -27,7 +29,7 @@ router.get("/", async (req: Request, res: Response) => {
   try 
   {
     //te llama la funcion en eventos-service que activa la query
-    const allEvent = await eventService.getAllEventos(Number(limit ?? 0), Number(offset ?? 0), String(url ?? ''), String(name ?? ''), String(cat ?? ''), nuevaFecha, String(tag ?? '')); 
+    const allEvent = await eventService.getAllEventos(req.path, String(url), Number(limit ?? 0), Number(offset ?? 0), String(name ?? ''), String(cat ?? ''), nuevaFecha, String(tag ?? '')); 
     
     return res.json(allEvent);
   } 
@@ -49,11 +51,11 @@ router.get("/:id", async (req: Request, res: Response) => {
   }
   catch (error) 
   {
-    console.log("Un Error");
+    console.log("Un Error en get by id controller");
     if (error.message === 'Not Found'){
       return res.status(404).json({ message: 'El ID ingresado no corresponde a ningún evento'})
     }else {
-      return res.status(400).json({ message: 'Un Error' });
+      return res.json({ message: error.message });
     }
   }
 });
@@ -102,8 +104,11 @@ const user= req.body; // tenes que crear en postman un objeto
       data: createdEvent, 
     });
   } catch (error) {
+    if (error.message === 'Bad Request'){
+      return res.status(400).json({ message: "Error al completar los campos." });
+    }
     console.error("Error creating event:", error);
-    return res.status(500).json({ message: "Error creando evento" });
+    return res.json({ message: error.message });
   }
 });
 
@@ -120,17 +125,22 @@ router.put("/:id", AuthMiddleware, async (req: RequestUser, res: Response) => {
       data: updatedEvent, 
     });
   } catch (error) {
+    if (error.message === 'Bad Request'){
+      return res.status(400).json({ message: "Error al completar los campos." });
+    }
+    else if (error.message === 'Not Found'){
+      return res.status(404).json({ message: "El evento que busca modificar no existe o no tienen ese ID" });
+    }
     console.error("Error modificando event:", error);
-    return res.status(500).json({ message: "Error modificando evento" });
+    return res.json({ message: error.message });
   }
 });
 
 /*delete*/
  router.delete( "/:id", AuthMiddleware, async(req: RequestUser, res: Response) =>{
   const id=req.params.id;
-  const eventito = req.body;
   const userId = req.user.id;
-  if(eventService.deleteEvent(eventito,Number(id),userId)){
+  if(eventService.deleteEvent(Number(id),userId)){
       return res.status(232).send({
           valido: "evento eliminado correctamente"
       });

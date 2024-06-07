@@ -10,7 +10,7 @@ router.post("/login", async(req: Request, res: Response) => {
   console.log(username, password);
   
   const token = await userService.verificarExistenciaUsuario(String(username), String(password));
-  res.json(token);
+  return res.json(token);
   });
 
 router.post("/register", (req:Request,res:Response) => {
@@ -24,13 +24,7 @@ router.post("/register", (req:Request,res:Response) => {
     return res.json("El usuario no se pudo crear");
   }
   
-  /*res.json({
-    id: 0,
-    firstname:body.firstname,
-    lastname:body.lastname,
-    username: body.username,
-    password: body.password,
-  });*/
+  /*res.json({id: 0, firstname:body.firstname, lastname:body.lastname, username: body.username, password: body.password,});*/
 });
 
 export default router;

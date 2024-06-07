@@ -46,13 +46,15 @@ class EventRepository {
         let retornar = null;
         try {
             console.log("llega a la query1");
-            const { rows: values } = await client.query(queryId);
-            console.log(values);
-            retornar = values;
+            const { rows: result } = await client.query(queryId);
+            if (result.length > 0) {
+                retornar = result[0];
+            }
         }
         catch (_a) {
             console.log("Error en query");
         }
+        console.log(retornar);
         return retornar;
     }
     async getParticipants(id, limit, offset, queryWhere) {
@@ -97,7 +99,12 @@ class EventRepository {
         }
         return retornar;
     }
-    async updateEvent(eventito, eventoId) {
+    async getMaxCapacity(id) {
+        const query = `SELECT max_capacity FROM event_locations WHERE id = '${id}'`;
+        const retornado = await client.query(query);
+        return retornado;
+    }
+    async updateEvent(eventito, userId) {
         const query = `UPDATE events 
         SET name= '${eventito.name}', 
         description= '${eventito.description}',
@@ -107,18 +114,14 @@ class EventRepository {
         duration_in_minutes =${eventito.duration_in_minutes},
         price=${eventito.price}, 
         enabled_for_enrollment=${eventito.enabled_for_enrollment},
-        max_assistance=${eventito.max_assistance},
-        id_creator_user=${eventito.id_creator_user} 
-        WHERE id = ${eventoId}; `;
-        const query2 = `SELECT * FROM events WHERE id = ${eventoId}}`;
+        max_assistance=${eventito.max_assistance}, 
+        WHERE id = ${eventito.id} AND id_creator_user = ${userId}; `;
         let retornar = null;
         try {
             console.log("llega a la query1");
             const { rows: seModifico } = await client.query(query);
             console.log(seModifico);
-            const { rows: eventoModificado } = await client.query(query2);
-            console.log(eventoModificado);
-            retornar = eventoModificado;
+            retornar = seModifico;
         }
         catch (_a) {
             console.log("Error en query, no se pudo modificar el evento");

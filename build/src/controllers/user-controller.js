@@ -11,7 +11,7 @@ router.post("/login", async (req, res) => {
     const { username, password } = req.body;
     console.log(username, password);
     const token = await userService.verificarExistenciaUsuario(String(username), String(password));
-    res.json(token);
+    return res.json(token);
 });
 router.post("/register", (req, res) => {
     const { fName, lName, username, password } = req.body;

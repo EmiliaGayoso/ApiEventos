@@ -27,15 +27,22 @@ class UserRepository {
     async crearUsuario(fName, lName, username, password) {
         let devolver = null;
         try {
-            const query = {
-                text: 'SELECT * FROM user where username=$1 AND password=$2',
-                values: [username, password]
+            let result = null;
+            const verUsername = {
+                text: 'SELECT * FROM users WHERE username= $1',
+                values: [username]
             };
-            const result = await client.query(query);
-            devolver = result.rows[0];
+            if (verUsername === null) {
+                const query = {
+                    text: 'INSERT INTO user VALUES ($1,$2, $3, $4) RETURNING * ',
+                    values: [fName, lName, username, password]
+                };
+                result = client.query(query);
+                devolver = result.rows[0];
+            }
         }
         catch (error) {
-            console.log("error en repo event loc crear");
+            console.log("error en repo regitro usuario");
         }
         return devolver;
     }

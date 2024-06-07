@@ -30,7 +30,7 @@ class LocationService {
         catch (error) {
             console.log("error");
         }
-        if (loc === null) {
+        if (loc.rows.length === 0) {
             throw new Error('Not Found');
         }
         return loc;

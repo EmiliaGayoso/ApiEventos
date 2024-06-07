@@ -36,29 +36,29 @@ class EventLocationService {
     }
     async crearEventLoc(eventIngresado, user) {
         let crear = null;
+        if ((eventIngresado.name || eventIngresado.full_address) === null || (eventIngresado.name || eventIngresado.full_address).length <= 3 || eventIngresado.id_location === null || eventIngresado.max_capacity <= 0) {
+            throw new Error('Bad Request');
+        }
         try {
             crear = await eventLocRepository.crearEventLoc(eventIngresado, user);
         }
         catch (error) {
             console.log("error en crear event loc");
         }
-        if ((eventIngresado.name || eventIngresado.full_address) === null || (eventIngresado.name || eventIngresado.full_address).length <= 3 || eventIngresado.id_location === null || eventIngresado.max_capacity <= 0) {
-            throw new Error('Bad Request');
-        }
         return crear;
     }
     async modificarEventLoc(eventModificar, user) {
         let modificar = null;
+        if ((eventModificar.name || eventModificar.full_address) === null || (eventModificar.name || eventModificar.full_address).length <= 3 || eventModificar.id_location === null || eventModificar.max_capacity <= 0) {
+            throw new Error('Bad Request');
+        }
         try {
             modificar = await eventLocRepository.modificarEventLoc(eventModificar, user);
         }
         catch (error) {
             console.log("error en modificar evento loc");
         }
-        if ((eventModificar.name || eventModificar.full_address) === null || (eventModificar.name || eventModificar.full_address).length <= 3 || eventModificar.id_location === null || eventModificar.max_capacity <= 0) {
-            throw new Error('Bad Request');
-        }
-        else if (modificar.rows.length === 0) {
+        if (modificar.rows.length === 0) {
             throw new Error('Not Found');
         }
         return modificar;

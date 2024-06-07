@@ -20,9 +20,8 @@ export declare class EventService {
         };
     }>;
     createEvent(eventito: Eventos): Promise<any>;
-    updateEvent(eventito: Eventos, eventoId: number, user_id: number): Promise<any>;
-    deleteEvent(eventito: Eventos, id: number, user_id: number): Promise<any>;
-    verificarExistenciaUsuario(idUser: number, username: string): boolean;
+    updateEvent(eventito: Eventos, eventoId: number, userId: number): Promise<any>;
+    deleteEvent(id: number, user_id: number): Promise<any>;
     enrollUser(id: number, idUser: number, username: string): Promise<boolean>;
     patchFeedback(id: number, attended: number, observations: string, rating: number): string;
 }

@@ -39,20 +39,23 @@ class CategoryService {
     async crearCategoria(catCrear) {
         const categoryRepository = new category_repository_1.CategoryRepository();
         let cat = null;
+        if (catCrear.name === null || catCrear.name.length <= 3) {
+            throw new Error('Bad Request');
+        }
         try {
             cat = await categoryRepository.crearCat(catCrear);
         }
         catch (error) {
             console.log("error en crear categoria");
         }
-        if (catCrear.name === null || catCrear.name.length <= 3) {
-            throw new Error('Bad Request');
-        }
         return cat;
     }
     async modificarCategoria(catModificar) {
         const categoryRepository = new category_repository_1.CategoryRepository();
         let cat = null;
+        if (catModificar.name === null || catModificar.name.length <= 3) {
+            throw new Error('Bad Request');
+        }
         try {
             cat = await categoryRepository.modificarCat(catModificar);
         }
@@ -60,10 +63,7 @@ class CategoryService {
             console.log("error en modificar categoria");
         }
         const buscada = await this.getByID(catModificar.id);
-        if (catModificar.name === null || catModificar.name.length <= 3) {
-            throw new Error('Bad Request');
-        }
-        else if (buscada.rows.length === 0) {
+        if (buscada.rows.length === 0) {
             throw new Error('Not Found');
         }
         return cat;
