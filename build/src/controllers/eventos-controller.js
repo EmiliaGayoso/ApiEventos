@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const eventos_service_1 = require("../servicios/eventos-service");
 const authMiddleware_1 = require("../auth/authMiddleware");
 const Pagination_1 = require("../entities/Pagination");
+const Eventos_1 = __importDefault(require("../entities/Eventos"));
 const router = express_1.default.Router();
 const eventService = new eventos_service_1.EventService();
 const pag = new Pagination_1.Pagination();
@@ -67,8 +68,17 @@ router.get("/:id/enrollment", async (req, res) => {
     }
 });
 router.post("/", authMiddleware_1.AuthMiddleware, async (req, res) => {
-    const eventito = req.body;
-    const user = req.body;
+    const eventito = new Eventos_1.default();
+    eventito.name = req.body.name;
+    eventito.description = req.body.description;
+    eventito.id_event_category = req.body.id_event_category;
+    eventito.id_event_location = req.body.start_date;
+    eventito.duration_in_minutes = req.body.duration_in_minutes;
+    eventito.price = req.body.price;
+    eventito.enabled_for_enrollment = req.body.enabled_for_enrollment;
+    eventito.max_assistance = req.body.max_assistance;
+    eventito.id_creator_user = req.body.id_creator_user;
+    const user = req.user;
     try {
         const createdEvent = await eventService.createEvent(eventito);
         return res.status(201).json({

@@ -29,7 +29,7 @@ class ProvinciaService {
         const [allProv, countProv] = await provinciaRepository.traerTodas(parsedLimit, parsedOffset);
         const resultado = {
             collection: allProv,
-            pagination: pag.buildPagination(limit, offset, countProv, path, url)
+            pagination: pag.buildPagination(parsedLimit, parsedOffset, countProv, path, url)
         };
         return resultado;
     }

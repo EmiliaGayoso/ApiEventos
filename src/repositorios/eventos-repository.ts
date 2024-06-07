@@ -1,5 +1,6 @@
 import pg from "pg";
 import { config } from "../repositorios/bd"; 
+import Eventos from "../entities/Eventos";
 
 
 const client = new pg.Client(config);
@@ -79,7 +80,7 @@ export class EventRepository{
     }
 
     /*5*/
-    async getParticipants(id, limit, offset, queryWhere){
+    async getParticipants(id: number, limit:number, offset:number, queryWhere: string){
         console.log("llega a getParticipant repository")
         //por ahora sin limit ni offset
         const queryParticipants = `SELECT er.*,u.first_name,u.last_name,u.username,e.name FROM event_enrollments er
@@ -107,7 +108,7 @@ export class EventRepository{
 
 
     /*8*/
-   async createEvent(eventito){// Lógica para crear un nuevo evento en la base de datos
+   async createEvent(eventito: Eventos){// Lógica para crear un nuevo evento en la base de datos
     const query = {
         text: 'INSERT INTO events (name,description,id_event_category,id_event_location, start_date,duration_in_minutes,price,enabled_for_enrollment,max_assistance,id_creator_user) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)',
         values: [eventito.name,eventito.description,eventito.id_event_category,eventito.id_event_location,eventito.start_date,eventito.duration_in_minutes,eventito.price,eventito.enabled_for_enrollment,eventito.max_assistance,eventito.id_creator_user]
@@ -125,17 +126,18 @@ export class EventRepository{
     }
     catch{
         console.log("Error en query, no se pudo crear el evento");
+        
     }
     return retornar;
 }
 
-    async getMaxCapacity(id){
+    async getMaxCapacity(id:number){
         const query = `SELECT max_capacity FROM event_locations WHERE id = '${id}'`
         const retornado = await client.query(query);
         return retornado;
     }
 
-    async updateEvent(eventito, userId) {
+    async updateEvent(eventito:Eventos, userId:Number) {
         // Lógica para crear un nuevo evento en la base de datos
         const query= `UPDATE events 
         SET name= '${eventito.name}', 

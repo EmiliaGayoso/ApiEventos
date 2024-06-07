@@ -33,7 +33,7 @@ export class ProvinciaService {
         const resultado = {
             collection: allProv, //aca deberia ir un array de elementos, esta es una version harcodeada
             
-            pagination: pag.buildPagination(limit, offset, countProv, path, url)
+            pagination: pag.buildPagination(parsedLimit, parsedOffset, countProv, path, url)
         }
 
 

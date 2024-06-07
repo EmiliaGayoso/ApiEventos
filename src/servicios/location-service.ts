@@ -8,13 +8,14 @@ export class LocationService {
         
         const parsedLimit = pag.parseLimit(limit);
         const parsedOffset = pag.parseOffset(offset);
-
+        console.log("loc service get all");
+        console.log(parsedLimit);
         const locationRepository = new LocationRepository();
         const [allLocations, cantidadLocations] = await locationRepository.getAll(parsedLimit, parsedOffset);
         const devolver = {
             collection: allLocations,
 
-            pagination: pag.buildPagination(limit, offset, cantidadLocations, path, url),
+            pagination: pag.buildPagination(parsedLimit, parsedOffset, cantidadLocations, path, url),
         }
         return devolver;
     }
@@ -27,7 +28,7 @@ export class LocationService {
         } catch (error) {
             console.log("error")
         }
-        if (loc.rows.length === 0){
+        if (loc === null){
             throw new Error ('Not Found')
         }
         return loc;

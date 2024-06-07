@@ -11,7 +11,7 @@ router.get("/", async (req: Request, res: Response) => {
     const url = "api/location";
 
     try {
-        const allLoc = await locationService.getAll(Number(limit ?? 0), Number(offset ?? 10), url, req.path);
+        const allLoc = await locationService.getAll(Number(limit), Number(offset), url, req.path);
         return res.status(200).json(allLoc);
     } catch (error) {
         console.log("Un Error");

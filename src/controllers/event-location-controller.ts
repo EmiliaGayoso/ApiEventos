@@ -4,6 +4,7 @@ import { AuthMiddleware } from "../auth/authMiddleware";
 import User from "../entities/User";
 import UserToken from "../entities/UserToken";
 import RequestUser from "../entities/RequestUser";
+import Eventos from "../entities/Eventos";
 
 const router = express.Router();
 const eventLocService = new EventLocationService();

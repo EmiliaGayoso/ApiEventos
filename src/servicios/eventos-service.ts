@@ -151,7 +151,7 @@ export class EventService {
         // Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
         const maxCapacityLoc = eventRepository.getMaxCapacity(eventito.id_event_location);
         const buscada = await this.getEventoById(eventoId);
-        if((eventito.description || eventito.name) === null || (eventito.description || eventito.name).length <= 3 || eventito.max_assistance > Number(maxCapacityLoc)){
+        if((eventito.description || eventito.name) === null || (eventito.description.length || eventito.name.length) <= 3 || eventito.max_assistance > Number(maxCapacityLoc)){
             throw new Error ('Bad Request');
         }else if (buscada.rows.length === 0){
             throw new Error ('Not Found')

@@ -121,7 +121,7 @@ class EventService {
         const eventRepository = new eventos_repository_1.EventRepository();
         const maxCapacityLoc = eventRepository.getMaxCapacity(eventito.id_event_location);
         const buscada = await this.getEventoById(eventoId);
-        if ((eventito.description || eventito.name) === null || (eventito.description || eventito.name).length <= 3 || eventito.max_assistance > Number(maxCapacityLoc)) {
+        if ((eventito.description || eventito.name) === null || (eventito.description.length || eventito.name.length) <= 3 || eventito.max_assistance > Number(maxCapacityLoc)) {
             throw new Error('Bad Request');
         }
         else if (buscada.rows.length === 0) {

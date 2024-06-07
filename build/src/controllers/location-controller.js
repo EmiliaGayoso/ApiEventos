@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
     const offset = req.query.page;
     const url = "api/location";
     try {
-        const allLoc = await locationService.getAll(Number(limit !== null && limit !== void 0 ? limit : 0), Number(offset !== null && offset !== void 0 ? offset : 10), url, req.path);
+        const allLoc = await locationService.getAll(Number(limit), Number(offset), url, req.path);
         return res.status(200).json(allLoc);
     }
     catch (error) {

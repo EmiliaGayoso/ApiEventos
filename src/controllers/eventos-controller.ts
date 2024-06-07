@@ -3,6 +3,7 @@ import {EventService} from "../servicios/eventos-service";
 import { AuthMiddleware } from "../auth/authMiddleware";
 import RequestUser from "../entities/RequestUser";
 import { Pagination } from "../entities/Pagination";
+import Eventos from "../entities/Eventos";
 
 const router = express.Router();
 const  eventService = new EventService();
@@ -93,9 +94,20 @@ router.get("/:id/enrollment", async (req: Request, res: Response) => {
 /*create*/
 // import Eventos from './../entities/Eventos'; // no se porque da error
 
-router.post("/", AuthMiddleware, async (req: Request, res: Response) => {
-const eventito = req.body;
-const user= req.body; // tenes que crear en postman un objeto
+router.post("/", AuthMiddleware, async (req: RequestUser, res: Response) => {
+const eventito=new Eventos();
+eventito.name=req.body.name;
+eventito.description=req.body.description;
+eventito.id_event_category=req.body.id_event_category;
+eventito.id_event_location=req.body.start_date;
+eventito.duration_in_minutes=req.body.duration_in_minutes;
+eventito.price=req.body.price;
+eventito.enabled_for_enrollment=req.body.enabled_for_enrollment;
+eventito.max_assistance=req.body.max_assistance;
+eventito.id_creator_user=req.body.id_creator_user;
+
+/*haciendo esto estoy asignando que parte de req body con el atributos de la clase Eventos;*/
+const user= req.user; // tenes que crear en postman un objeto
 
   try {
     const createdEvent = await eventService.createEvent(eventito);

@@ -12,7 +12,7 @@ class EventLocationService {
         const [allEventLoc, cantidadEventLoc] = await eventLocRepository.getAll(limit, offset);
         const devolver = {
             collection: allEventLoc,
-            pagination: pag.buildPagination(limit, offset, cantidadEventLoc, path, url),
+            pagination: pag.buildPagination(parsedLimit, parsedOffset, cantidadEventLoc, path, url),
         };
         return devolver;
     }
