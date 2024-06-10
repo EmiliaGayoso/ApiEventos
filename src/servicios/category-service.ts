@@ -1,6 +1,7 @@
 import { CategoryRepository } from "../repositorios/category-repository";
 import { Pagination } from "../entities/Pagination";
 import Categories from "../entities/Categorias";
+import { parse } from "dotenv";
 
 export class CategoryService {
 
@@ -11,7 +12,7 @@ export class CategoryService {
         const parsedOffset = pag.parseOffset(offset);
 
         const categoryRepository = new CategoryRepository();
-        const [allCategories, cantidadCategories] = await categoryRepository.getAll(limit, offset);
+        const [allCategories, cantidadCategories] = await categoryRepository.getAll(parsedLimit, parsedOffset);
         const devolver = {
             collection: allCategories,
 
@@ -29,7 +30,7 @@ export class CategoryService {
         } catch (error) {
             console.log("error")
         }
-        if (cat === null || cat.rows.length === 0){
+        if (cat === null){
             throw new Error ('Not Found')
         }
         return cat;
@@ -53,33 +54,34 @@ export class CategoryService {
     async modificarCategoria(catModificar: Categories){
         const categoryRepository = new CategoryRepository();
         let cat = null;
+        const buscada = await this.getByID(catModificar.id);
         if (catModificar.name === null || catModificar.name.length <= 3){
             throw new Error ('Bad Request');
+        }else if (buscada === null){
+            throw new Error ('Not Found');
         }
         try {
             cat = await categoryRepository.modificarCat(catModificar);
         } catch (error) {
             console.log("error en modificar categoria")
         }
-        const buscada = await this.getByID(catModificar.id);
-        if (buscada.rows.length === 0){
-            throw new Error ('Not Found');
-        }
+        
         return cat;
     }
 
     async eliminarCategoria(id: number){
         const categoryRepository = new CategoryRepository();
         let cat = null;
+        const buscada = await this.getByID(id);
+        if (buscada === null){
+            throw new Error ('Not Found');
+        }
         try {
             cat = await categoryRepository.eliminarCat(id);
         } catch (error) {
             console.log("error en service eliminar categoria")
         }
-        const buscada = await this.getByID(id);
-        if (buscada.rows.length === 0){
-            throw new Error ('Not Found');
-        }
+        
         return cat;
     }
 }

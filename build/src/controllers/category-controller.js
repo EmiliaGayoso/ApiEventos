@@ -10,9 +10,9 @@ const categoryService = new category_service_1.CategoryService();
 router.get("/", async (req, res) => {
     const limit = req.query.pageSize;
     const offset = req.query.page;
-    const url = "api/category";
+    const url = "api/event-category";
     try {
-        const allCat = await categoryService.getAll(Number(limit !== null && limit !== void 0 ? limit : 0), Number(offset !== null && offset !== void 0 ? offset : 10), url, req.path);
+        const allCat = await categoryService.getAll(Number(limit), Number(offset), url, req.path);
         return res.status(200).json(allCat);
     }
     catch (error) {
@@ -38,7 +38,7 @@ router.post("/", async (req, res) => {
     const catCrear = req.body;
     try {
         const creada = await categoryService.crearCategoria(catCrear);
-        return res.status(200).json(creada);
+        return res.status(201).json({ message: 'La categoría fue creada' });
     }
     catch (error) {
         if (error.message === 'Bad Request') {
@@ -51,7 +51,7 @@ router.put("/", async (req, res) => {
     const catModificar = req.body;
     try {
         const modificada = await categoryService.modificarCategoria(catModificar);
-        return res.status(200).json(modificada);
+        return res.status(200).json({ message: 'La categoría fue modificada' });
     }
     catch (error) {
         if (error.message === 'Bad Request') {

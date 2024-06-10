@@ -11,12 +11,14 @@ console.log('config', bd_1.config);
 client.connect();
 class CategoryRepository {
     async getAll(limit, offset) {
-        console.log("llego a getAll cat");
+        console.log("llego a repo getAll cat");
         const query1 = `SELECT * FROM event_categories LIMIT ${limit} OFFSET ${offset}`;
         const queryCount = 'SELECT COUNT(*) FROM event_categories';
         try {
             const { rows: resp } = await client.query(query1);
+            console.log("llega a query 2");
             const resp2 = resp.length;
+            console.log(resp + ',' + resp2);
             return [resp, resp2];
         }
         catch (error) {
