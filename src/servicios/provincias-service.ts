@@ -13,7 +13,8 @@ export class ProvinciaService {
         } catch (error) {
             console.log("error");
         }
-        if (provinciaDevolver === null || provinciaDevolver.rows.length === 0){
+        console.log(provinciaDevolver)
+        if (provinciaDevolver === null){
             throw new Error ('Not Found');
         }
         console.log(provinciaDevolver);
@@ -38,6 +39,25 @@ export class ProvinciaService {
 
 
         return resultado;
+    }
+
+    async traerTodasLoc(id: number, limit: number, offset: number, url: string, path: string){
+        const provinciaRepository = new ProvinciaRepository();
+        const pag = new Pagination();
+        const parsedLimit = pag.parseLimit(limit);
+        const parsedOffset = pag.parseOffset(offset);
+
+        if(this.busquedaId(id) === null){
+            throw new Error ('Not Found');
+        }
+        const [allLoc, countLoc] = await provinciaRepository.traerLoc(id, parsedLimit, parsedOffset);
+        
+        const resultado = {
+            collection: allLoc,
+            
+            pagination: pag.buildPagination(parsedLimit, parsedOffset, countLoc, path, url)
+        }
+
     }
 
     async crearProvincia(provinciaCrear: Provincias){

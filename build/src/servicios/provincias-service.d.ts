@@ -5,6 +5,7 @@ export declare class ProvinciaService {
         collection: string | number | any[];
         pagination: import("../entities/Pagination").PaginationDto;
     }>;
+    traerTodasLoc(id: number, limit: number, offset: number, url: string, path: string): Promise<void>;
     crearProvincia(provinciaCrear: Provincias): Promise<any>;
     modificarProvincia(provinciaId: number, provinciaModificar: Provincias): Promise<any>;
     borrarProvincia(provinciaId: number): Promise<any>;

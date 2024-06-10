@@ -54,6 +54,23 @@ export class ProvinciaRepository {
         
     }
 
+    async traerLoc(id, limit, offset){
+        
+        const query1 = `SELECT * FROM locations WHERE id_province = ${id} LIMIT ${limit} OFFSET ${offset}`;
+        const query2 = `SELECT COUNT(*) FROM locations WHERE id_province = ${id} LIMIT ${limit} OFFSET ${offset}`
+        
+        try {
+            const {rows: result1} = await this.BDClient.query(query1);
+
+            const result2 = result1.length;
+            console.log(result2);
+
+            return [result1, result2];
+        } catch (error) {
+            return ("Query error");
+        }
+    }
+
     async crearProvincia (provinciaCrear){
         console.log("llego a prov crearProvincia");
         let devolver = null;

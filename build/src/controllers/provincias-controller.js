@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 const provincias_service_1 = require("../servicios/provincias-service");
 const router = express_1.default.Router();
 const provinciaService = new provincias_service_1.ProvinciaService();
-router.get('/provincias/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     const id = req.params.id;
     try {
         const provincia = await provinciaService.busquedaId(Number(id));
@@ -28,6 +28,21 @@ router.get('/', async (req, res) => {
     }
     catch (error) {
         res.status(500).json({ message: error.message });
+    }
+});
+router.get('/:id/locations', async (req, res) => {
+    const limit = req.query.limit;
+    const offset = req.query.offset;
+    const url = "api/provincias";
+    try {
+        const locProvPaginadas = await provinciaService.traerTodasLoc(Number(req.params.id), Number(limit), Number(offset), url, req.path);
+        res.json(locProvPaginadas);
+    }
+    catch (error) {
+        if (error.message === 'Not Found') {
+            res.status(404).json({ message: 'El ID ingresado no corresponde a ninguna provincia' });
+        }
+        res.json({ message: error.message });
     }
 });
 router.post('/', async (req, res) => {

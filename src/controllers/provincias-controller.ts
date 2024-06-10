@@ -6,7 +6,7 @@ const router = express.Router();
 const provinciaService = new ProvinciaService();
 
 // Obtener una provincia por ID
-router.get('/provincias/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     const id = req.params.id
     try {
       const provincia = await provinciaService.busquedaId(Number(id));
@@ -30,6 +30,21 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/:id/locations', async (req, res) => {
+  const limit = req.query.limit;
+  const offset = req.query.offset;
+  const url = "api/provincias";
+
+  try {
+    const locProvPaginadas = await provinciaService.traerTodasLoc(Number(req.params.id), Number(limit), Number(offset), url, req.path)
+    res.json(locProvPaginadas);
+  } catch (error) {
+    if (error.message === 'Not Found'){
+      res.status(404).json({ message: 'El ID ingresado no corresponde a ninguna provincia'});
+    }
+    res.json({message: error.message});
+  }
+});
 
 //creacion de provincia
 router.post('/', async (req, res) => {
