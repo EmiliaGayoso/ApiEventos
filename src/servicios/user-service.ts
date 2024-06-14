@@ -16,8 +16,9 @@ export class UserService {
         let userExistence; 
         try 
         {
-            userExistence= userRepository.verificarExistenciaUsuario(username, password);
-            console.log("llega a repo user login")
+            userExistence= await userRepository.verificarExistenciaUsuario(username, password);
+            console.log("llega a service user login");
+            console.log(userExistence);
             
         }
         catch (error)

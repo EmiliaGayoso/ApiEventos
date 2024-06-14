@@ -6,7 +6,7 @@ const Pagination_1 = require("../entities/Pagination");
 class EventService {
     async getAllEventos(path, url, limit, offset, name, cat, fecha, tag) {
         var queryWhere = ``;
-        let fechaNew = fecha.toISOString().split('T')[0];
+        let fechaNew = fecha.toISOString().split(' ')[0];
         let currentDate = new Date();
         if (name) {
             queryWhere += `WHERE events.name ILIKE '%${name}%'`;
@@ -105,11 +105,13 @@ class EventService {
     async createEvent(eventito) {
         const eventRepository = new eventos_repository_1.EventRepository();
         let evento = null;
+        console.log('Id event loc: ', eventito.id_event_location);
         const maxCapacityLoc = eventRepository.getMaxCapacity(eventito.id_event_location);
         if ((eventito.description || eventito.name) === null || (eventito.description || eventito.name).length <= 3 || eventito.max_assistance > Number(maxCapacityLoc)) {
             throw new Error('Bad Request');
         }
         try {
+            console.log('llega al try de event service create');
             evento = await eventRepository.createEvent(eventito);
         }
         catch (error) {
@@ -117,14 +119,14 @@ class EventService {
         }
         return evento;
     }
-    async updateEvent(eventito, eventoId, userId) {
+    async updateEvent(eventito, userId) {
         const eventRepository = new eventos_repository_1.EventRepository();
         const maxCapacityLoc = eventRepository.getMaxCapacity(eventito.id_event_location);
-        const buscada = await this.getEventoById(eventoId);
+        const buscada = await this.getEventoById(eventito.id);
         if ((eventito.description || eventito.name) === null || (eventito.description.length || eventito.name.length) <= 3 || eventito.max_assistance > Number(maxCapacityLoc)) {
             throw new Error('Bad Request');
         }
-        else if (buscada.rows.length === 0) {
+        else if (buscada === null) {
             throw new Error('Not Found');
         }
         let evento = null;
@@ -134,11 +136,13 @@ class EventService {
         catch (error) {
             console.log("error al modificar evento en service");
         }
-        return this.getEventoById(eventito.id);
+        return evento;
     }
     async deleteEvent(id, user_id) {
         const eventRepository = new eventos_repository_1.EventRepository();
-        const eliminado = await eventRepository.deleteEvent(id, user_id);
+        let eliminado = null;
+        eliminado = await eventRepository.deleteEvent(id, user_id);
+        console.log('pasa el eliminar');
         if (eliminado === null) {
             throw new Error('Not Found');
         }

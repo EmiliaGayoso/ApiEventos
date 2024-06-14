@@ -52,7 +52,7 @@ class EventRepository {
             }
         }
         catch (_a) {
-            console.log("Error en query");
+            console.log("Error en query getByID");
         }
         console.log(retornar);
         return retornar;
@@ -80,19 +80,20 @@ class EventRepository {
         }
     }
     async createEvent(eventito) {
+        console.log('llega a repo create event');
+        console.log("aaa");
+        console.log(eventito.start_date.toString());
+        console.log(eventito.id_creator_user);
         const query = {
-            text: 'INSERT INTO events (name,description,id_event_category,id_event_location, start_date,duration_in_minutes,price,enabled_for_enrollment,max_assistance,id_creator_user) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)',
+            text: 'INSERT INTO events (name,description,id_event_category,id_event_location, start_date,duration_in_minutes,price,enabled_for_enrollment,max_assistance,id_creator_user) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *',
             values: [eventito.name, eventito.description, eventito.id_event_category, eventito.id_event_location, eventito.start_date, eventito.duration_in_minutes, eventito.price, eventito.enabled_for_enrollment, eventito.max_assistance, eventito.id_creator_user]
         };
-        const query2 = 'SELECT * FROM events WHERE title = ${eventito.name}';
         let retornar = null;
         try {
             console.log("llega a la query1");
             const { rows: seCreo } = await client.query(query);
             console.log(seCreo);
-            const { rows: eventoCreado } = await client.query(query2);
-            console.log(eventoCreado);
-            retornar = eventoCreado;
+            retornar = seCreo;
         }
         catch (_a) {
             console.log("Error en query, no se pudo crear el evento");
@@ -105,6 +106,7 @@ class EventRepository {
         return retornado;
     }
     async updateEvent(eventito, userId) {
+        console.log(eventito);
         const query = `UPDATE events 
         SET name= '${eventito.name}', 
         description= '${eventito.description}',
@@ -114,8 +116,8 @@ class EventRepository {
         duration_in_minutes =${eventito.duration_in_minutes},
         price=${eventito.price}, 
         enabled_for_enrollment=${eventito.enabled_for_enrollment},
-        max_assistance=${eventito.max_assistance}, 
-        WHERE id = ${eventito.id} AND id_creator_user = ${userId}; `;
+        max_assistance=${eventito.max_assistance}
+        WHERE id = ${eventito.id} AND id_creator_user = ${userId} RETURNING * `;
         let retornar = null;
         try {
             console.log("llega a la query1");
@@ -129,9 +131,11 @@ class EventRepository {
         return retornar;
     }
     async deleteEvent(id, userId) {
+        const queryEliminarTags = `DELETE FROM event_tags WHERE id_event=(SELECT id from events where id= ${id} and id_creator_user = ${userId})`;
         const query = `DELETE FROM events WHERE id = ${id} AND id_creator_user = ${userId}`;
         try {
             console.log("llega a la query");
+            const rowCountTags = await client.query(queryEliminarTags);
             const { rowCount } = await client.query(query);
             if (rowCount === 0) {
                 console.log("No se encontró ningún evento para eliminar con el ID proporcionado.");

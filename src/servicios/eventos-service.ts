@@ -8,7 +8,7 @@ export class EventService {
     {   
         //se tiene que verificar que name, cat, fecha y tag EXISTAN
         var queryWhere = ``;
-        let fechaNew = fecha.toISOString().split('T')[0]
+        let fechaNew = fecha.toISOString().split(' ')[0]
         let currentDate = new Date()
         //falta agregar cosas, ya que en el caso que no exista name, pero si las demas, el WHERE debería seguir funcionando
         if (name){
@@ -133,11 +133,13 @@ export class EventService {
     async createEvent(eventito: Eventos) {
         const eventRepository = new EventRepository();
         let evento = null;
+        console.log('Id event loc: ', eventito.id_event_location);
         const maxCapacityLoc = eventRepository.getMaxCapacity(eventito.id_event_location);
         if((eventito.description || eventito.name) === null || (eventito.description || eventito.name).length <= 3 || eventito.max_assistance > Number(maxCapacityLoc)){
             throw new Error ('Bad Request');
         }
         try {
+            console.log('llega al try de event service create')
             evento = await eventRepository.createEvent(eventito);
         } catch (error) {
             console.log("error en evento service creat");
@@ -145,15 +147,15 @@ export class EventService {
         return evento;
     }
 
-    async updateEvent(eventito: Eventos, eventoId: number, userId: number){
+    async updateEvent(eventito: Eventos, userId: number){
         const eventRepository = new EventRepository();
         ///validacion de que las modificaciones son del mismo usuarios que lo creo
         // Aquí podrías realizar validaciones adicionales antes de crear el evento, si es necesario.
         const maxCapacityLoc = eventRepository.getMaxCapacity(eventito.id_event_location);
-        const buscada = await this.getEventoById(eventoId);
+        const buscada = await this.getEventoById(eventito.id);
         if((eventito.description || eventito.name) === null || (eventito.description.length || eventito.name.length) <= 3 || eventito.max_assistance > Number(maxCapacityLoc)){
             throw new Error ('Bad Request');
-        }else if (buscada.rows.length === 0){
+        }else if (buscada === null){
             throw new Error ('Not Found')
         }
         let evento = null;
@@ -162,12 +164,15 @@ export class EventService {
         } catch (error) {
             console.log("error al modificar evento en service")
         }
-        return this.getEventoById(eventito.id);
+        return evento;
     }
 
     async deleteEvent(id: number, user_id: number,){
         const eventRepository = new EventRepository();
-        const eliminado = await eventRepository.deleteEvent(id, user_id)
+        
+        let eliminado = null;
+        eliminado = await eventRepository.deleteEvent(id, user_id);
+        console.log('pasa el eliminar');
         if (eliminado === null){
             throw new Error ('Not Found');
         }else if (eliminado.message === 'Bad Request'){

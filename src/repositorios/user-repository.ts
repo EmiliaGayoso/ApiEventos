@@ -19,11 +19,13 @@ export class UserRepository{
                     text: 'SELECT * FROM users WHERE username = $1 AND password = $2',
                     values: [username, password]
                 }
+                
                 devolver = await client.query(query);
+                console.log(devolver.rows[0]);
             } catch (error) {
                 console.log("error en repo event loc crear");
             }
-            return devolver;
+            return devolver.rows[0];
         
         //acá iría la query que debe verificar si existe o no el usuario que se manda
         //si existe, deberia retornar al usuario

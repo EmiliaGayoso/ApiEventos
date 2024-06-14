@@ -72,12 +72,14 @@ router.post("/", authMiddleware_1.AuthMiddleware, async (req, res) => {
     eventito.name = req.body.name;
     eventito.description = req.body.description;
     eventito.id_event_category = req.body.id_event_category;
-    eventito.id_event_location = req.body.start_date;
+    eventito.id_event_location = req.body.id_event_location;
+    eventito.start_date = req.body.start_date;
     eventito.duration_in_minutes = req.body.duration_in_minutes;
     eventito.price = req.body.price;
     eventito.enabled_for_enrollment = req.body.enabled_for_enrollment;
     eventito.max_assistance = req.body.max_assistance;
-    eventito.id_creator_user = req.body.id_creator_user;
+    eventito.id_creator_user = req.user.id;
+    console.log(req.user.id);
     const user = req.user;
     try {
         const createdEvent = await eventService.createEvent(eventito);
@@ -94,12 +96,11 @@ router.post("/", authMiddleware_1.AuthMiddleware, async (req, res) => {
         return res.json({ message: error.message });
     }
 });
-router.put("/:id", authMiddleware_1.AuthMiddleware, async (req, res) => {
-    const eventoId = req.params.id;
+router.put("/", authMiddleware_1.AuthMiddleware, async (req, res) => {
     const eventito = req.body;
     const userId = req.user.id;
     try {
-        const updatedEvent = await eventService.updateEvent(eventito, Number(eventoId), userId);
+        const updatedEvent = await eventService.updateEvent(eventito, userId);
         return res.status(201).json({
             message: "Evento modificado correctamente",
             data: updatedEvent,
@@ -119,12 +120,20 @@ router.put("/:id", authMiddleware_1.AuthMiddleware, async (req, res) => {
 router.delete("/:id", authMiddleware_1.AuthMiddleware, async (req, res) => {
     const id = req.params.id;
     const userId = req.user.id;
-    if (eventService.deleteEvent(Number(id), userId)) {
-        return res.status(232).send({
-            valido: "evento eliminado correctamente"
-        });
+    console.log(userId);
+    try {
+        eventService.deleteEvent(Number(id), userId);
+        return res.status(200).send({ valido: "evento eliminado correctamente" });
     }
-    return res.status(400).send("Error en los campos");
+    catch (error) {
+        if (error.message === 'Not Found') {
+            return res.status(404).json({ message: 'El ID ingresado no corresponde a ningún evento de su dominio' });
+        }
+        else if (error.message === 'Bad Request') {
+            return res.status(400).send("El evento no se puede eliminar porque hay al menos 1 usuario inscripto");
+        }
+        return res.status(500);
+    }
 });
 router.post("/:id/enrollment", authMiddleware_1.AuthMiddleware, async (req, res) => {
     const id = req.params.id;

@@ -73,7 +73,7 @@ export class EventRepository{
             }
         }
         catch {
-            console.log("Error en query");
+            console.log("Error en query getByID");
         }
         console.log(retornar);
         return retornar;
@@ -109,20 +109,24 @@ export class EventRepository{
 
     /*8*/
    async createEvent(eventito: Eventos){// Lógica para crear un nuevo evento en la base de datos
+    console.log('llega a repo create event');
+    //let fechaNew = eventito.start_date.toDateString();
+    console.log("aaa");
+
+    console.log(eventito.start_date.toString())
+    
+    console.log(eventito.id_creator_user)
     const query = {
-        text: 'INSERT INTO events (name,description,id_event_category,id_event_location, start_date,duration_in_minutes,price,enabled_for_enrollment,max_assistance,id_creator_user) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)',
+        text: 'INSERT INTO events (name,description,id_event_category,id_event_location, start_date,duration_in_minutes,price,enabled_for_enrollment,max_assistance,id_creator_user) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *',
         values: [eventito.name,eventito.description,eventito.id_event_category,eventito.id_event_location,eventito.start_date,eventito.duration_in_minutes,eventito.price,eventito.enabled_for_enrollment,eventito.max_assistance,eventito.id_creator_user]
     };
-    const query2 = 'SELECT * FROM events WHERE title = ${eventito.name}';
     // Suponiendo que tienes un método create en tu clase Database
     let retornar = null;
     try {
         console.log("llega a la query1");
         const { rows: seCreo} = await client.query(query);
         console.log(seCreo);
-        const { rows: eventoCreado } = await client.query(query2);
-        console.log(eventoCreado);
-        retornar = eventoCreado;
+        retornar = seCreo;
     }
     catch{
         console.log("Error en query, no se pudo crear el evento");
@@ -139,6 +143,8 @@ export class EventRepository{
 
     async updateEvent(eventito:Eventos, userId:Number) {
         // Lógica para crear un nuevo evento en la base de datos
+        console.log(eventito);
+        
         const query= `UPDATE events 
         SET name= '${eventito.name}', 
         description= '${eventito.description}',
@@ -148,8 +154,8 @@ export class EventRepository{
         duration_in_minutes =${eventito.duration_in_minutes},
         price=${eventito.price}, 
         enabled_for_enrollment=${eventito.enabled_for_enrollment},
-        max_assistance=${eventito.max_assistance}, 
-        WHERE id = ${eventito.id} AND id_creator_user = ${userId}; `;
+        max_assistance=${eventito.max_assistance}
+        WHERE id = ${eventito.id} AND id_creator_user = ${userId} RETURNING * `;
         
         let retornar = null;
         
@@ -167,10 +173,12 @@ export class EventRepository{
 
    async deleteEvent(id, userId)
     {
+        const queryEliminarTags = `DELETE FROM event_tags WHERE id_event=(SELECT id from events where id= ${id} and id_creator_user = ${userId})`
         const query= `DELETE FROM events WHERE id = ${id} AND id_creator_user = ${userId}`
         
         try {
             console.log("llega a la query");
+            const rowCountTags = await client.query(queryEliminarTags);
             const { rowCount } = await client.query(query);/*si elimina bien el evento devuelve un 1 que es la cantidad de elementos eliminados. no necesito un select, porque me devolveria un array vacio, pero ya lo verifica con el 1 que devuelve el delete */
             if (rowCount === 0) {
                 console.log("No se encontró ningún evento para eliminar con el ID proporcionado.");

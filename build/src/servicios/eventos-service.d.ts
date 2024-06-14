@@ -15,10 +15,8 @@ export declare class EventService {
         };
     }>;
     createEvent(eventito: Eventos): Promise<any>;
-    updateEvent(eventito: Eventos, eventoId: number, userId: number): Promise<any>;
-    deleteEvent(id: number, user_id: number): Promise<{
-        message: string;
-    }>;
+    updateEvent(eventito: Eventos, userId: number): Promise<any>;
+    deleteEvent(id: number, user_id: number): Promise<any>;
     enrollUser(id: number, idUser: number, username: string): Promise<true | import("pg").QueryResult<any>>;
     patchFeedback(id: number, observations: string, rating: number): any;
 }

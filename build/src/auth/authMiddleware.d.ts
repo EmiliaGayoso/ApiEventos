@@ -1,1 +1,1 @@
-export declare function AuthMiddleware(req: any, res: any, next: any): any;
+export declare function AuthMiddleware(req: any, res: any, next: any): Promise<any>;

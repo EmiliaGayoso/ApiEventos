@@ -2,13 +2,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthMiddleware = void 0;
 const jwt_js_1 = require("./jwt.js");
-function AuthMiddleware(req, res, next) {
-    if (!req.headers.authorization) {
+async function AuthMiddleware(req, res, next) {
+    let token = req.headers.authorization;
+    console.log('AuthMiddleware: ', token);
+    if (!token) {
         return res.status(401).json("Unauthorized");
     }
     else {
-        const token = req.headers.authorization.split(" ")[1];
-        const decryptToken = (0, jwt_js_1.descriptedToken)(token);
+        token = token.replace('Bearer ', '');
+        console.log('AuthMiddleware xxx: ', token);
+        token = req.headers.authorization.split(" ")[1];
+        const decryptToken = await (0, jwt_js_1.descriptedToken)(token);
         req.user = decryptToken;
     }
     next();

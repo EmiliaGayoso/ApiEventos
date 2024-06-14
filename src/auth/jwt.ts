@@ -1,14 +1,14 @@
 import jwt from 'jsonwebtoken'
 import User from '../entities/User'
-
+const secretKey = 'kklovers';
 export const createToken = (user: User) => 
 {
     const payload = 
     {
         id: user.id
     };
+    console.log(user.id);
 
-    const secretKey= 'kkLovers';
     const options= 
     {
         expiresIn: '365d',
@@ -16,18 +16,16 @@ export const createToken = (user: User) =>
     }
 
     const token= jwt.sign(payload, secretKey, options);//genera el token con los datos que se los brindo 
-    console.log(token); 
+    console.log('Token generado:', token); 
     return token;
 }
 
 export const descriptedToken = async (ptoken:string) =>
 {
-    const secretKey = 'kklovers'
-    let token= ptoken;
     let payloadOriginal=null;
 
     try{
-        payloadOriginal = await jwt.verify(token,secretKey);
+        payloadOriginal = await jwt.verify(ptoken,secretKey);
     } catch(e){
         console.error(e);
     }
