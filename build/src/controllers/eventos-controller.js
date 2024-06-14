@@ -122,7 +122,7 @@ router.delete("/:id", authMiddleware_1.AuthMiddleware, async (req, res) => {
     const userId = req.user.id;
     console.log(userId);
     try {
-        eventService.deleteEvent(Number(id), userId);
+        await eventService.deleteEvent(Number(id), userId);
         return res.status(200).send({ valido: "evento eliminado correctamente" });
     }
     catch (error) {

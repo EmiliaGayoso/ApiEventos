@@ -156,7 +156,7 @@ router.put("/", AuthMiddleware, async (req: RequestUser, res: Response) => {
   console.log(userId);
 
   try {
-    eventService.deleteEvent(Number(id),userId);
+    await eventService.deleteEvent(Number(id),userId);
     return res.status(200).send({valido: "evento eliminado correctamente"});
   } catch (error) {
     if(error.message === 'Not Found'){
