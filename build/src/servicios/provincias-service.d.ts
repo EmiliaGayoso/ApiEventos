@@ -5,7 +5,10 @@ export declare class ProvinciaService {
         collection: string | number | any[];
         pagination: import("../entities/Pagination").PaginationDto;
     }>;
-    traerTodasLoc(id: number, limit: number, offset: number, url: string, path: string): Promise<void>;
+    traerTodasLoc(id: number, limit: number, offset: number, url: string, path: string): Promise<{
+        collection: string | number | any[];
+        pagination: import("../entities/Pagination").PaginationDto;
+    }>;
     crearProvincia(provinciaCrear: Provincias): Promise<any>;
     modificarProvincia(provinciaId: number, provinciaModificar: Provincias): Promise<any>;
     borrarProvincia(provinciaId: number): Promise<any>;

@@ -140,7 +140,7 @@ router.post("/:id/enrollment", authMiddleware_1.AuthMiddleware, async (req, res)
     const idUser = req.body.id_user;
     const username = req.body.username;
     try {
-        const event = await eventService.enrollUser(Number(id), Number(idUser), String(username));
+        const event = await eventService.enrollUser(Number(id), Number(idUser));
         return res.json("Te pudiste inscribir bien");
     }
     catch (_a) {

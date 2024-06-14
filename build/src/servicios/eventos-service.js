@@ -113,6 +113,9 @@ class EventService {
         try {
             console.log('llega al try de event service create');
             evento = await eventRepository.createEvent(eventito);
+            if (evento.message === 'Bad Request') {
+                throw new Error('Bad Request');
+            }
         }
         catch (error) {
             console.log("error en evento service creat");
@@ -132,6 +135,9 @@ class EventService {
         let evento = null;
         try {
             evento = await eventRepository.updateEvent(eventito, userId);
+            if (evento.message === 'Bad Request') {
+                throw new Error('Bad Request');
+            }
         }
         catch (error) {
             console.log("error al modificar evento en service");
@@ -151,9 +157,9 @@ class EventService {
         }
         return eliminado;
     }
-    async enrollUser(id, idUser, username) {
+    async enrollUser(id, idUser) {
         const eventRepository = new eventos_repository_1.EventRepository();
-        const sePudo = await eventRepository.enrollUsuario(id, idUser, username);
+        const sePudo = await eventRepository.enrollUsuario(id, idUser);
         return sePudo;
     }
     patchFeedback(id, observations, rating) {

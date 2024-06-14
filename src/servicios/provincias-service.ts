@@ -47,17 +47,17 @@ export class ProvinciaService {
         const parsedLimit = pag.parseLimit(limit);
         const parsedOffset = pag.parseOffset(offset);
 
-        if(this.busquedaId(id) === null){
+        if(await this.busquedaId(id) === null){
             throw new Error ('Not Found');
         }
         const [allLoc, countLoc] = await provinciaRepository.traerLoc(id, parsedLimit, parsedOffset);
-        
+        console.log('COunt loc: ',countLoc);
         const resultado = {
             collection: allLoc,
             
             pagination: pag.buildPagination(parsedLimit, parsedOffset, countLoc, path, url)
         }
-
+        return resultado;
     }
 
     async crearProvincia(provinciaCrear: Provincias){

@@ -13,7 +13,7 @@ class ProvinciaRepository {
         this.BDClient.connect();
     }
     async buscarId(id) {
-        console.log("llegue a provincia buscarId");
+        console.log("llegue a repo provincia buscarId");
         let devolver = null;
         try {
             const query = {
@@ -50,9 +50,10 @@ class ProvinciaRepository {
     }
     async traerLoc(id, limit, offset) {
         const query1 = `SELECT * FROM locations WHERE id_province = ${id} LIMIT ${limit} OFFSET ${offset}`;
-        const query2 = `SELECT COUNT(*) FROM locations WHERE id_province = ${id} LIMIT ${limit} OFFSET ${offset}`;
+        const query2 = `SELECT COUNT(*) FROM locations WHERE id_province = ${id}`;
         try {
             const { rows: result1 } = await this.BDClient.query(query1);
+            console.log('Result 1', result1);
             const result2 = result1.length;
             console.log(result2);
             return [result1, result2];

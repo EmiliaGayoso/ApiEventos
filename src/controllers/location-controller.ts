@@ -39,7 +39,7 @@ router.get("/:id/event-location", AuthMiddleware, async (req: Request, res: Resp
     const url = "api/location";
     
     try {
-        const eventLocations = locationService.getAllEventLocations(Number(req.params.id), Number(limit), Number(offset), url, req.path);
+        const eventLocations = await locationService.getAllEventLocations(Number(req.params.id), Number(limit), Number(offset), url, req.path);
         return res.status(200).json(eventLocations);
     } catch (error) {
         if (error.message === 'Not Found'){

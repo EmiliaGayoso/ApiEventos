@@ -10,6 +10,6 @@ export declare class EventRepository {
     deleteEvent(id: any, userId: any): Promise<{
         message: string;
     }>;
-    enrollUsuario(id: any, idUser: any, username: any): Promise<true | pg.QueryResult<any>>;
+    enrollUsuario(idEvento: any, idUsuario: any): Promise<any>;
     patchFeedback(id: any, observations: any, rating: any): string;
 }

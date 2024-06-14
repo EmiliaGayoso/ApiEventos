@@ -95,8 +95,9 @@ class EventRepository {
             console.log(seCreo);
             retornar = seCreo;
         }
-        catch (_a) {
+        catch (error) {
             console.log("Error en query, no se pudo crear el evento");
+            return { message: "Bad Request" };
         }
         return retornar;
     }
@@ -127,6 +128,7 @@ class EventRepository {
         }
         catch (_a) {
             console.log("Error en query, no se pudo modificar el evento");
+            return { message: "Bad Request" };
         }
         return retornar;
     }
@@ -150,29 +152,43 @@ class EventRepository {
             return { message: "Bad Request" };
         }
     }
-    async enrollUsuario(id, idUser, username) {
-        let usuarioInscripto;
-        const usuario = 1;
-        if (usuario != null) {
-            const query = {
-                text: `INSERT INTO event_enrollments(id_event,id_user,registration_date_time) VALUES ($1, $2) `,
-                values: [id, idUser]
-            };
-            try {
-                const result = await client.query(query);
-                usuarioInscripto = result.rows[0];
-                console.log('Usuario Inscripto', usuarioInscripto);
-            }
-            catch (error) {
-                console.error('Error al insertar usuario:', error);
-            }
-            if (!usuarioInscripto) {
-                throw new Error('Not Found');
-            }
-            const values = client.query(query);
-            return values;
+    async enrollUsuario(idEvento, idUsuario) {
+        const query1 = `SELECT * FROM event_enrollments WHERE id_event = ${idEvento} AND id_user = ${idUsuario}`;
+        const result1 = await client.query(query1);
+        if (result1.rows.length > 0) {
+            throw new Error('El usuario ya está inscrito en este evento.');
         }
-        return true;
+        const query2 = {
+            text: 'SELECT * FROM events WHERE id = $1 AND start_date > NOW()',
+            values: [idEvento]
+        };
+        const result2 = await client.query(query2);
+        if (result2.rows.length === 0) {
+            throw new Error('La fecha del evento ya ha pasado.');
+        }
+        const query3 = {
+            text: 'SELECT count(*) AS num_enrollments FROM event_enrollments WHERE id_event = $1',
+            values: [idEvento]
+        };
+        const result3 = await client.query(query3);
+        const numEnrollments = parseInt(result3.rows[0].num_enrollments);
+        const query4 = {
+            text: 'SELECT max_assistance FROM events WHERE id = $1',
+            values: [idEvento]
+        };
+        const result4 = await client.query(query4);
+        const maxAssistance = parseInt(result4.rows[0].max_assistance);
+        if (numEnrollments >= maxAssistance) {
+            throw new Error('Se ha alcanzado la cantidad máxima de inscripciones para este evento.');
+        }
+        const query5 = {
+            text: 'INSERT INTO event_enrollments(id_event, id_user, registration_date_time) VALUES ($1, $2, NOW()) RETURNING *',
+            values: [idEvento, idUsuario]
+        };
+        const result5 = await client.query(query5);
+        const usuarioInscripto = result5.rows[0];
+        console.log('Usuario inscrito:', usuarioInscripto);
+        return usuarioInscripto;
     }
     patchFeedback(id, observations, rating) {
         return "json";

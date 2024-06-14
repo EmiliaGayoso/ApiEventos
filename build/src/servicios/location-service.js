@@ -35,18 +35,23 @@ class LocationService {
     async getAllEventLocations(id, limit, offset, url, path) {
         const locationRepository = new location_repository_1.LocationRepository();
         let eventLocations, countLocations = null;
+        let parsedLimit = pag.parseLimit(limit);
+        let parsedOffset = pag.parseOffset(offset);
         let devolver = null;
+        if (await this.getByID(id) === null) {
+            throw new Error('Not Found');
+        }
         try {
-            [eventLocations, countLocations] = await locationRepository.getAllEventsLocations(id, limit, offset);
+            const [eventLocations, countLocations] = await locationRepository.getAllEventsLocations(id, parsedLimit, parsedOffset);
             devolver = {
                 collection: eventLocations,
-                pagination: pag.buildPagination(limit, offset, countLocations, path, url),
+                pagination: pag.buildPagination(parsedLimit, parsedOffset, countLocations, path, url),
             };
         }
         catch (error) {
             console.log("error en location rep get all event");
         }
-        if (eventLocations === null || eventLocations.rows.length === 0) {
+        if (eventLocations === null) {
             throw new Error('Not Found');
         }
         return devolver;

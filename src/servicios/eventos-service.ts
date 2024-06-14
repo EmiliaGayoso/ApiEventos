@@ -141,6 +141,9 @@ export class EventService {
         try {
             console.log('llega al try de event service create')
             evento = await eventRepository.createEvent(eventito);
+            if (evento.message === 'Bad Request'){
+                throw new Error ('Bad Request');
+            }
         } catch (error) {
             console.log("error en evento service creat");
         }
@@ -161,6 +164,9 @@ export class EventService {
         let evento = null;
         try {   
             evento = await eventRepository.updateEvent(eventito, userId);
+            if (evento.message === 'Bad Request'){
+                throw new Error ('Bad Request');
+            }
         } catch (error) {
             console.log("error al modificar evento en service")
         }
@@ -185,10 +191,10 @@ export class EventService {
     //verificar si el nombre de usuario coincide con el id
 
     //inscribirlo
-    async enrollUser(id: number, idUser: number, username: string){
+    async enrollUser(id: number, idUser: number, /*username: string*/){
         const eventRepository = new EventRepository();
         //insertar el idUser a la BD de inscriptos
-        const sePudo = await eventRepository.enrollUsuario(id, idUser, username)
+        const sePudo = await eventRepository.enrollUsuario(id, idUser)
         return sePudo;
     }
 

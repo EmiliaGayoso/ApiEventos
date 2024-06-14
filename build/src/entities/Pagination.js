@@ -22,12 +22,13 @@ class Pagination {
         this.offsetRegex = /offset=\d+/;
     }
     parseLimit(limit) {
-        return !isNaN(parseInt(limit)) ? parseInt(limit) : 3;
+        return !isNaN(parseInt(limit)) ? parseInt(limit) : 2;
     }
     parseOffset(offset) {
         return !isNaN(parseInt(offset)) ? parseInt(offset) : 0;
     }
     buildPagination(limit, currentOffset, total, path, url) {
+        console.log('estoy en builpagination');
         console.log(limit);
         console.log(currentOffset);
         console.log(total);

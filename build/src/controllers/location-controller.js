@@ -40,7 +40,7 @@ router.get("/:id/event-location", authMiddleware_1.AuthMiddleware, async (req, r
     const offset = req.query.page;
     const url = "api/location";
     try {
-        const eventLocations = locationService.getAllEventLocations(Number(req.params.id), Number(limit), Number(offset), url, req.path);
+        const eventLocations = await locationService.getAllEventLocations(Number(req.params.id), Number(limit), Number(offset), url, req.path);
         return res.status(200).json(eventLocations);
     }
     catch (error) {

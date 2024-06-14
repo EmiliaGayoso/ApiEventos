@@ -128,9 +128,9 @@ export class EventRepository{
         console.log(seCreo);
         retornar = seCreo;
     }
-    catch{
+    catch(error){
         console.log("Error en query, no se pudo crear el evento");
-        
+        return { message: "Bad Request" };
     }
     return retornar;
 }
@@ -167,6 +167,7 @@ export class EventRepository{
         }
         catch{
             console.log("Error en query, no se pudo modificar el evento");
+            return { message: "Bad Request" };
         }
         return retornar;
     }
@@ -213,35 +214,56 @@ export class EventRepository{
         }
     }*/
 
-    async enrollUsuario(id, idUser, username){
+    
         //se tiene que hacer lo de agregar el usuario
         //si no se pudo se manda null
-        let usuarioInscripto;
-        const usuario=/* this.verificarExistenciaUsuario(idUser,username)*/1;
-        
+        async enrollUsuario(idEvento, idUsuario) {
 
-        if(usuario != null)
-        {
-            const query = {
-                text: `INSERT INTO event_enrollments(id_event,id_user,registration_date_time) VALUES ($1, $2) `,
-                values: [id, idUser]
-            };
-            try{
-                const result = await client.query(query);
-                usuarioInscripto = result.rows[0];
-                console.log('Usuario Inscripto', usuarioInscripto);
-            } catch(error){
-                console.error('Error al insertar usuario:', error)
+            // Verificar si el usuario ya está inscrito en el evento
+            const query1 = `SELECT * FROM event_enrollments WHERE id_event = ${idEvento} AND id_user = ${idUsuario}`;
+            const result1 = await client.query(query1);
+            if (result1.rows.length > 0) {
+                throw new Error('El usuario ya está inscrito en este evento.');
             }
-            if(!usuarioInscripto){
-                throw new Error('Not Found')
-            } 
-            const values = client.query(query);
-            return values;
-        }
         
-        return true
-    }
+            // Verificar si la fecha del evento aún no ha pasado
+            const query2 = {
+                text: 'SELECT * FROM events WHERE id = $1 AND start_date > NOW()',
+                values: [idEvento]
+            };
+            const result2 = await client.query(query2);
+            if (result2.rows.length === 0) {
+                throw new Error('La fecha del evento ya ha pasado.');
+            }
+        
+            // Verificar si no se ha alcanzado la cantidad máxima de personas para el evento
+            const query3 = {
+                text: 'SELECT count(*) AS num_enrollments FROM event_enrollments WHERE id_event = $1',
+                values: [idEvento]
+            };
+            const result3 = await client.query(query3);
+            const numEnrollments = parseInt(result3.rows[0].num_enrollments);
+            const query4 = {
+                text: 'SELECT max_assistance FROM events WHERE id = $1',
+                values: [idEvento]
+            };
+            const result4 = await client.query(query4);
+            const maxAssistance = parseInt(result4.rows[0].max_assistance);
+            if (numEnrollments >= maxAssistance) {
+                throw new Error('Se ha alcanzado la cantidad máxima de inscripciones para este evento.');
+            }
+        
+            // Inscribir al usuario en el evento
+            const query5 = {
+                text: 'INSERT INTO event_enrollments(id_event, id_user, registration_date_time) VALUES ($1, $2, NOW()) RETURNING *',
+                values: [idEvento, idUsuario]
+            };
+            const result5 = await client.query(query5);
+            const usuarioInscripto = result5.rows[0];
+            console.log('Usuario inscrito:', usuarioInscripto);
+            return usuarioInscripto;
+        }
+    
 
     patchFeedback(id, observations, rating){
         //deberia retornar el json de como
