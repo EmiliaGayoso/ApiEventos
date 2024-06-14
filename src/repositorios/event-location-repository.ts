@@ -7,12 +7,13 @@ client.connect();
 
 export class EventLocationRepository {
     async getAll(limit, offset){
+        console.log('llegue a getAll de eventlocrepo');
         const query1 = `SELECT * FROM event_locations LIMIT ${limit} OFFSET ${offset}`;
 
-        const queryCount = 'SELECT COUNT(*) FROM event_locations';
         try {
             const { rows: resp } = await client.query(query1);
             const resp2 = resp.length;
+            console.log('Length de event_locations: ', resp2);
             return [resp, resp2];
         } catch (error) {
             return ("error en repo event loc getAll");
@@ -41,7 +42,7 @@ export class EventLocationRepository {
         let devolver = null;
         try {
             const query = {
-                text: 'INSERT INTO event_locations (id_location, name, full_address, max_capacity, latitude, longitude, id_creator_user) VALUES ($1,$2,$3,$4,$5,$6,$7)',
+                text: 'INSERT INTO event_locations (id_location, name, full_address, max_capacity, latitude, longitude, id_creator_user) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *',
                 values: [crear.id_location, crear.name, crear.full_address, crear.max_capacity, crear.latitude, crear.longitude, user]
             };
             const result = await client.query(query);
@@ -56,7 +57,7 @@ export class EventLocationRepository {
         let devolver = null;
         try {
             const query = {
-                text: 'UPDATE event_locations SET id_location = $1, name = $2, full_address = $3, max_capacity = $4, latitude = $5, longitude = $6 WHERE id = $7 AND id_creator_user = $8',
+                text: 'UPDATE event_locations SET id_location = $1, name = $2, full_address = $3, max_capacity = $4, latitude = $5, longitude = $6 WHERE id = $7 AND id_creator_user = $8 RETURNING *',
                 values: [modificar.id_location, modificar.name, modificar.full_address, modificar.max_capacity, modificar.latitude, modificar.longitude, modificar.id, user]
             };
             const result = await client.query(query);

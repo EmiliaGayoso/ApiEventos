@@ -11,10 +11,12 @@ router.get('/:id', async (req, res) => {
     const id = req.params.id;
     try {
         const provincia = await provinciaService.busquedaId(Number(id));
-        res.status(200).json(provincia);
+        return res.status(200).json(provincia);
     }
     catch (error) {
-        res.status(404).json({ message: error.message });
+        if (error.message === 'Not Found')
+            return res.status(404).json({ message: error.message });
+        return res.json(error);
     }
 });
 router.get('/', async (req, res) => {
@@ -63,8 +65,8 @@ router.post('/', async (req, res) => {
         }
     }
 });
-router.put('/:id', async (req, res) => {
-    const provinciaId = req.params.id;
+router.put('/', async (req, res) => {
+    const provinciaId = req.body.id;
     const provinciaModificar = req.body;
     try {
         const provinciaModificada = await provinciaService.modificarProvincia(Number(provinciaId), provinciaModificar);

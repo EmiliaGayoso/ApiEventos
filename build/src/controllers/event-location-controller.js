@@ -28,7 +28,7 @@ router.get("/:id", authMiddleware_1.AuthMiddleware, async (req, res) => {
     }
     catch (error) {
         if (error.message === 'Not Found') {
-            return res.status(404).json({ message: 'El ID ingresado no corresponde a ningún evento. El usuario no está autenticado' });
+            return res.status(404).json({ message: 'El ID ingresado no corresponde a ningún evento.' });
         }
         else {
             return res.status(400).json({ message: error.message });
@@ -50,9 +50,9 @@ router.post("/", authMiddleware_1.AuthMiddleware, async (req, res) => {
     }
 });
 router.put("/", authMiddleware_1.AuthMiddleware, async (req, res) => {
+    const user = req.user.id;
+    const modificar = req.body;
     try {
-        const user = req.user.id;
-        const modificar = req.body;
         const modificada = await eventLocService.modificarEventLoc(modificar, user);
         return res.status(200).json(modificada);
     }
@@ -69,8 +69,8 @@ router.put("/", authMiddleware_1.AuthMiddleware, async (req, res) => {
 router.delete("/:id", authMiddleware_1.AuthMiddleware, async (req, res) => {
     try {
         const user = req.user.id;
-        const eliminado = eventLocService.borrarEventLoc(Number(req.params.id), user);
-        return res.status(200).json(eliminado);
+        const eliminado = await eventLocService.borrarEventLoc(Number(req.params.id), user);
+        return res.status(200).json({ message: 'La locacion de evento se pudo eliminar de manera correcta' });
     }
     catch (error) {
         if (error.message === 'Not Found') {

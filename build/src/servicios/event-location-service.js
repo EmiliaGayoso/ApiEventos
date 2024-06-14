@@ -9,7 +9,7 @@ class EventLocationService {
         const pag = new Pagination_1.Pagination();
         const parsedLimit = pag.parseLimit(limit);
         const parsedOffset = pag.parseOffset(offset);
-        const [allEventLoc, cantidadEventLoc] = await eventLocRepository.getAll(limit, offset);
+        const [allEventLoc, cantidadEventLoc] = await eventLocRepository.getAll(parsedLimit, parsedOffset);
         const devolver = {
             collection: allEventLoc,
             pagination: pag.buildPagination(parsedLimit, parsedOffset, cantidadEventLoc, path, url),
@@ -24,7 +24,7 @@ class EventLocationService {
         catch (error) {
             console.log("erros en event loc service getbyid");
         }
-        if (buscada.rows.length === 0) {
+        if (buscada === null) {
             throw new Error('Not Found');
         }
         return buscada;
@@ -47,27 +47,27 @@ class EventLocationService {
         if ((eventModificar.name || eventModificar.full_address) === null || (eventModificar.name || eventModificar.full_address).length <= 3 || eventModificar.id_location === null || eventModificar.max_capacity <= 0) {
             throw new Error('Bad Request');
         }
+        else if (await this.getById(eventModificar.id) === null) {
+            throw new Error('Not Found');
+        }
         try {
             modificar = await eventLocRepository.modificarEventLoc(eventModificar, user);
         }
         catch (error) {
             console.log("error en modificar evento loc");
         }
-        if (modificar.rows.length === 0) {
-            throw new Error('Not Found');
-        }
         return modificar;
     }
     async borrarEventLoc(id, user) {
         let eliminar = null;
+        if (await this.getById(id) === null) {
+            throw new Error('Not Found');
+        }
         try {
             eliminar = await eventLocRepository.borrarEventLoc(id, user);
         }
         catch (error) {
             console.log("error en service borrar evento loc");
-        }
-        if (eliminar.rows.length === 0) {
-            throw new Error('Not Found');
         }
     }
 }

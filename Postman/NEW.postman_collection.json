@@ -1,0 +1,870 @@
+{
+	"info": {
+		"_postman_id": "d07b8dd8-d1f6-441f-8861-9f0c8ae611c1",
+		"name": "DAI-API_Eventos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Event",
+			"item": [
+				{
+					"name": "NO Enrollment",
+					"item": [
+						{
+							"name": "NO Rating de un evento event_enrollment",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": ""
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NO Inscripción a un evento",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{puerto}}/api/event/15/enrollment",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{puerto}}",
+									"path": [
+										"api",
+										"event",
+										"15",
+										"enrollment"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NO Eliminar al usuario del evento",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": ""
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/event",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"event"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/event/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"event",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear evento",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"name\": \"Harry Styles\",\r\n\"description\": \"Un concierto muy STYLE\",\r\n\"id_event_category\": 1,\r\n\"id_event_location\": 1,\r\n\"start_date\": \"2025-12-03 t 00:00:00\" ,\r\n\"duration_in_minutes\": 210,\r\n\"price\": 17500,\r\n\"enabled_for_enrollment\": true,\r\n\"max_assistance\": 90000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/event",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"event"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modificar evento",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"id\": 15,\r\n\"name\": \"Emi Gayoso\",\r\n\"description\": \"Un concierto muy STYLE\",\r\n\"id_event_category\": 1,\r\n\"id_event_location\": 1,\r\n\"start_date\": \"2022/12/03 t 00:00:00\" ,\r\n\"duration_in_minutes\": 300,\r\n\"price\": 2,\r\n\"enabled_for_enrollment\": true,\r\n\"max_assistance\": 90000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/event/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"event",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar evento",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/event/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"event",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Event-Location LISTO",
+			"item": [
+				{
+					"name": "getAll",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/event-location",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"event-location"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/event-location/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"event-location",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear event_location",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_location\": 1,\r\n    \"name\": \"Prueba 2\",\r\n    \"full_address\": \"aaa\",\r\n    \"max_capacity\": 20,\r\n    \"latitude\": 5,\r\n    \"longitude\": 32\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/event-location",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"event-location"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar event_location",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 2,\r\n    \"id_location\": 1,\r\n    \"name\": \"aaaaaaa\",\r\n    \"full_address\": \"aaa\",\r\n    \"max_capacity\": 20,\r\n    \"latitude\": 5,\r\n    \"longitude\": 32\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/event-location",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"event-location"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar event_location",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/event-location/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"event-location",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category LISTO",
+			"item": [
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5050/api/event-category",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5050",
+							"path": [
+								"api",
+								"event-category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5050/api/event-category/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5050",
+							"path": [
+								"api",
+								"event-category",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear event_category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Prueba\",\r\n    \"display_order\": 20\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5050/api/event-category",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5050",
+							"path": [
+								"api",
+								"event-category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar event_category",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 4,\r\n    \"name\": \"Prueba de la prueba2\",\r\n    \"display_order\": 25\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5050/api/event-category",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5050",
+							"path": [
+								"api",
+								"event-category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar event_category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5050/api/event-category/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5050",
+							"path": [
+								"api",
+								"event-category",
+								"7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Locations LISTO",
+			"item": [
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/location",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"location"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/location/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"location",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAll event-location",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/location/1/event-location",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"location",
+								"1",
+								"event-location"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Provinces LISTO",
+			"item": [
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/provincias",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"provincias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/provincias/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"provincias",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getById all locations of province",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/provincias/2/locations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"provincias",
+								"2",
+								"locations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear provincia",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"name\": \"Sokovia\",\r\n\"full_name\": \"The land of Sokovia\",\r\n\"latitude\": -100.61444091496875,\r\n\"longitude\": -500.445877075195312\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/provincias",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"provincias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar provincia",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"id\": 3,\r\n\"name\": \"Nueva York\",\r\n\"full_name\": \"The land of Sokovia\",\r\n\"latitude\": -100.61444091496875,\r\n\"longitude\": -500.445877075195312\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/provincias",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"provincias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar provincia",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/provincias/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"provincias",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User LISTO",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"pm.environment.set(\"token\", res);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"first_name\": \"Julian\",\r\n\"last_name\": \"Schiffer\",\r\n\"username\": \"schifferjulian@gmail.com\",\r\n\"password\": \"julian\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/user/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"first_name\": \"Emi\",\r\n\"last_name\": \"Gayoso\",\r\n\"username\": \"gayoso@gmail.com\",\r\n\"password\": \"emi\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{puerto}}/api/user/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{puerto}}",
+							"path": [
+								"api",
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

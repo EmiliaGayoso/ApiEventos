@@ -32,7 +32,7 @@ router.get("/:id", AuthMiddleware, async (req: Request, res: Response) => {
         return res.status(200).json(eventLocBuscado);
     } catch (error) {
         if (error.message === 'Not Found'){
-            return res.status(404).json({ message: 'El ID ingresado no corresponde a ningún evento. El usuario no está autenticado'})
+            return res.status(404).json({ message: 'El ID ingresado no corresponde a ningún evento.'})
         }else {
             return res.status(400).json({ message: error.message})
         }
@@ -54,9 +54,10 @@ router.post("/", AuthMiddleware, async (req: RequestUser, res: Response) => {
 });
 
 router.put("/", AuthMiddleware, async (req: RequestUser, res: Response) => {
+    const user = req.user.id;
+    const modificar = req.body;
     try {
-        const user = req.user.id;
-        const modificar = req.body;
+        
         const modificada = await eventLocService.modificarEventLoc(modificar,user);
         return res.status(200).json(modificada);
     } catch (error) {
@@ -72,8 +73,8 @@ router.put("/", AuthMiddleware, async (req: RequestUser, res: Response) => {
 router.delete("/:id", AuthMiddleware, async (req: RequestUser, res: Response) => {
     try {
         const user = req.user.id;
-        const eliminado = eventLocService.borrarEventLoc(Number(req.params.id),user)
-        return res.status(200).json(eliminado)
+        const eliminado = await eventLocService.borrarEventLoc(Number(req.params.id),user)
+        return res.status(200).json({message: 'La locacion de evento se pudo eliminar de manera correcta'})
     } catch (error) {
         if(error.message === 'Not Found'){
             return res.status(404).json({   message: 'El ID ingresado no pertenece a ninguna locación o no tienes la autorización suficiente para poder eliminarla' });
