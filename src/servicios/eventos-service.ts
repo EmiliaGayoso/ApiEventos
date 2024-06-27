@@ -191,11 +191,17 @@ export class EventService {
     //verificar si el nombre de usuario coincide con el id
 
     //inscribirlo
-    async enrollUser(id: number, idUser: number, /*username: string*/){
+    async enrollUser(id: number, idUser: number /*username: string*/){
         const eventRepository = new EventRepository();
         //insertar el idUser a la BD de inscriptos
         const sePudo = await eventRepository.enrollUsuario(id, idUser)
         return sePudo;
+    }
+
+    async userYaInscripto(idEvent: number, idUser: number){
+        const eventRepository = new EventRepository();
+        const yaInscripto = await eventRepository.verificarInscripcion(idEvent, idUser);
+        return yaInscripto;
     }
 
     

@@ -264,7 +264,9 @@ export class EventRepository{
             return usuarioInscripto;
         }
     
-
+        verificarInscripcion(idEvent, idUser){
+            
+        }
     patchFeedback(id, observations, rating){
         //deberia retornar el json de como
         return "json"
