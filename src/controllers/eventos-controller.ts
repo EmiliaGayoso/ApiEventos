@@ -176,7 +176,6 @@ router.post("/:id/enrollment", AuthMiddleware, async(req: Request, res: Response
   const username = req.body.username;
 
   try {
-    
     try {
       const eventDisponible = await eventService.getEventoById(Number(id));
       if(!eventDisponible.enabled_for_enrollment){
@@ -192,13 +191,33 @@ router.post("/:id/enrollment", AuthMiddleware, async(req: Request, res: Response
     const yaInscripto = await eventService.userYaInscripto(Number(id), Number(idUser));
     if(yaInscripto !== null){
       return res.status(400).json({message: 'Ya estás inscripto al evento deseado'})
-    }
-    const inscripto = await eventService.enrollUser(Number(id), Number(idUser), /*String(username)*/);
-    if(inscripto !== null){
+    }else{
+      const inscripto = await eventService.enrollUser(Number(id), Number(idUser), /*String(username)*/);
+      if(inscripto !== null)
       return res.status(201).json({message: 'Te pudiste inscribir bien'});
     }
+    return res.json('todo bien');
   }
   catch (error){
+    console.log("Un Error");
+    return res.json("Un Error");
+  }
+});
+
+router.delete("/:id/enrollment", AuthMiddleware, async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const idUser = req.body.id_user;
+  try {
+    const eventDisponible = await eventService.getEventoById(Number(id));
+      if(eventDisponible.start_date <= Date.now()){
+        return res.status(400).json({message: 'El evento al que quiere inscribirse no tiene la inscripción abierta'});
+      }
+    const yaInscripto = await eventService.userYaInscripto(Number(id), Number(idUser));
+    if(yaInscripto === null){
+      return res.status(400).json({message: 'No estás inscripto al evento deseado'})
+    }
+    const eliminado = await eventService.deleteEnrollment(Number(id), Number(idUser))
+  } catch (error) {
     console.log("Un Error");
     return res.json("Un Error");
   }

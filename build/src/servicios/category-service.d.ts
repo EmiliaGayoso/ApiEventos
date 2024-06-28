@@ -1,7 +1,7 @@
 import Categories from "../entities/Categorias";
 export declare class CategoryService {
     getAll(limit: number, offset: number, url: string, path: string): Promise<{
-        collection: string | number | any[];
+        collection: any;
         pagination: import("../entities/Pagination").PaginationDto;
     }>;
     getByID(id: number): Promise<any>;

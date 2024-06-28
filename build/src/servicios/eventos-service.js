@@ -162,6 +162,11 @@ class EventService {
         const sePudo = await eventRepository.enrollUsuario(id, idUser);
         return sePudo;
     }
+    async userYaInscripto(idEvent, idUser) {
+        const eventRepository = new eventos_repository_1.EventRepository();
+        const yaInscripto = await eventRepository.verificarInscripcion(idEvent, idUser);
+        return yaInscripto;
+    }
     patchFeedback(id, observations, rating) {
         const eventRepository = new eventos_repository_1.EventRepository();
         let sePudo = null;

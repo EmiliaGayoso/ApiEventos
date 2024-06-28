@@ -197,7 +197,7 @@ export class EventService {
         const sePudo = await eventRepository.enrollUsuario(id, idUser)
         return sePudo;
     }
-
+    //listo
     async userYaInscripto(idEvent: number, idUser: number){
         const eventRepository = new EventRepository();
         const yaInscripto = await eventRepository.verificarInscripcion(idEvent, idUser);
@@ -205,6 +205,13 @@ export class EventService {
     }
 
     
+    //delete el enrollment
+    async deleteEnrollment(idEvent: number, idUser: number){
+        const eventRepository = new EventRepository();
+        const eliminado = await eventRepository.eliminarEnrollment(idEvent, idUser);
+        return eliminado;
+    }
+
     /*10*/
     patchFeedback(id: number, observations: string, rating: number){
         const eventRepository = new EventRepository();
