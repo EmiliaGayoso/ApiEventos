@@ -198,31 +198,49 @@ export class EventService {
         return sePudo;
     }
     //listo
+    /*
     async userYaInscripto(idEvent: number, idUser: number){
         const eventRepository = new EventRepository();
         const yaInscripto = await eventRepository.verificarInscripcion(idEvent, idUser);
         return yaInscripto;
     }
+    */
 
     
     //delete el enrollment
     async deleteEnrollment(idEvent: number, idUser: number){
         const eventRepository = new EventRepository();
         const eliminado = await eventRepository.eliminarEnrollment(idEvent, idUser);
+        const buscada = await this.getEventoById(idEvent);
+        if (buscada === null){
+            throw new Error ('Not Found')
+        }
+        try {
+            
+        } catch (error) {
+            
+        }
         return eliminado;
     }
 
     /*10*/
-    patchFeedback(id: number, observations: string, rating: number){
+    async patchFeedback(idEvent: number, idUser: number, observations: string, rating: number){
         const eventRepository = new EventRepository();
-        
+        const buscada = await this.getEventoById(idEvent);
+        if(!(Number(rating) >= 1 && Number(rating) <= 10)){
+            throw new Error ('Bad Request rating');
+        }else if (buscada === null){
+            throw new Error ('Not Found')
+        }
         let sePudo = null;
         try {
-            
-        } catch (error) {   
+            sePudo = await eventRepository.ingresoFeedback(idEvent, idUser, rating, observations);
+        } catch (error) {
+            if(!sePudo.success){//habria que ver una manera de que el success tenga opcion de 2 false, uno para el error de noInscripto y otro para el de noSucedio
+                throw new Error ('Bad Request noInscripto');//por ahora quedara esa
+                //la otra es que se mande como null, y que así lo identifiquemos, esto va tambien para el punto 9
+            }
         }
-        
-        
         return sePudo;
     }
 

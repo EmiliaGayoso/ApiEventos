@@ -275,4 +275,8 @@ export class EventRepository{
         async eliminarEnrollment(idEvent, idUser){
 
         }
+
+        async ingresoFeedback(idEvent, idUser, rating,  feedback){
+            
+        }
     }
