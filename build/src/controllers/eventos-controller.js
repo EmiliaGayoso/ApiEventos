@@ -100,7 +100,7 @@ router.put("/", authMiddleware_1.AuthMiddleware, async (req, res) => {
     const eventito = req.body;
     const userId = req.user.id;
     try {
-        const updatedEvent = await eventService.updateEvent(eventito, userId);
+        const updatedEvent = await eventService.updateEvent(eventito, Number(userId));
         return res.status(201).json({
             message: "Evento modificado correctamente",
             data: updatedEvent,
@@ -122,7 +122,7 @@ router.delete("/:id", authMiddleware_1.AuthMiddleware, async (req, res) => {
     const userId = req.user.id;
     console.log(userId);
     try {
-        await eventService.deleteEvent(Number(id), userId);
+        await eventService.deleteEvent(Number(id), Number(userId));
         return res.status(200).send({ valido: "evento eliminado correctamente" });
     }
     catch (error) {
@@ -137,73 +137,73 @@ router.delete("/:id", authMiddleware_1.AuthMiddleware, async (req, res) => {
 });
 router.post("/:id/enrollment", authMiddleware_1.AuthMiddleware, async (req, res) => {
     const id = req.params.id;
-    const idUser = req.body.id_user;
-    const username = req.body.username;
+    const idUser = req.user.id;
     try {
-        try {
-            const eventDisponible = await eventService.getEventoById(Number(id));
-            if (!eventDisponible.enabled_for_enrollment) {
-                return res.status(400).json({ message: 'El evento al que quiere inscribirse no tiene la inscripción abierta' });
-            }
-            else if (eventDisponible.current_attendance >= eventDisponible.max_assistance) {
-                return res.status(400).json({ message: 'El evento al que quiere inscribirse ya no tiene cupos disponibles' });
-            }
-        }
-        catch (error) {
-            if (error.message === 'Not Found') {
-                return res.status(404).json({ message: 'El evento que busca no existe' });
-            }
-        }
-        const yaInscripto = await eventService.userYaInscripto(Number(id), Number(idUser));
-        if (yaInscripto !== null) {
-            return res.status(400).json({ message: 'Ya estás inscripto al evento deseado' });
-        }
-        else {
-            const inscripto = await eventService.enrollUser(Number(id), Number(idUser));
-            if (inscripto !== null)
-                return res.status(201).json({ message: 'Te pudiste inscribir bien' });
-        }
+        const inscripto = await eventService.enrollUser(Number(id), Number(idUser));
+        return res.status(201).json({ message: 'Te pudiste inscribir bien' });
     }
     catch (error) {
+        if (error.message === 'Bad Request inscripto') {
+            return res.status(400).json({ message: 'Ya estás inscripto al evento deseado' });
+        }
+        else if (error.message === 'Bad Request cerrado') {
+            return res.status(400).json({ message: 'El evento al que quiere inscribirse no tiene la inscripción abierta' });
+        }
+        else if (error.message === 'Bad Request agotado') {
+            return res.status(400).json({ message: 'El evento al que quiere inscribirse ya no tiene cupos disponibles' });
+        }
+        else if (error.message === 'Not Found') {
+            return res.status(404).json({ message: 'El evento que busca no existe' });
+        }
         console.log("Un Error");
         return res.json("Un Error");
     }
 });
 router.delete("/:id/enrollment", authMiddleware_1.AuthMiddleware, async (req, res) => {
     const id = req.params.id;
-    const idUser = req.body.id_user;
+    const idUser = req.user.id;
+    console.log(idUser);
     try {
-        const eventDisponible = await eventService.getEventoById(Number(id));
-        if (eventDisponible.start_date <= Date.now()) {
-            return res.status(400).json({ message: 'El evento al que quiere inscribirse no tiene la inscripción abierta' });
-        }
-        const yaInscripto = await eventService.userYaInscripto(Number(id), Number(idUser));
-        if (yaInscripto === null) {
-            return res.status(400).json({ message: 'No estás inscripto al evento deseado' });
-        }
+        const eliminado = await eventService.deleteEnrollment(Number(id), Number(idUser));
+        return res.status(200).json({ message: 'Se pudo eliminar su inscripción correctamente' });
     }
     catch (error) {
+        if (error.message === 'Bad Request noInscripto') {
+            return res.status(400).json({ message: 'No estás inscripto al evento deseado' });
+        }
+        else if (error.message === 'Bad Request pasado') {
+            return res.status(400).json({ message: 'El evento al que quiere desinscribirse ya pasó' });
+        }
+        else if (error.message === 'Not Found') {
+            return res.status(404).json({ message: 'El evento al que quiere desinscribirse no existe' });
+        }
+        console.log("Un Error");
+        return res.json("Un Error");
     }
 });
 router.patch("/:id/enrollment/:entero", authMiddleware_1.AuthMiddleware, async (req, res) => {
-    const id = req.params.id;
+    const idEvent = req.params.id;
     const rating = req.params.entero;
     const observations = req.body.observations;
+    const idUser = req.user.id;
     try {
-        if (!(Number.isInteger(Number(rating)))) {
-            return res.status(405).json({ error: `El formato ingresado es inválido` });
-        }
-        const feedback = await eventService.patchFeedback(Number(id), String(observations), Number(rating));
+        const feedback = await eventService.patchFeedback(Number(idEvent), Number(idUser), String(observations), Number(rating));
         return res.status(200).json("El feedback se pudo cargar de manera exitosa");
     }
     catch (error) {
         if (error.message === 'Not Found') {
             return res.status(404).json({ message: "El ID ingresado no corresponde a ningún evento" });
         }
-        else if (error.message === 'Bad Request') {
-            return res.status(400).json({ message: "El usuario ingresado no está registrado en el evento seleccionado, o a completado alguno de los campos de manera incorrecta" });
+        else if (error.message === 'Bad Request rating') {
+            return res.status(400).json({ error: `El formato ingresado del rating es inválido` });
         }
-        return res.json("Un error");
+        else if (error.message === 'Bad Request noInscripto') {
+            return res.status(400).json({ message: "El usuario ingresado no está registrado en el evento seleccionado" });
+        }
+        else if (error.message === 'Bad Request noSucedio') {
+            return res.status(400).json({ message: "El evento seleccionado no ha finalizado" });
+        }
+        return res.json("Un error en query");
     }
 });
 exports.default = router;

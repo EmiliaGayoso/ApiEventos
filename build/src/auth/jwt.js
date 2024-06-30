@@ -28,6 +28,7 @@ const descriptedToken = async (ptoken) => {
     catch (e) {
         console.error(e);
     }
+    console.log("Payload:", payloadOriginal);
     return payloadOriginal;
 };
 exports.descriptedToken = descriptedToken;

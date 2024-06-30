@@ -29,6 +29,6 @@ export const descriptedToken = async (ptoken:string) =>
     } catch(e){
         console.error(e);
     }
-
+    console.log("Payload:", payloadOriginal);
     return payloadOriginal;
 }

@@ -1,6 +1,6 @@
 export declare class LocationService {
     getAll(limit: number, offset: number, url: string, path: string): Promise<{
-        collection: any;
+        collection: string | number | any[];
         pagination: import("../entities/Pagination").PaginationDto;
     }>;
     getByID(id: number): Promise<any>;

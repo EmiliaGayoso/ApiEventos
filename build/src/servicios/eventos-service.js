@@ -162,17 +162,37 @@ class EventService {
         const sePudo = await eventRepository.enrollUsuario(id, idUser);
         return sePudo;
     }
-    async userYaInscripto(idEvent, idUser) {
+    async deleteEnrollment(idEvent, idUser) {
         const eventRepository = new eventos_repository_1.EventRepository();
-        const yaInscripto = await eventRepository.verificarInscripcion(idEvent, idUser);
-        return yaInscripto;
-    }
-    patchFeedback(id, observations, rating) {
-        const eventRepository = new eventos_repository_1.EventRepository();
-        let sePudo = null;
+        const eliminado = await eventRepository.eliminarEnrollment(idEvent, idUser);
+        const buscada = await this.getEventoById(idEvent);
+        if (buscada === null) {
+            throw new Error('Not Found');
+        }
         try {
         }
         catch (error) {
+        }
+        return eliminado;
+    }
+    async patchFeedback(idEvent, idUser, observations, rating) {
+        const eventRepository = new eventos_repository_1.EventRepository();
+        const buscada = await this.getEventoById(idEvent);
+        if (!(Number(rating) >= 1 && Number(rating) <= 10)) {
+            throw new Error('Bad Request rating');
+        }
+        else if (buscada === null) {
+            throw new Error('Not Found');
+        }
+        let sePudo = null;
+        try {
+            sePudo = await eventRepository.ingresoFeedback(idEvent, idUser, observations, rating);
+        }
+        catch (error) {
+            if (error.message === 'Bad Request noInscripto') {
+                throw new Error('Bad Request noInscripto');
+            }
+            throw new Error('Query Error');
         }
         return sePudo;
     }

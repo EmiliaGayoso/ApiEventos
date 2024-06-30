@@ -1,5 +1,5 @@
 export declare class LocationRepository {
-    getAll(limit: any, offset: any): Promise<any[] | "Query error">;
+    getAll(limit: any, offset: any): Promise<(number | any[])[] | "Query error">;
     getById(id: any): Promise<any>;
-    getAllEventsLocations(id: any, limit: any, offset: any): Promise<any[] | "Query error">;
+    getAllEventsLocations(id: any, limit: any, offset: any): Promise<(number | any[])[] | "Query error">;
 }

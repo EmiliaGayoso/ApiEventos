@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "d07b8dd8-d1f6-441f-8861-9f0c8ae611c1",
+		"_postman_id": "c1db3406-38c5-4874-afc0-256489754cc6",
 		"name": "DAI-API_Eventos",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33641861"
 	},
 	"item": [
 		{
@@ -12,7 +13,7 @@
 					"name": "NO Enrollment",
 					"item": [
 						{
-							"name": "NO Rating de un evento event_enrollment",
+							"name": "Rating de un evento event_enrollment",
 							"request": {
 								"method": "PATCH",
 								"header": [],
@@ -23,7 +24,7 @@
 							"response": []
 						},
 						{
-							"name": "NO Inscripción a un evento",
+							"name": "Inscripción a un evento",
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -55,7 +56,7 @@
 							"response": []
 						},
 						{
-							"name": "NO Eliminar al usuario del evento",
+							"name": "Eliminar al usuario del evento",
 							"request": {
 								"method": "DELETE",
 								"header": [],

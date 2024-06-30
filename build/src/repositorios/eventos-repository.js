@@ -102,9 +102,16 @@ class EventRepository {
         return retornar;
     }
     async getMaxCapacity(id) {
-        const query = `SELECT max_capacity FROM event_locations WHERE id = '${id}'`;
-        const retornado = await client.query(query);
-        return retornado;
+        const query = `SELECT max_assistance FROM events WHERE id = $1`;
+        const result = await client.query(query, [id]);
+        if (result.rows.length > 0) {
+            const maxAsistencia = result.rows[0].max_assistance;
+            console.log("Capacidad máxima:", maxAsistencia);
+            return maxAsistencia;
+        }
+        else {
+            throw new Error('Evento no encontrado.');
+        }
     }
     async updateEvent(eventito, userId) {
         console.log(eventito);
@@ -153,48 +160,103 @@ class EventRepository {
         }
     }
     async verificarInscripcion(idEvent, idUser) {
-        let retornar = null;
-        const query = `SELECT * FROM event_enrollments WHERE id_event = ${idEvent} AND id_user=${idUser} `;
+        const query = `SELECT * FROM event_enrollments WHERE id_event = ${idEvent} AND id_user=${idUser}`;
         try {
             const { rowCount } = await client.query(query);
             if (rowCount === 0) {
-                return retornar;
+                return false;
             }
-            return retornar = rowCount;
+            return true;
         }
-        catch (_a) {
-            console.log("Error en query, no se pudo ver si el usuario esta en el evento");
-            return { message: "Error query o database" };
+        catch (error) {
+            console.log("Error en query, no se pudo ver si el usuario esta en el evento:", error);
+            throw new Error('Error en la verificación de inscripción');
         }
     }
     async enrollUsuario(idEvento, idUsuario) {
         try {
-            const existe = await client.query(`SELECT * FROM event_enrollments WHERE id_event = ${idEvento} AND id_user = ${idUsuario}`);
-            if (existe.rows.length > 0) {
-                return { success: false, message: 'El usuario ya está inscrito en este evento.' };
+            const existe = await this.verificarInscripcion(idEvento, idUsuario);
+            if (existe) {
+                throw new Error('Bad Request inscripto');
             }
-            const evento = await client.query(`SELECT start_date, max_assistance FROM events WHERE id = ${idEvento}`);
+            const evento = await client.query(`SELECT start_date FROM events WHERE id = ${idEvento}`);
             const hoy = new Date();
             if (evento.rows.length > 0) {
                 const startDate = new Date(evento.rows[0].start_date);
                 if (startDate < hoy) {
-                    return { success: false, message: 'El evento ya ha pasado, no se puede realizar la inscripción.' };
+                    throw new Error('Bad Request cerrado');
                 }
-                const inscritos = await client.query(`SELECT COUNT(*) AS count FROM event_enrollments WHERE id_event = ${idEvento}`);
-                const cantidadInscritos = inscritos.rows[0].count;
-                const maxAsistencia = evento.rows[0].max_assistance;
-                if (cantidadInscritos >= maxAsistencia) {
-                    return { success: false, message: 'Se ha alcanzado la capacidad máxima de asistentes para este evento.' };
+                const inscriptos = await client.query(`SELECT COUNT(*) AS count FROM event_enrollments WHERE id_event = ${idEvento}`);
+                const maxAsistencia = await this.getMaxCapacity(idEvento);
+                if (inscriptos >= maxAsistencia) {
+                    console.log("llego agotado");
+                    console.log("max asistencias: " + maxAsistencia);
+                    console.log("enrollment: " + inscriptos);
+                    throw new Error('Bad Request agotado');
                 }
             }
-            const now = new Date();
+            else {
+                throw new Error('Not Found');
+            }
             await client.query(`
-                    INSERT INTO event_enrollments (id_event, id_user) VALUES ($1, $2)`, [idEvento, idUsuario]);
+                INSERT INTO event_enrollments (id_event, id_user) VALUES ($1, $2)`, [idEvento, idUsuario]);
             return { success: true, message: 'Usuario inscrito correctamente en el evento.' };
         }
         catch (error) {
             console.error('Error al inscribir usuario:', error);
-            return { success: false, message: 'Ocurrió un error al intentar inscribir al usuario en el evento.' };
+            throw new Error(error.message || 'Ocurrió un error al intentar inscribir al usuario en el evento.');
+        }
+    }
+    async eliminarEnrollment(idEvento, idUsuario) {
+        try {
+            const existe = await this.verificarInscripcion(idEvento, idUsuario);
+            if (!existe) {
+                throw new Error('Bad Request noInscripto');
+            }
+            const evento = await client.query(`SELECT start_date FROM events WHERE id = ${idEvento}`);
+            const hoy = new Date();
+            if (evento.rows.length > 0) {
+                const startDate = new Date(evento.rows[0].start_date);
+                if (startDate < hoy) {
+                    throw new Error('Bad Request cerrado');
+                }
+            }
+            else {
+                throw new Error('Not Found');
+            }
+            await client.query(`
+                DELETE FROM event_enrollments WHERE id_event = $1 AND id_user = $2`, [idEvento, idUsuario]);
+            return { success: true, message: 'Usuario eliminado correctamente del evento.' };
+        }
+        catch (error) {
+            console.error('Error al eliminar usuario:', error);
+            throw new Error(error.message || 'Ocurrió un error al intentar eliminar al usuario del evento.');
+        }
+    }
+    async ingresoFeedback(idEvent, idUser, observations, rating) {
+        try {
+            const existe = await this.verificarInscripcion(idEvent, idUser);
+            console.log('Registrado en evento', existe);
+            if (!existe) {
+                throw new Error('Bad Request noInscripto');
+            }
+            console.log('10, llega a verificarion de fecha');
+            const evento = await this.getEventById(idEvent);
+            if (evento.start_date >= Date.now()) {
+                throw new Error('Bad Request noSucedio');
+            }
+            console.log('10, llega al UPDATE');
+            await client.query(`UPDATE event_enrollments SET rating = $1, observations = $2 WHERE id_event = $3 AND id_user = $4`, [rating, observations, idEvent, idUser]);
+            console.log('Punto 10, pasa el UPDATE');
+            const { rowCount } = await client.query(`SELECT * FROM event_enrollments WHERE observations = $1 AND rating = $2`, [observations, rating]);
+            if (rowCount > 0) {
+                return { success: true, message: 'El feedback se pudo cargar de manera exitosa' };
+            }
+            return { success: false };
+        }
+        catch (error) {
+            console.error('Error al actualizar el feedback:', error);
+            throw new Error(error.message || 'Ocurrió un error al intentar actualizar el feedback del evento.');
         }
     }
 }

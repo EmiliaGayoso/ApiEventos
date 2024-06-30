@@ -170,10 +170,11 @@ router.put("/", AuthMiddleware, async (req: RequestUser, res: Response) => {
 });
 
 /*9 inscripcion a un evento*/
-router.post("/:id/enrollment", AuthMiddleware, async(req: Request, res: Response) => {
+router.post("/:id/enrollment", AuthMiddleware, async(req: RequestUser, res: Response) => {
   
   const id = req.params.id;
   const idUser = req.user.id;
+  
   try {
     const inscripto = await eventService.enrollUser(Number(id), Number(idUser));
     return res.status(201).json({message: 'Te pudiste inscribir bien'});
@@ -193,9 +194,11 @@ router.post("/:id/enrollment", AuthMiddleware, async(req: Request, res: Response
   }
 });
 
-router.delete("/:id/enrollment", AuthMiddleware, async (req: Request, res: Response) => {
+router.delete("/:id/enrollment", AuthMiddleware, async (req: RequestUser, res: Response) => {
   const id = req.params.id;
   const idUser = req.user.id;
+  console.log(idUser);
+
   try {
     const eliminado = await eventService.deleteEnrollment(Number(id), Number(idUser))
     return res.status(200).json({message: 'Se pudo eliminar su inscripción correctamente'});
@@ -214,7 +217,7 @@ router.delete("/:id/enrollment", AuthMiddleware, async (req: Request, res: Respo
 
 /*10 rating del evento*/
 /*id del evento, idUser, attended (para verificar), rating (1 a 10) feedback*/
-router.patch("/:id/enrollment/:entero", AuthMiddleware, async (req: Request, res: Response) => {
+router.patch("/:id/enrollment/:entero", AuthMiddleware, async (req: RequestUser, res: Response) => {//funciona
   
   const idEvent = req.params.id;
   const rating = req.params.entero;
@@ -229,13 +232,13 @@ router.patch("/:id/enrollment/:entero", AuthMiddleware, async (req: Request, res
     if (error.message === 'Not Found'){
       return res.status(404).json({message : "El ID ingresado no corresponde a ningún evento"});
     }else if (error.message === 'Bad Request rating'){
-      return res.status(400).json({error: `El formato ingresado del rating es inválido`});
+      return res.status(400).json({error: `El formato ingresado del rating es inválido`});//funciona
     }else if (error.message === 'Bad Request noInscripto'){//el de verificarInscripto y si es null, manda throw new Error
-      return res.status(400).json({ message: "El usuario ingresado no está registrado en el evento seleccionado"});
+      return res.status(400).json({ message: "El usuario ingresado no está registrado en el evento seleccionado"});//funciona
     }else if(error.message === 'Bad Request noSucedio'){//verifica la fecha con dateNow, similar al de Bad Request pasado de enrollment
       return res.status(400).json({ message: "El evento seleccionado no ha finalizado"});
     }
-    return res.json("Un error");
+    return res.json("Un error en query");
   }
 });
 

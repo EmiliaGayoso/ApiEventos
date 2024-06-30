@@ -234,12 +234,13 @@ export class EventService {
         }
         let sePudo = null;
         try {
-            sePudo = await eventRepository.ingresoFeedback(idEvent, idUser, rating, observations);
+            sePudo = await eventRepository.ingresoFeedback(idEvent, idUser, observations, rating);
         } catch (error) {
-            if(!sePudo.success){//habria que ver una manera de que el success tenga opcion de 2 false, uno para el error de noInscripto y otro para el de noSucedio
+            if(error.message === 'Bad Request noInscripto'){//habria que ver una manera de que el success tenga opcion de 2 false, uno para el error de noInscripto y otro para el de noSucedio
                 throw new Error ('Bad Request noInscripto');//por ahora quedara esa
                 //la otra es que se mande como null, y que así lo identifiquemos, esto va tambien para el punto 9
             }
+            throw new Error ('Query Error');
         }
         return sePudo;
     }
