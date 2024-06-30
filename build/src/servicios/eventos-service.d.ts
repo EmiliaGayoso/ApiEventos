@@ -17,10 +17,7 @@ export declare class EventService {
     createEvent(eventito: Eventos): Promise<any>;
     updateEvent(eventito: Eventos, userId: number): Promise<any>;
     deleteEvent(id: number, user_id: number): Promise<any>;
-    enrollUser(id: number, idUser: number): Promise<{
-        success: boolean;
-        message: string;
-    }>;
+    enrollUser(id: number, idUser: number): Promise<any>;
     deleteEnrollment(idEvent: number, idUser: number): Promise<{
         success: boolean;
         message: string;

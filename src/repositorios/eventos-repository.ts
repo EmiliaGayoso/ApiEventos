@@ -144,7 +144,7 @@ export class EventRepository{
             console.log("Capacidad máxima:", maxAsistencia);
             return maxAsistencia;
         } else {
-            throw new Error('Evento no encontrado.');
+            return null;
         }
     }
 
@@ -229,38 +229,36 @@ export class EventRepository{
     // Inscribir al usuario en el evento
     async enrollUsuario(idEvento: number, idUsuario: number) {
         try {
-            // Verificar si el usuario ya está inscrito en el evento
             const existe = await this.verificarInscripcion(idEvento, idUsuario);
             if (existe) {
                 throw new Error('Bad Request inscripto');
-            }
+            }//bien
 
-            // Verificar que la fecha del evento aún no haya pasado
             const evento = await client.query(`SELECT start_date FROM events WHERE id = ${idEvento}`);
             const hoy = new Date();
 
             if (evento.rows.length > 0) {
                 const startDate = new Date(evento.rows[0].start_date);
-                if (startDate < hoy) {
+                if (startDate.getTime() < hoy.getTime()) {
                     throw new Error('Bad Request cerrado');
                 }
 
-                // Verificar la cantidad máxima de asistentes
-                const inscriptos = await client.query(`SELECT COUNT(*) AS count FROM event_enrollments WHERE id_event = ${idEvento}`);
+                const cantInscriptos = await client.query(`SELECT COUNT(*) FROM event_enrollments WHERE id_event = ${idEvento}`);
                 const maxAsistencia = await this.getMaxAssistance(idEvento);
 
-                if (inscriptos >= maxAsistencia) {
+                if (cantInscriptos >= maxAsistencia) {
                     console.log("llego agotado")
                     console.log("max asistencias: "+ maxAsistencia)
-                    console.log("enrollment: "+ inscriptos)
+                    console.log("enrollment: "+ cantInscriptos)
                     throw new Error('Bad Request agotado');
                 }
             } else {
                 throw new Error('Not Found');
             }
-            // Si pasa todas las verificaciones, proceder con la inscripción del usuario
+            console.log('9 enroll hoy:', hoy)
+            console.log('9 enroll lelga a la query de insert into enrollments')
             await client.query(`
-                INSERT INTO event_enrollments (id_event, id_user, registration_date_time) VALUES ($1, $2,$3)`,
+                INSERT INTO event_enrollments (id_event, id_user, registration_date_time) VALUES ($1, $2, $3)`,
                 [idEvento, idUsuario, hoy]
             );
 
@@ -275,26 +273,23 @@ export class EventRepository{
 
         async eliminarEnrollment(idEvento, idUsuario){
             try {
-            // Verificar si el usuario ya está inscrito en el evento
             const existe = await this.verificarInscripcion(idEvento, idUsuario);
             if (!existe) {
                 throw new Error('Bad Request noInscripto');
             }
     
-            // Verificar que la fecha del evento aún no haya pasado
             const evento = await client.query(`SELECT start_date FROM events WHERE id = ${idEvento}`);
             const hoy = new Date();
     
             if (evento.rows.length > 0) {
                 const startDate = new Date(evento.rows[0].start_date);
-                if (startDate < hoy) {
+                if (startDate.getTime() < hoy.getTime()) {
                     throw new Error('Bad Request cerrado');
                 }
             } else {
                 throw new Error('Not Found');
             }
     
-            // Proceder con la eliminación de la inscripción del usuario
             await client.query(`
                 DELETE FROM event_enrollments WHERE id_event = $1 AND id_user = $2`,
                 [idEvento, idUsuario]

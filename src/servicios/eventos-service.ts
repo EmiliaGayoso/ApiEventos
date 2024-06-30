@@ -194,7 +194,23 @@ export class EventService {
     async enrollUser(id: number, idUser: number /*username: string*/){
         const eventRepository = new EventRepository();
         //insertar el idUser a la BD de inscriptos
-        const sePudo = await eventRepository.enrollUsuario(id, idUser)
+        const buscada = await this.getEventoById(id);
+        if (buscada === null){
+            throw new Error ('Not Found')
+        }
+        let sePudo = null;
+        try {
+            sePudo = await eventRepository.enrollUsuario(id, idUser);
+        } catch (error) {
+            if(error.message === 'Bad Request inscripto'){
+                throw new Error ('Bad Request inscripto');
+            }else if(error.message === 'Bad Request cerrado'){
+                throw new Error ('Bad Request cerrado');
+            }else if (error.message === 'Bad Request agotado'){
+                throw new Error ('Bad Request agotado');
+            }
+        }
+        
         return sePudo;
     }
     //listo
@@ -210,15 +226,19 @@ export class EventService {
     //delete el enrollment
     async deleteEnrollment(idEvent: number, idUser: number){
         const eventRepository = new EventRepository();
-        const eliminado = await eventRepository.eliminarEnrollment(idEvent, idUser);
+        let eliminado = null;
         const buscada = await this.getEventoById(idEvent);
         if (buscada === null){
             throw new Error ('Not Found')
         }
         try {
-            
+            eliminado = await eventRepository.eliminarEnrollment(idEvent, idUser);
         } catch (error) {
-            
+            if(error.message === 'Bad Request noInscripto'){
+                throw new Error ('Bad Request noInscripto');
+            }else if(error.message === 'Bad Request cerrado'){
+                throw new Error ('Bad Request cerrado');
+            }
         }
         return eliminado;
     }

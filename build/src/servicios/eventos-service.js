@@ -159,7 +159,25 @@ class EventService {
     }
     async enrollUser(id, idUser) {
         const eventRepository = new eventos_repository_1.EventRepository();
-        const sePudo = await eventRepository.enrollUsuario(id, idUser);
+        const buscada = await this.getEventoById(id);
+        if (buscada === null) {
+            throw new Error('Not Found');
+        }
+        let sePudo = null;
+        try {
+            sePudo = await eventRepository.enrollUsuario(id, idUser);
+        }
+        catch (error) {
+            if (error.message === 'Bad Request inscripto') {
+                throw new Error('Bad Request inscripto');
+            }
+            else if (error.message === 'Bad Request cerrado') {
+                throw new Error('Bad Request cerrado');
+            }
+            else if (error.message === 'Bad Request agotado') {
+                throw new Error('Bad Request agotado');
+            }
+        }
         return sePudo;
     }
     async deleteEnrollment(idEvent, idUser) {

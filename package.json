@@ -21,7 +21,6 @@
   "homepage": "https://github.com/EmiliaGayoso/ApiEventos#readme",
   "dependencies": {
     "@types/express": "^4.17.21",
-    "@types/jsonwebtoken": "^9.0.6",
     "@types/pg": "^8.11.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.1",
@@ -30,5 +29,8 @@
     "pg": "^8.11.5",
     "postgres": "^3.4.4",
     "typescript": "^5.4.3"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.6"
   }
 }
