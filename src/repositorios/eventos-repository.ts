@@ -135,18 +135,24 @@ export class EventRepository{
     return retornar;
 }
 
-async getMaxCapacity(id: number) {
-    const query = `SELECT max_assistance FROM events WHERE id = $1`;
-    const result = await client.query(query, [id]);
+    async getMaxAssistance(id: number) {
+        const query = `SELECT max_assistance FROM events WHERE id = $1`;
+        const result = await client.query(query, [id]);
 
-    if (result.rows.length > 0) {
-        const maxAsistencia = result.rows[0].max_assistance;
-        console.log("Capacidad máxima:", maxAsistencia);
-        return maxAsistencia;
-    } else {
-        throw new Error('Evento no encontrado.');
+        if (result.rows.length > 0) {
+            const maxAsistencia = result.rows[0].max_assistance;
+            console.log("Capacidad máxima:", maxAsistencia);
+            return maxAsistencia;
+        } else {
+            throw new Error('Evento no encontrado.');
+        }
     }
-}
+
+    async getMaxCapacity(id:number){
+        const query = `SELECT max_capacity FROM event_locations WHERE id = '${id}'`
+        const retornado = await client.query(query);
+        return retornado;
+    }
 
     async updateEvent(eventito:Eventos, userId:Number) {
         // Lógica para crear un nuevo evento en la base de datos
@@ -241,7 +247,7 @@ async getMaxCapacity(id: number) {
 
                 // Verificar la cantidad máxima de asistentes
                 const inscriptos = await client.query(`SELECT COUNT(*) AS count FROM event_enrollments WHERE id_event = ${idEvento}`);
-                const maxAsistencia = await this.getMaxCapacity(idEvento);
+                const maxAsistencia = await this.getMaxAssistance(idEvento);
 
                 if (inscriptos >= maxAsistencia) {
                     console.log("llego agotado")
@@ -252,11 +258,10 @@ async getMaxCapacity(id: number) {
             } else {
                 throw new Error('Not Found');
             }
-
             // Si pasa todas las verificaciones, proceder con la inscripción del usuario
             await client.query(`
-                INSERT INTO event_enrollments (id_event, id_user) VALUES ($1, $2)`,
-                [idEvento, idUsuario]
+                INSERT INTO event_enrollments (id_event, id_user, registration_date_time) VALUES ($1, $2,$3)`,
+                [idEvento, idUsuario, hoy]
             );
 
             return { success: true, message: 'Usuario inscrito correctamente en el evento.' };
