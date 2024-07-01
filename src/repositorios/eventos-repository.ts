@@ -239,7 +239,7 @@ export class EventRepository{
 
             if (evento.rows.length > 0) {
                 const startDate = new Date(evento.rows[0].start_date);
-                if (startDate.getTime() < hoy.getTime()) {
+                if (startDate.getTime() < hoy.getTime()) {//esto lo que hace es que te compara los milisegundos de cada uno que 
                     throw new Error('Bad Request cerrado');
                 }
 

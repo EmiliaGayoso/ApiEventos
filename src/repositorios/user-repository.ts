@@ -21,11 +21,12 @@ export class UserRepository{
                 }
                 
                 devolver = await client.query(query);
+                devolver= devolver.rows[0];
                 console.log(devolver.rows[0]);
             } catch (error) {
                 console.log("error en repo event loc crear");
             }
-            return devolver.rows[0];
+            return devolver;
         
         //acá iría la query que debe verificar si existe o no el usuario que se manda
         //si existe, deberia retornar al usuario

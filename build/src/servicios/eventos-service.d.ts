@@ -18,9 +18,6 @@ export declare class EventService {
     updateEvent(eventito: Eventos, userId: number): Promise<any>;
     deleteEvent(id: number, user_id: number): Promise<any>;
     enrollUser(id: number, idUser: number): Promise<any>;
-    deleteEnrollment(idEvent: number, idUser: number): Promise<{
-        success: boolean;
-        message: string;
-    }>;
+    deleteEnrollment(idEvent: number, idUser: number): Promise<any>;
     patchFeedback(idEvent: number, idUser: number, observations: string, rating: number): Promise<any>;
 }

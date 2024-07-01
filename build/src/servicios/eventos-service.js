@@ -182,14 +182,21 @@ class EventService {
     }
     async deleteEnrollment(idEvent, idUser) {
         const eventRepository = new eventos_repository_1.EventRepository();
-        const eliminado = await eventRepository.eliminarEnrollment(idEvent, idUser);
+        let eliminado = null;
         const buscada = await this.getEventoById(idEvent);
         if (buscada === null) {
             throw new Error('Not Found');
         }
         try {
+            eliminado = await eventRepository.eliminarEnrollment(idEvent, idUser);
         }
         catch (error) {
+            if (error.message === 'Bad Request noInscripto') {
+                throw new Error('Bad Request noInscripto');
+            }
+            else if (error.message === 'Bad Request cerrado') {
+                throw new Error('Bad Request cerrado');
+            }
         }
         return eliminado;
     }

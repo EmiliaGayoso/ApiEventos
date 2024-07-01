@@ -224,7 +224,7 @@ class EventRepository {
             const hoy = new Date();
             if (evento.rows.length > 0) {
                 const startDate = new Date(evento.rows[0].start_date);
-                if (startDate < hoy) {
+                if (startDate.getTime() < hoy.getTime()) {
                     throw new Error('Bad Request cerrado');
                 }
             }

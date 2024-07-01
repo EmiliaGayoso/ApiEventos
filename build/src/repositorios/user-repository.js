@@ -18,12 +18,13 @@ class UserRepository {
                 values: [username, password]
             };
             devolver = await client.query(query);
+            devolver = devolver.rows[0];
             console.log(devolver.rows[0]);
         }
         catch (error) {
             console.log("error en repo event loc crear");
         }
-        return devolver.rows[0];
+        return devolver;
     }
     async crearUsuario(fName, lName, username, password) {
         let devolver = null;
