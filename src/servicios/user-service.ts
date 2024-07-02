@@ -4,6 +4,7 @@ import { config } from "../repositorios/bd.js";
 import {UserRepository} from "../repositorios/user-repository.js";
 import {createToken} from "../auth/jwt"
 import User from '../entities/User'
+import { NewLineKind } from "typescript";
 
 const client = new pg.Client(config);
 client.connect();
@@ -41,8 +42,14 @@ export class UserService {
         async crearUsuario(fName: string, lName: string, username: string, password: string)
     {
         const userRepository = new UserRepository();
+        //devuelve o el usuario o null, si es null no existe el usuario
+        if(fName === null || fName.length < 3 || lName === null || lName.length < 3 || password === null || password.length < 3){
+            throw new Error ('Bad Request');
+        }else if(!(username.includes('@') && username.includes('.com'))){
+            throw new Error ('Bad Request');
+        } 
         const usuario = userRepository.crearUsuario(fName, lName, username, password);
-        return usuario;//devuelve o el usuario o null, si es null no existe el usuario
+        return usuario;
     }
     
 

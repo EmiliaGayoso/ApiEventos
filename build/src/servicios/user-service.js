@@ -32,6 +32,12 @@ class UserService {
     }
     async crearUsuario(fName, lName, username, password) {
         const userRepository = new user_repository_js_1.UserRepository();
+        if (fName === null || fName.length < 3 || lName === null || lName.length < 3 || password === null || password.length < 3) {
+            throw new Error('Bad Request');
+        }
+        else if (!(username.includes('@') && username.includes('.com'))) {
+            throw new Error('Bad Request');
+        }
         const usuario = userRepository.crearUsuario(fName, lName, username, password);
         return usuario;
     }

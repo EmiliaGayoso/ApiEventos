@@ -34,17 +34,31 @@ class UserRepository {
                 text: 'SELECT * FROM users WHERE username= $1',
                 values: [username]
             };
-            if (verUsername === null) {
-                const query = {
-                    text: 'INSERT INTO user VALUES ($1,$2, $3, $4) RETURNING * ',
-                    values: [fName, lName, username, password]
-                };
-                result = client.query(query);
-                devolver = result.rows[0];
+            const { rowCount } = await client.query(verUsername);
+            if (rowCount === 0) {
+                try {
+                    const query = {
+                        text: 'INSERT INTO users (first_name, last_name, username, password) VALUES ($1,$2,$3,$4) RETURNING *',
+                        values: [fName, lName, username, password]
+                    };
+                    result = await client.query(query);
+                    devolver = result.rows[0];
+                }
+                catch (error) {
+                    console.log('register, error en insert');
+                    throw new Error('Error invalido');
+                }
+            }
+            else {
+                throw new Error();
             }
         }
         catch (error) {
+            if (error.message === 'Error inválido') {
+                throw new Error('Pruebe otra vez');
+            }
             console.log("error en repo regitro usuario");
+            throw new Error('Usuario ya existente');
         }
         return devolver;
     }

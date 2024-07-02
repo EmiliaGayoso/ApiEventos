@@ -38,23 +38,38 @@ export class UserRepository{
         let devolver = null;
         try {
             let result = null;
-            const verUsername= {
+            const verUsername = {
                 text:'SELECT * FROM users WHERE username= $1',/*verifica si existe, si no existe se devuelve null */
                 values:[username]
-            } 
-            if(verUsername===null){
-                const query = {
+            }
+            const { rowCount } =  await client.query(verUsername);
+            if(rowCount === 0){
+                try {
+                    const query = {
                 
-                    text: 'INSERT INTO user VALUES ($1,$2, $3, $4) RETURNING * ',/*EL RETURNING ES PARA NO HACER UNA QUERY MAS PARA QUE ME DEVUELVA LO QUE ME ACABA DE CCREAR */
-                    values: [fName,lName,username, password]
+                        text: 'INSERT INTO users (first_name, last_name, username, password) VALUES ($1,$2,$3,$4) RETURNING *',/*EL RETURNING ES PARA NO HACER UNA QUERY MAS PARA QUE ME DEVUELVA LO QUE ME ACABA DE CCREAR */
+                        values: [fName,lName,username, password]
+                    }
+                    
+                    result = await client.query(query);
+                    devolver = result.rows[0];/*esto es el usuario completo creado */
+
+                } catch (error) {
+                    console.log('register, error en insert');
+                    throw new Error ('Error invalido');
                 }
                 
-                result= client.query(query);
-                devolver = result.rows[0];/*esto es el usuario completo creado */
+            }else{
+                throw new Error();
             }
             
         } catch (error) {
+            if(error.message === 'Error inválido'){
+                throw new Error('Pruebe otra vez');
+            }
             console.log("error en repo regitro usuario");
+            throw new Error ('Usuario ya existente');
+
         }
         return devolver;
 
