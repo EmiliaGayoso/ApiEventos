@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "deb4cfc9-2801-4f05-bf17-4776953f3aab",
+		"_postman_id": "aca5b259-2e55-4d8b-81a5-5ac23c20cd60",
 		"name": "DAI-API_Eventos",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -9,7 +9,7 @@
 			"name": "Event",
 			"item": [
 				{
-					"name": "NO Enrollment",
+					"name": "Enrollment",
 					"item": [
 						{
 							"name": "Rating de un evento event_enrollment",
@@ -120,7 +120,7 @@
 					]
 				},
 				{
-					"name": "Get all",
+					"name": "NO Get all",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -134,13 +134,20 @@
 							"path": [
 								"api",
 								"event"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2024-03-28",
+									"disabled": true
+								}
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "getById",
+					"name": "NO getById",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -654,7 +661,7 @@
 			"name": "Provinces LISTO",
 			"item": [
 				{
-					"name": "getAll",
+					"name": "NO getAll",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -695,7 +702,7 @@
 					"response": []
 				},
 				{
-					"name": "getById all locations of province",
+					"name": "NO getById all locations of province",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -894,7 +901,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\"first_name\": \"Emi\",\r\n\"last_name\": \"Gayoso\",\r\n\"username\": \"gayoso@gmail.com\",\r\n\"password\": \"emi\"\r\n}",
+							"raw": "{\r\n\"first_name\": \"Emilia\",\r\n\"last_name\": \"Gayoso\",\r\n\"username\": \"gayoso@gmail.com\",\r\n\"password\": \"emilia\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
