@@ -6,7 +6,6 @@ const Pagination_1 = require("../entities/Pagination");
 class EventService {
     async getAllEventos(path, url, limit, offset, name, cat, fecha, tag) {
         var queryWhere = ``;
-        let fechaNew = fecha.toISOString().split(' ')[0];
         let currentDate = new Date();
         if (name) {
             queryWhere += `WHERE events.name ILIKE '%${name}%'`;
@@ -20,12 +19,12 @@ class EventService {
             }
             ;
         }
-        if (!(fechaNew === currentDate.toISOString().split('T')[0])) {
+        if (fecha) {
             if (queryWhere.includes("WHERE")) {
-                queryWhere += ` AND startDate = '${fecha}'`;
+                queryWhere += ` AND start_date = '${fecha}'`;
             }
             else {
-                queryWhere += ` WHERE startDate = '${fecha}'`;
+                queryWhere += ` WHERE start_date = '${fecha}'`;
             }
             ;
         }

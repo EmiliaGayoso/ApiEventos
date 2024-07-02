@@ -12,7 +12,7 @@ client.connect();
 class EventRepository {
     async getAllEvents(name, cat, fecha, tag, limit, offset, queryWhere) {
         console.log("llego a getAllEvents");
-        const query1 = `SELECT e.name, e.description, e.start_date, e.duration_in_minutes, e.price, e.max_assistance FROM events e
+        const query1 = `SELECT DISTINCT e.name, e.description, e.start_date, e.duration_in_minutes, e.price, e.max_assistance FROM events e
         LEFT JOIN event_categories ON e.id_event_category = event_categories.id
         LEFT JOIN event_tags ON event_tags.id_event = e.id 
         LEFT JOIN tags ON event_tags.id_tag = tags.id

@@ -21,17 +21,16 @@ router.get("/", async (req: Request, res: Response) => {
   const name = req.query.name;
   const cat = req.query.category;
   const fecha = req.query.startDate;
+  console.log(fecha);
   const tag = req.query.tag;
-  const fechaString = String(fecha);
-  let fecha2 = new Date(fechaString);
 
-  let nuevaFecha = fecha2 && !isNaN(fecha2.getTime()) ? new Date(fecha2) : new Date();
+  //let nuevaFecha = fecha2 && !isNaN(fecha2.getTime()) ? new Date(fecha2) : new Date();
   //Verificar si limit y offset son numeros y existen
 
   try 
   {
     //te llama la funcion en eventos-service que activa la query
-    const allEvent = await eventService.getAllEventos(req.path, String(url), Number(limit ?? 0), Number(offset ?? 0), String(name ?? ''), String(cat ?? ''), nuevaFecha, String(tag ?? '')); 
+    const allEvent = await eventService.getAllEventos(req.path, String(url), Number(limit ?? 0), Number(offset ?? 0), String(name ?? ''), String(cat ?? ''), String(fecha ?? ''), String(tag ?? '')); 
     
     return res.json(allEvent);
   } 

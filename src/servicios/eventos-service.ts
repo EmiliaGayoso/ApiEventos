@@ -4,11 +4,10 @@ import { Pagination } from "../entities/Pagination";
 
 export class EventService {
     /*2 y 3*/
-    async getAllEventos(path: string, url: string, limit: number, offset:number, name ?: string, cat ?: string, fecha ?: Date, tag ?: string) //el ?: (segun gemini) es para definir que el parametro es opcional
+    async getAllEventos(path: string, url: string, limit: number, offset:number, name ?: string, cat ?: string, fecha ?: string, tag ?: string) //el ?: (segun gemini) es para definir que el parametro es opcional
     {   
         //se tiene que verificar que name, cat, fecha y tag EXISTAN
         var queryWhere = ``;
-        let fechaNew = fecha.toISOString().split(' ')[0]
         let currentDate = new Date()
         //falta agregar cosas, ya que en el caso que no exista name, pero si las demas, el WHERE debería seguir funcionando
         if (name){
@@ -22,12 +21,12 @@ export class EventService {
                 queryWhere += ` WHERE event_categories.name = '${cat}'`;
             };
         }
-        if (!(fechaNew === currentDate.toISOString().split('T')[0])){
+        if (fecha){
             if(queryWhere.includes("WHERE")){
-                queryWhere += ` AND startDate = '${fecha}'`;
+                queryWhere += ` AND start_date = '${fecha}'`;
             }
             else{
-                queryWhere += ` WHERE startDate = '${fecha}'`;
+                queryWhere += ` WHERE start_date = '${fecha}'`;
             };
         }
         if (tag){

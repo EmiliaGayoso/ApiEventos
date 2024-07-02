@@ -19,12 +19,10 @@ router.get("/", async (req, res) => {
     const name = req.query.name;
     const cat = req.query.category;
     const fecha = req.query.startDate;
+    console.log(fecha);
     const tag = req.query.tag;
-    const fechaString = String(fecha);
-    let fecha2 = new Date(fechaString);
-    let nuevaFecha = fecha2 && !isNaN(fecha2.getTime()) ? new Date(fecha2) : new Date();
     try {
-        const allEvent = await eventService.getAllEventos(req.path, String(url), Number(limit !== null && limit !== void 0 ? limit : 0), Number(offset !== null && offset !== void 0 ? offset : 0), String(name !== null && name !== void 0 ? name : ''), String(cat !== null && cat !== void 0 ? cat : ''), nuevaFecha, String(tag !== null && tag !== void 0 ? tag : ''));
+        const allEvent = await eventService.getAllEventos(req.path, String(url), Number(limit !== null && limit !== void 0 ? limit : 0), Number(offset !== null && offset !== void 0 ? offset : 0), String(name !== null && name !== void 0 ? name : ''), String(cat !== null && cat !== void 0 ? cat : ''), String(fecha !== null && fecha !== void 0 ? fecha : ''), String(tag !== null && tag !== void 0 ? tag : ''));
         return res.json(allEvent);
     }
     catch (error) {
