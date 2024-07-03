@@ -14,8 +14,8 @@ router.get("/", async (req: Request, res: Response) => {
   
   console.log("event 2 y 3")
 
-  const limit = pag.parseLimit(req.query.pageSize);
-  const offset = pag.parseOffset(req.query.page);
+  const limit = pag.parseLimit(req.query.limit);
+  const offset = pag.parseOffset(req.query.offset);
   const url = "api/event";
 
   const name = req.query.name;

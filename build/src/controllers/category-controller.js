@@ -8,8 +8,8 @@ const category_service_1 = require("../servicios/category-service");
 const router = express_1.default.Router();
 const categoryService = new category_service_1.CategoryService();
 router.get("/", async (req, res) => {
-    const limit = req.query.pageSize;
-    const offset = req.query.page;
+    const limit = req.query.limit;
+    const offset = req.query.offset;
     const url = "api/event-category";
     try {
         const allCat = await categoryService.getAll(Number(limit), Number(offset), url, req.path);

@@ -9,8 +9,8 @@ const authMiddleware_1 = require("../auth/authMiddleware");
 const router = express_1.default.Router();
 const eventLocService = new event_location_service_1.EventLocationService();
 router.get("/", authMiddleware_1.AuthMiddleware, async (req, res) => {
-    const limit = req.query.pageSize;
-    const offset = req.query.page;
+    const limit = req.query.limit;
+    const offset = req.query.offset;
     const url = "api/event-location";
     try {
         const allEventLoc = await eventLocService.getAll(Number(limit), Number(offset), url, req.path);

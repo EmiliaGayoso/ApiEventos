@@ -84,14 +84,14 @@ class EventRepository {
 		LEFT JOIN event_tags et ON e.id = et.id_event
         LEFT JOIN tags ON et.id = tags.id
         WHERE e.id = ${id}` + queryWhere;
-        const query2 = `select count(*) from event_enrollments`;
+        const query2 = `select count(*) as total from event_enrollments`;
         try {
             console.log("llega a la query1");
             const { rows: participants } = await client.query(queryParticipants);
             console.log(participants);
             console.log("llega a query2");
             const { rows: countParticipants } = await client.query(query2);
-            return [participants, countParticipants];
+            return [participants, countParticipants[0].total];
         }
         catch (_a) {
             console.log("Error en query");

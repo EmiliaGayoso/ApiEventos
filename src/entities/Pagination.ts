@@ -51,12 +51,12 @@ export class Pagination {
         let url = process.env.BASE_URL + url1 + path;
         console.log(url);
         url = this.limitRegex.test(url)
-        ? url.replace(this.limitRegex, `pageSize=${limit}`)
-        : `${url}${url.includes("?") ? "&" : "?"}pageSize=${limit}`;
+        ? url.replace(this.limitRegex, `limit=${limit}`)
+        : `${url}${url.includes("?") ? "&" : "?"}limit=${limit}`;
         console.log(url);
         url = this.offsetRegex.test(url)
-        ? url.replace(this.offsetRegex, `page=${currentOffset + limit}`)
-        : `${url}${url.includes("?") ? "&" : "?"}page=${currentOffset + limit}`;
+        ? url.replace(this.offsetRegex, `offset=${currentOffset + limit}`)
+        : `${url}${url.includes("?") ? "&" : "?"}offset=${currentOffset + limit}`;
         console.log(url);
         currentOffset++;
         return url;

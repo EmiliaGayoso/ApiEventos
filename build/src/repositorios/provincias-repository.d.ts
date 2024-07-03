@@ -4,7 +4,7 @@ export declare class ProvinciaRepository {
     constructor();
     buscarId(id: any): Promise<any>;
     traerTodas(limit: any, offset: any): Promise<any[] | "Query error">;
-    traerLoc(id: any, limit: any, offset: any): Promise<"Query error" | (number | any[])[]>;
+    traerLoc(id: any, limit: any, offset: any): Promise<any[] | "Query error">;
     crearProvincia(provinciaCrear: any): Promise<any>;
     modificarProvincia(provinciaModificar: any, provinciaId: any): Promise<void>;
     borrarProvincia(provinciaId: any): Promise<void>;

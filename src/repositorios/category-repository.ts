@@ -10,13 +10,13 @@ export class CategoryRepository{
         console.log("llego a repo getAll cat");
         const query1 = `SELECT * FROM event_categories ORDER BY id LIMIT ${limit} OFFSET ${offset}`;
 
-        const queryCount = 'SELECT COUNT(*) FROM event_categories';
+        const queryCount = 'SELECT COUNT(*) as total FROM event_categories';
         try {
             const { rows: resp } = await client.query(query1);
             console.log("llega a query 2");
-            const resp2 = resp.length;
+            const {rows: resp2} = await client.query(queryCount);
             console.log(resp + ',' + resp2 );
-            return [resp, resp2];
+            return [resp, resp2[0].total];
         } catch (error) {
             return ("Query error");
         }

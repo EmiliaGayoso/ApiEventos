@@ -20,8 +20,8 @@ router.get('/:id', async (req, res) => {
     }
 });
 router.get('/', async (req, res) => {
-    const limit = req.query.pageSize;
-    const offset = req.query.page;
+    const limit = req.query.limit;
+    const offset = req.query.offset;
     const url = "api/provincias";
     try {
         const provinciasPaginadas = await provinciaService.traerTodas(Number(limit), Number(offset), url, req.path);

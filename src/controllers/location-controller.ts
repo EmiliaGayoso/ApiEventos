@@ -6,8 +6,8 @@ const router = express.Router();
 const locationService = new LocationService();
 
 router.get("/", async (req: Request, res: Response) => {
-    const limit = req.query.pageSize;
-    const offset = req.query.page;
+    const limit = req.query.limit;
+    const offset = req.query.offset;
     const url = "api/location";
 
     try {
@@ -34,8 +34,8 @@ router.get("/:id", async (req: Request, res: Response) => {
 
 //Se necesita autenticacion
 router.get("/:id/event-location", AuthMiddleware, async (req: Request, res: Response) => {
-    const limit = req.query.pageSize;
-    const offset = req.query.page;
+    const limit = req.query.limit;
+    const offset = req.query.offset;
     const url = "api/location";
     
     try {

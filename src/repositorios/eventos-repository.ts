@@ -34,7 +34,7 @@ export class EventRepository{
         }
 
         
-        /*`SELECT * FROM events limit ${pageSize} offset ${requestedPage}
+        /*`SELECT * FROM events limit ${limit} offset ${requestedPage}
         LEFT JOIN event_categories ON event.id_event_category = event_categories.id
         LEFT JOIN event_tags ON event_tags.id_event = event.id 
         LEFT JOIN tags ON event_tags.id_tag = tags.id
@@ -108,7 +108,7 @@ export class EventRepository{
 		LEFT JOIN event_tags et ON e.id = et.id_event
         LEFT JOIN tags ON et.id = tags.id
         WHERE e.id = ${id}` + queryWhere;
-        const query2= `select count(*) from event_enrollments`;
+        const query2= `select count(*) as total from event_enrollments`;
         try {
             console.log("llega a la query1");
             const { rows: participants } = await client.query(queryParticipants);
@@ -117,7 +117,7 @@ export class EventRepository{
             console.log("llega a query2")
             const { rows: countParticipants } = await client.query(query2);
 
-            return [participants, countParticipants];
+            return [participants, countParticipants[0].total];
         }
         catch {
             console.log("Error en query");

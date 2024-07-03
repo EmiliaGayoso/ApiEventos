@@ -5,8 +5,8 @@ const router = express.Router();
 const categoryService = new CategoryService();
 
 router.get("/", async (req: Request, res: Response) => {
-    const limit = req.query.pageSize;
-    const offset = req.query.page;
+    const limit = req.query.limit;
+    const offset = req.query.offset;
     const url = "api/event-category";
 
     try {

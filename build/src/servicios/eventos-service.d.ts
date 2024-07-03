@@ -5,15 +5,7 @@ export declare class EventService {
         pagination: import("../entities/Pagination").PaginationDto;
     }>;
     getEventoById(id: number): Promise<any>;
-    getParticipants(limit: number, offset: number, id: number, fName?: string, lName?: string, username?: string, attended?: boolean, rating?: number): Promise<string | any[] | {
-        collection: string | any[];
-        pagination: {
-            limit: number;
-            offset: number;
-            nextPage: string;
-            total: number;
-        };
-    }>;
+    getParticipants(limit: number, offset: number, id: number, fName?: string, lName?: string, username?: string, attended?: boolean, rating?: number): Promise<any>;
     createEvent(eventito: Eventos): Promise<any>;
     updateEvent(eventito: Eventos, userId: number): Promise<any>;
     deleteEvent(id: number, user_id: number): Promise<any>;

@@ -9,12 +9,13 @@ export class EventLocationRepository {
     async getAll(limit, offset){
         console.log('llegue a getAll de eventlocrepo');
         const query1 = `SELECT * FROM event_locations ORDER BY id LIMIT ${limit} OFFSET ${offset}`;
+        const query2 = `SELECT COUNT(*) as total FROM event_locations`
 
         try {
             const { rows: resp } = await client.query(query1);
-            const resp2 = resp.length;
+            const {rows: resp2} = await client.query(query2);
             console.log('Length de event_locations: ', resp2);
-            return [resp, resp2];
+            return [resp, resp2[0].total];
         } catch (error) {
             return ("error en repo event loc getAll");
         }

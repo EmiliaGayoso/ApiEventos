@@ -104,7 +104,7 @@ export class EventService {
         return resultado;
             /*pagination: 
             {
-              limit: pageSize, //la cantidad de elementos por pagina
+              limit: limit, //la cantidad de elementos por pagina
               offset: requestedPage,// la pagina en la que estas
               nextPage: "http://localhost:5050/event?limit=15&offset=1",
               total: cantidadEvents, // cantidad de elementos, lo mismo de arriba

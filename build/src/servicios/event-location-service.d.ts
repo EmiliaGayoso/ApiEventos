@@ -1,7 +1,7 @@
 import EventLocaciones from "../entities/Eventos-Locaciones";
 export declare class EventLocationService {
     getAll(limit: number, offset: number, url: string, path: string): Promise<{
-        collection: string | number | any[];
+        collection: any;
         pagination: import("../entities/Pagination").PaginationDto;
     }>;
     getById(id: number): Promise<any>;

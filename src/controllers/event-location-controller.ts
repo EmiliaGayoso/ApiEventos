@@ -12,8 +12,8 @@ const eventLocService = new EventLocationService();
 
 
 router.get("/", AuthMiddleware, async (req: RequestUser, res: Response) => {
-    const limit = req.query.pageSize;
-    const offset = req.query.page;
+    const limit = req.query.limit;
+    const offset = req.query.offset;
     const url = "api/event-location";
 
     try {

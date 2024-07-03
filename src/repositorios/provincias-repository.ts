@@ -56,15 +56,15 @@ export class ProvinciaRepository {
     async traerLoc(id, limit, offset){
         
         const query1 = `SELECT * FROM locations WHERE id_province = ${id} LIMIT ${limit} OFFSET ${offset}`;
-        const query2 = `SELECT COUNT(*) FROM locations WHERE id_province = ${id}`
+        const query2 = `SELECT COUNT(*) as total FROM locations WHERE id_province = ${id}`
         
         try {
             const {rows: result1} = await this.BDClient.query(query1);
             console.log('Result 1',result1);
-            const result2 = result1.length;
+            const {rows: result2} = await this.BDClient.query(query2);
             console.log(result2);
 
-            return [result1, result2];
+            return [result1, result2[0].total];
         } catch (error) {
             return ("Query error");
         }

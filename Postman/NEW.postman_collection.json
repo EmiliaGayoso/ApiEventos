@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "cd9cbe87-7158-493e-a1b8-9e958f366109",
+		"_postman_id": "74b60cab-7681-49b6-b703-450766d8e99f",
 		"name": "DAI-API_Eventos",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -142,7 +142,7 @@
 									"disabled": true
 								},
 								{
-									"key": "pageSize",
+									"key": "limit",
 									"value": "10",
 									"disabled": true
 								}
@@ -666,7 +666,7 @@
 			"name": "Provinces LISTO",
 			"item": [
 				{
-					"name": "NO getAll",
+					"name": "getAll",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -680,6 +680,18 @@
 							"path": [
 								"api",
 								"provincias"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "10",
+									"disabled": true
+								}
 							]
 						}
 					},
@@ -707,12 +719,12 @@
 					"response": []
 				},
 				{
-					"name": "NO getById all locations of province",
+					"name": "getById all locations of province",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:{{puerto}}/api/provincias/2/locations",
+							"raw": "http://localhost:{{puerto}}/api/provincias/2/locations?limit=10",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -723,6 +735,12 @@
 								"provincias",
 								"2",
 								"locations"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								}
 							]
 						}
 					},
