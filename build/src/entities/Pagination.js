@@ -48,9 +48,10 @@ class Pagination {
             : `${url}${url.includes("?") ? "&" : "?"}pageSize=${limit}`;
         console.log(url);
         url = this.offsetRegex.test(url)
-            ? url.replace(this.offsetRegex, `page=${(currentOffset + 1) * limit}`)
-            : `${url}${url.includes("?") ? "&" : "?"}page=${(currentOffset + 1) * limit}`;
+            ? url.replace(this.offsetRegex, `page=${currentOffset + limit}`)
+            : `${url}${url.includes("?") ? "&" : "?"}page=${currentOffset + limit}`;
         console.log(url);
+        currentOffset++;
         return url;
     }
 }
