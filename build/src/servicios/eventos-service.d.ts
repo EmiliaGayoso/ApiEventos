@@ -1,7 +1,7 @@
 import Eventos from "../entities/Eventos";
 export declare class EventService {
     getAllEventos(path: string, url: string, limit: number, offset: number, name?: string, cat?: string, fecha?: string, tag?: string): Promise<{
-        collection: string | number | any[];
+        collection: any;
         pagination: import("../entities/Pagination").PaginationDto;
     }>;
     getEventoById(id: number): Promise<any>;

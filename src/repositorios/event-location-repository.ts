@@ -8,7 +8,7 @@ client.connect();
 export class EventLocationRepository {
     async getAll(limit, offset){
         console.log('llegue a getAll de eventlocrepo');
-        const query1 = `SELECT * FROM event_locations LIMIT ${limit} OFFSET ${offset}`;
+        const query1 = `SELECT * FROM event_locations ORDER BY id LIMIT ${limit} OFFSET ${offset}`;
 
         try {
             const { rows: resp } = await client.query(query1);

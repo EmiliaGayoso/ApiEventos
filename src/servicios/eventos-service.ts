@@ -37,18 +37,66 @@ export class EventService {
                 queryWhere += ` WHERE tags.name = '${tag}'`;
             }
         }
-        queryWhere += `LIMIT ${limit} OFFSET ${offset}`
+        queryWhere += `ORDER BY e.id LIMIT ${limit} OFFSET ${offset}`
         console.log("Despues de todas las query: ", queryWhere)
         const pag = new Pagination();
 
         const eventRepository = new EventRepository();
         const [allEvents, cantidadEvents] = await eventRepository.getAllEvents(name, cat, fecha, tag, limit, offset, queryWhere);
+        const formattedEvents = allEvents.map(event => ({
+            id: event.id,
+            name: event.name,
+            description: event.description,
+            event_category: {
+                id: event.id_event_category,
+                name: event.category_name
+            },
+            event_location: {
+                id: event.id_event_location,
+                name: event.event_location_name,
+                full_address: event.full_address,
+                latitude: event.event_location_latitude,
+                longitude: event.event_location_longitude,
+                max_capacity: event.event_location_max_capacity,
+                location: {
+                    id: event.location_id,
+                    name: event.location_name,
+                    latitude: event.location_latitude,
+                    longitude: event.location_longitude,
+                    province: {
+                        id: event.province_id,
+                        name: event.province_name,
+                        full_name: event.province_full_name,
+                        latitude: event.province_latitude,
+                        longitude: event.province_longitude,
+                        display_order: event.province_display_order
+                    }
+                }
+            },
+            start_date: event.start_date,
+            duration_in_minutes: event.duration_in_minutes,
+            price: event.price,
+            enabled_for_enrollment: event.enabled_for_enrollment,
+            max_assistance: event.max_assistance,
+            creator_user: {
+                id: event.id_creator_user,
+                username: event.username,
+                first_name: event.first_name,
+                last_name: event.last_name
+            },
+            tags: event.tags ? event.tags.map(tag => ({
+                id: tag.id,
+                name: tag.name
+            })) : []
+        }));
+
         //throw new Error("Error en el servicio  de eventos");
         const paginacionCreada = pag.buildPagination(limit, offset, cantidadEvents, path, url)
         console.log(paginacionCreada);
+        
         const resultado=
         {
-            collection: allEvents,
+            collection: formattedEvents,
             
             pagination: paginacionCreada
         }

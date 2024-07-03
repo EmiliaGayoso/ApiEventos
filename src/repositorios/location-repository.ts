@@ -8,7 +8,7 @@ client.connect();
 export class LocationRepository {
     async getAll(limit, offset){
         console.log("llego a getAll loc");
-        const query1 = `SELECT * FROM locations LIMIT ${limit} OFFSET ${offset}`;
+        const query1 = `SELECT * FROM locations ORDER BY id LIMIT ${limit} OFFSET ${offset}`;
         try {
             const { rows: resp } = await client.query(query1);
             const resp2 = resp.length;

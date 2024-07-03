@@ -12,7 +12,7 @@ client.connect();
 class CategoryRepository {
     async getAll(limit, offset) {
         console.log("llego a repo getAll cat");
-        const query1 = `SELECT * FROM event_categories LIMIT ${limit} OFFSET ${offset}`;
+        const query1 = `SELECT * FROM event_categories ORDER BY id LIMIT ${limit} OFFSET ${offset}`;
         const queryCount = 'SELECT COUNT(*) FROM event_categories';
         try {
             const { rows: resp } = await client.query(query1);
