@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "aca5b259-2e55-4d8b-81a5-5ac23c20cd60",
+		"_postman_id": "cd9cbe87-7158-493e-a1b8-9e958f366109",
 		"name": "DAI-API_Eventos",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -120,7 +120,7 @@
 					]
 				},
 				{
-					"name": "NO Get all",
+					"name": "Get all",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -140,6 +140,11 @@
 									"key": "startDate",
 									"value": "2024-03-28",
 									"disabled": true
+								},
+								{
+									"key": "pageSize",
+									"value": "10",
+									"disabled": true
 								}
 							]
 						}
@@ -147,7 +152,7 @@
 					"response": []
 				},
 				{
-					"name": "NO getById",
+					"name": "getById",
 					"request": {
 						"method": "GET",
 						"header": [],
