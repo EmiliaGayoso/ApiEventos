@@ -30,7 +30,12 @@ class EventRepository {
         pr.longitude as province_longitude,
         pr.display_order as province_display_order,
         tg.id as tag_id,
-        tg.name as tag_name
+        tg.name as tag_name,
+		u.id as user_id,
+		u.username as user_username,
+		u.first_name as user_first_name,
+		u.last_name as user_last_name
+        
         FROM events e
         LEFT JOIN locations l ON e.id_event_location = l.id
         LEFT JOIN provinces pr ON l.id_province = pr.id
@@ -77,17 +82,21 @@ class EventRepository {
         pr.longitude as province_longitude,
         pr.display_order as province_display_order,
         tg.id as tag_id,
-        tg.name as tag_name
+        tg.name as tag_name,
+		u.id as user_id,
+		u.username as user_username,
+		u.first_name as user_first_name,
+		u.last_name as user_last_name
         FROM events e
+
         LEFT JOIN locations l ON e.id_event_location = l.id
         LEFT JOIN provinces pr ON l.id_province = pr.id
         LEFT JOIN event_locations el ON e.id_event_location = el.id
         LEFT JOIN event_tags et ON e.id = et.id_event
-
         LEFT JOIN tags tg ON et.id_tag = tg.id
-
         LEFT JOIN event_categories ec ON e.id_event_category = ec.id
         LEFT JOIN users u ON e.id_creator_user = u.id
+
         WHERE e.id = ${id}`;
         let retornar = null;
         try {

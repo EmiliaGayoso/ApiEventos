@@ -79,17 +79,17 @@ export class EventService {
             enabled_for_enrollment: event.enabled_for_enrollment,
             max_assistance: event.max_assistance,
             creator_user: {
-                id: event.id_creator_user,
-                username: event.username,
-                first_name: event.first_name,
-                last_name: event.last_name
+                id: event.user_id,
+                username: event.user_username,
+                first_name: event.user_first_name,
+                last_name: event.user_last_name
             },
             tags: event.tags ? event.tags.map(tag => ({
                 id: tag.id,
                 name: tag.name
             })) : []
         }));
-
+        console.log(formattedEvents);
         //throw new Error("Error en el servicio  de eventos");
         const paginacionCreada = pag.buildPagination(limit, offset, cantidadEvents, path, url)
         console.log(paginacionCreada);
@@ -157,10 +157,10 @@ export class EventService {
             enabled_for_enrollment: evento.enabled_for_enrollment,
             max_assistance: evento.max_assistance,
             creator_user: {
-                id: evento.id_creator_user,
-                username: evento.username,
-                first_name: evento.first_name,
-                last_name: evento.last_name
+                id: evento.user_id,
+                username: evento.user_username,
+                first_name: evento.user_first_name,
+                last_name: evento.user_last_name
             },
             tags: evento.tags ? evento.tags.map(tag => ({
                 id: tag.id,
