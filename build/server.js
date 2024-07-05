@@ -15,7 +15,7 @@ const port = 5050;
 app.use(express_1.default.json());
 app.use("/api/event", eventos_controller_1.default);
 app.use("/api/user", user_controller_1.default);
-app.use("/api/provincias", provincias_controller_1.default);
+app.use("/api/provinces", provincias_controller_1.default);
 app.use("/api/event-category", category_controller_1.default);
 app.use("/api/location", location_controller_1.default);
 app.use("/api/event-location", event_location_controller_1.default);

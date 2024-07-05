@@ -121,8 +121,55 @@ export class EventService {
             throw new Error ('Not Found');
         }
         const returnEntity = evento;
-        console.log("ESTOY EN EVENTOS-SERVICE Y MANDO: ", returnEntity)
-        return returnEntity;
+        const formattedEvents = {
+            id: evento.id,
+            name: evento.name,
+            description: evento.description,
+            event_category: {
+                id: evento.id_event_category,
+                name: evento.category_name
+            },
+            event_location: {
+                id: evento.id_event_location,
+                name: evento.event_location_name,
+                full_address: evento.full_address,
+                latitude: evento.event_location_latitude,
+                longitude: evento.event_location_longitude,
+                max_capacity: evento.event_location_max_capacity,
+                location: {
+                    id: evento.location_id,
+                    name: evento.location_name,
+                    latitude: evento.location_latitude,
+                    longitude: evento.location_longitude,
+                    province: {
+                        id: evento.province_id,
+                        name: evento.province_name,
+                        full_name: evento.province_full_name,
+                        latitude: evento.province_latitude,
+                        longitude: evento.province_longitude,
+                        display_order: evento.province_display_order
+                    }
+                }
+            },
+            start_date: evento.start_date,
+            duration_in_minutes: evento.duration_in_minutes,
+            price: evento.price,
+            enabled_for_enrollment: evento.enabled_for_enrollment,
+            max_assistance: evento.max_assistance,
+            creator_user: {
+                id: evento.id_creator_user,
+                username: evento.username,
+                first_name: evento.first_name,
+                last_name: evento.last_name
+            },
+            tags: evento.tags ? evento.tags.map(tag => ({
+                id: tag.id,
+                name: tag.name
+            })) : []
+        };
+
+        console.log("ESTOY EN EVENTOS-SERVICE Y MANDO: ", formattedEvents)
+        return formattedEvents;
 
     }
 

@@ -4,7 +4,49 @@ export declare class EventService {
         collection: any;
         pagination: import("../entities/Pagination").PaginationDto;
     }>;
-    getEventoById(id: number): Promise<any>;
+    getEventoById(id: number): Promise<{
+        id: any;
+        name: any;
+        description: any;
+        event_category: {
+            id: any;
+            name: any;
+        };
+        event_location: {
+            id: any;
+            name: any;
+            full_address: any;
+            latitude: any;
+            longitude: any;
+            max_capacity: any;
+            location: {
+                id: any;
+                name: any;
+                latitude: any;
+                longitude: any;
+                province: {
+                    id: any;
+                    name: any;
+                    full_name: any;
+                    latitude: any;
+                    longitude: any;
+                    display_order: any;
+                };
+            };
+        };
+        start_date: any;
+        duration_in_minutes: any;
+        price: any;
+        enabled_for_enrollment: any;
+        max_assistance: any;
+        creator_user: {
+            id: any;
+            username: any;
+            first_name: any;
+            last_name: any;
+        };
+        tags: any;
+    }>;
     getParticipants(limit: number, offset: number, id: number, fName?: string, lName?: string, username?: string, attended?: boolean, rating?: number): Promise<any>;
     createEvent(eventito: Eventos): Promise<any>;
     updateEvent(eventito: Eventos, userId: number): Promise<any>;

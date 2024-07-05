@@ -12,10 +12,35 @@ client.connect();
 class EventRepository {
     async getAllEvents(name, cat, fecha, tag, limit, offset, queryWhere) {
         console.log("llego a getAllEvents");
-        const query1 = `SELECT DISTINCT ON (e.id) e.id, e.name, e.description, e.start_date, e.duration_in_minutes, e.price, e.max_assistance FROM events e
-        LEFT JOIN event_categories ON e.id_event_category = event_categories.id
-        LEFT JOIN event_tags ON event_tags.id_event = e.id 
-        LEFT JOIN tags ON event_tags.id_tag = tags.id
+        const query1 = `SELECT DISTINCT ON (e.id) e.*, 
+        ec.name as category_name, 
+        el.name as event_location_name, 
+        el.full_address, 
+        el.latitude as event_location_latitude, 
+        el.longitude as event_location_longitude, 
+        el.max_capacity as event_location_max_capacity,
+        l.id as location_id,
+        l.name as location_name,
+        l.latitude as location_latitude,
+        l.longitude as location_longitude,
+        pr.id as province_id,
+        pr.name as province_name,
+        pr.full_name as province_full_name,
+        pr.latitude as province_latitude,
+        pr.longitude as province_longitude,
+        pr.display_order as province_display_order,
+        tg.id as tag_id,
+        tg.name as tag_name
+        FROM events e
+        LEFT JOIN locations l ON e.id_event_location = l.id
+        LEFT JOIN provinces pr ON l.id_province = pr.id
+        LEFT JOIN event_locations el ON e.id_event_location = el.id
+        LEFT JOIN event_tags et ON e.id = et.id_event
+
+        LEFT JOIN tags tg ON et.id_tag = tg.id
+
+        LEFT JOIN event_categories ec ON e.id_event_category = ec.id
+        LEFT JOIN users u ON e.id_creator_user = u.id
         ` + queryWhere;
         const queryCount = 'SELECT COUNT(id) as total FROM events';
         try {
@@ -50,7 +75,9 @@ class EventRepository {
         pr.full_name as province_full_name,
         pr.latitude as province_latitude,
         pr.longitude as province_longitude,
-        pr.display_order as province_display_order 
+        pr.display_order as province_display_order,
+        tg.id as tag_id,
+        tg.name as tag_name
         FROM events e
         LEFT JOIN locations l ON e.id_event_location = l.id
         LEFT JOIN provinces pr ON l.id_province = pr.id

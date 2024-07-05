@@ -14,7 +14,7 @@ app.use(express.json()); // Middleware to parse JSON
 
 app.use("/api/event", EventosController);
 app.use("/api/user", UserController);
-app.use("/api/provincias", ProvinciasController);
+app.use("/api/provinces", ProvinciasController);
 app.use("/api/event-category", CategoryController);
 app.use("/api/location", LocationController);
 app.use("/api/event-location", EventLocationController);
