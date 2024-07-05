@@ -82,10 +82,10 @@ class EventService {
                 first_name: event.user_first_name,
                 last_name: event.user_last_name
             },
-            tags: event.tags ? event.tags.map(tag => ({
-                id: tag.id,
-                name: tag.name
-            })) : []
+            tags: allEvents.tag_id ? {
+                id: allEvents.tag_id,
+                name: allEvents.tag_name
+            } : []
         }));
         console.log(formattedEvents);
         const paginacionCreada = pag.buildPagination(limit, offset, cantidadEvents, path, url);
@@ -145,10 +145,10 @@ class EventService {
                 first_name: evento.user_first_name,
                 last_name: evento.user_last_name
             },
-            tags: evento.tags ? evento.tags.map(tag => ({
-                id: tag.id,
-                name: tag.name
-            })) : []
+            tags: evento.tag_id ? {
+                id: evento.tag_id,
+                name: evento.tag_name
+            } : []
         };
         console.log("ESTOY EN EVENTOS-SERVICE Y MANDO: ", formattedEvents);
         return formattedEvents;

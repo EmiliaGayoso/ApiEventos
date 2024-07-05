@@ -45,7 +45,10 @@ export declare class EventService {
             first_name: any;
             last_name: any;
         };
-        tags: any;
+        tags: any[] | {
+            id: any;
+            name: any;
+        };
     }>;
     getParticipants(limit: number, offset: number, id: number, fName?: string, lName?: string, username?: string, attended?: boolean, rating?: number): Promise<any>;
     createEvent(eventito: Eventos): Promise<any>;
