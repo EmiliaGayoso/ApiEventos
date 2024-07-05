@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "74b60cab-7681-49b6-b703-450766d8e99f",
+		"_postman_id": "8bf86e39-ef27-45bd-b6d0-77ea57a0cd24",
 		"name": "DAI-API_Eventos",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -28,7 +28,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n\"observations\": \"Fue increible!!. Conviene estacionar lejos!!!!\"\r\n}",
+									"raw": "{\r\n\"observations\": \"Lalalala. Conviene estacionar lejos!!!!\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -157,7 +157,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:{{puerto}}/api/event/1",
+							"raw": "http://localhost:{{puerto}}/api/event/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -166,7 +166,7 @@
 							"path": [
 								"api",
 								"event",
-								"1"
+								"2"
 							]
 						}
 					},
@@ -671,7 +671,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:{{puerto}}/api/provincias",
+							"raw": "http://localhost:{{puerto}}/api/provinces",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -679,7 +679,7 @@
 							"port": "{{puerto}}",
 							"path": [
 								"api",
-								"provincias"
+								"provinces"
 							],
 							"query": [
 								{
@@ -703,7 +703,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:{{puerto}}/api/provincias/2",
+							"raw": "http://localhost:{{puerto}}/api/provinces/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -711,7 +711,7 @@
 							"port": "{{puerto}}",
 							"path": [
 								"api",
-								"provincias",
+								"provinces",
 								"2"
 							]
 						}
@@ -724,7 +724,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:{{puerto}}/api/provincias/2/locations?limit=10",
+							"raw": "http://localhost:{{puerto}}/api/provinces/2/locations?limit=10",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -732,7 +732,7 @@
 							"port": "{{puerto}}",
 							"path": [
 								"api",
-								"provincias",
+								"provinces",
 								"2",
 								"locations"
 							],
@@ -771,7 +771,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:{{puerto}}/api/provincias",
+							"raw": "http://localhost:{{puerto}}/api/provinces",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -779,7 +779,7 @@
 							"port": "{{puerto}}",
 							"path": [
 								"api",
-								"provincias"
+								"provinces"
 							]
 						}
 					},
@@ -810,7 +810,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:{{puerto}}/api/provincias",
+							"raw": "http://localhost:{{puerto}}/api/provinces",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -818,7 +818,7 @@
 							"port": "{{puerto}}",
 							"path": [
 								"api",
-								"provincias"
+								"provinces"
 							]
 						}
 					},
@@ -844,7 +844,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:{{puerto}}/api/provincias/3",
+							"raw": "http://localhost:{{puerto}}/api/provinces/3",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -852,7 +852,7 @@
 							"port": "{{puerto}}",
 							"path": [
 								"api",
-								"provincias",
+								"provinces",
 								"3"
 							]
 						}
